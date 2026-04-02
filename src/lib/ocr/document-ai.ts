@@ -1,4 +1,4 @@
-import OpenAI from 'openai'
+import { getOpenRouter } from '../agents/openrouter'
 
 export interface OCRResult {
   rawText: string
@@ -6,15 +6,6 @@ export interface OCRResult {
   status: 'success' | 'error'
   error?: string
 }
-
-const openRouter = new OpenAI({
-  baseURL: 'https://openrouter.ai/api/v1',
-  apiKey: process.env.OPENROUTER_API_KEY,
-  defaultHeaders: {
-    'HTTP-Referer': 'https://copiloto-aduanero.vercel.app',
-    'X-Title': 'Copiloto Aduanero',
-  },
-})
 
 export async function extractTextFromDocument(
   fileBuffer: Buffer,
@@ -24,7 +15,7 @@ export async function extractTextFromDocument(
     const base64Data = fileBuffer.toString('base64')
     const model = 'google/gemini-2.0-flash-lite:free'
 
-    const response = await openRouter.chat.completions.create({
+    const response = await getOpenRouter().chat.completions.create({
       model: model,
       messages: [
         {

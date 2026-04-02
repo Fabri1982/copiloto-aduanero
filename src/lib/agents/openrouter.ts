@@ -1,14 +1,23 @@
 import OpenAI from 'openai'
 
-// This will be used for text-to-JSON extractions to save Google AI Direct quota
-const openRouter = new OpenAI({
-  baseURL: 'https://openrouter.ai/api/v1',
-  apiKey: process.env.OPENROUTER_API_KEY,
-  defaultHeaders: {
-    'HTTP-Referer': 'https://copiloto-aduanero.vercel.app', // Required by OpenRouter
-    'X-Title': 'Copiloto Aduanero',
-  },
-})
+let openRouterInstance: OpenAI | null = null
+
+export function getOpenRouter() {
+  if (!openRouterInstance) {
+    if (!process.env.OPENROUTER_API_KEY) {
+      throw new Error('OPENROUTER_API_KEY is missing in environment variables')
+    }
+    openRouterInstance = new OpenAI({
+      baseURL: 'https://openrouter.ai/api/v1',
+      apiKey: process.env.OPENROUTER_API_KEY,
+      defaultHeaders: {
+        'HTTP-Referer': 'https://copiloto-aduanero.vercel.app',
+        'X-Title': 'Copiloto Aduanero',
+      },
+    })
+  }
+  return openRouterInstance
+}
 
 // Default free models to rotate if one fails
 export const FREE_MODELS = [
@@ -32,7 +41,7 @@ export async function generateWithOpenRouter(
   }
 
   try {
-    const response = await openRouter.chat.completions.create({
+    const response = await getOpenRouter().chat.completions.create({
       model: preferredModel,
       messages: [{ role: 'user', content: prompt }],
       response_format: jsonMode ? { type: 'json_object' } : undefined,
