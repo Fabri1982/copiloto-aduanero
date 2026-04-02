@@ -3,25 +3,10 @@ import { createClient } from "@/lib/supabase/server"
 import { getUserProfile } from "@/lib/supabase/auth"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { CaseStatusBadge } from "@/components/cases/case-status-badge"
-import { PriorityBadge } from "@/components/cases/priority-badge"
+import { CasesTable } from "@/components/cases/cases-table"
 import { CreateCaseDialog } from "@/components/cases/create-case-dialog"
 import { OperationCase } from "@/types/database"
-import { MoreHorizontal, Search, FileText, Eye, Edit } from "lucide-react"
+import { Search, FileText } from "lucide-react"
 
 function formatDate(dateString: string): string {
   return new Date(dateString).toLocaleDateString("es-ES", {
@@ -87,102 +72,10 @@ export default async function CasesPage({ searchParams }: CasesPageProps) {
         </form>
       </div>
 
-      {/* Cases Table */}
+      {/* Cases Table with Selection */}
       <div className="rounded-xl border border-[var(--border)] bg-[var(--surface)]">
         {cases && cases.length > 0 ? (
-          <Table>
-            <TableHeader>
-              <TableRow className="border-[var(--border)] hover:bg-transparent">
-                <TableHead className="text-[var(--text-muted)] font-medium">
-                  Referencia
-                </TableHead>
-                <TableHead className="text-[var(--text-muted)] font-medium">
-                  Cliente
-                </TableHead>
-                <TableHead className="text-[var(--text-muted)] font-medium">
-                  Estado
-                </TableHead>
-                <TableHead className="text-[var(--text-muted)] font-medium">
-                  Prioridad
-                </TableHead>
-                <TableHead className="text-[var(--text-muted)] font-medium">
-                  Fecha
-                </TableHead>
-                <TableHead className="text-[var(--text-muted)] font-medium w-[60px]">
-                  <span className="sr-only">Acciones</span>
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {cases.map((caseItem: OperationCase) => (
-                <TableRow
-                  key={caseItem.id}
-                  className="border-[var(--border)] hover:bg-[var(--surface-2)]"
-                >
-                  <TableCell>
-                    <Link
-                      href={`/cases/${caseItem.id}`}
-                      className="font-medium text-[var(--text)] hover:text-[var(--primary)] transition-colors"
-                    >
-                      {caseItem.reference_code || "Sin referencia"}
-                    </Link>
-                  </TableCell>
-                  <TableCell className="text-[var(--text)]">
-                    {caseItem.client_name}
-                  </TableCell>
-                  <TableCell>
-                    <CaseStatusBadge status={caseItem.status} />
-                  </TableCell>
-                  <TableCell>
-                    <PriorityBadge priority={caseItem.priority} />
-                  </TableCell>
-                  <TableCell className="text-[var(--text-muted)]">
-                    {formatDate(caseItem.created_at)}
-                  </TableCell>
-                  <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger
-                        render={
-                          <Button
-                            variant="ghost"
-                            size="icon-sm"
-                            className="h-8 w-8"
-                          >
-                            <MoreHorizontal className="h-4 w-4" />
-                            <span className="sr-only">Acciones</span>
-                          </Button>
-                        }
-                      />
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem
-                          render={
-                            <Link
-                              href={`/cases/${caseItem.id}`}
-                              className="flex items-center gap-2"
-                            >
-                              <Eye className="h-4 w-4" />
-                              Ver
-                            </Link>
-                          }
-                        />
-                        <DropdownMenuItem
-                          render={
-                            <Link
-                              href={`/cases/${caseItem.id}?edit=true`}
-                              className="flex items-center gap-2"
-                            >
-                              <Edit className="h-4 w-4" />
-                              Editar
-                            </Link>
-                          }
-                        />
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          <CasesTable cases={cases} searchQuery={searchQuery} />
         ) : (
           <div className="flex flex-col items-center justify-center py-16 px-4">
             <div className="w-16 h-16 rounded-full bg-[var(--surface-2)] flex items-center justify-center mb-4">
