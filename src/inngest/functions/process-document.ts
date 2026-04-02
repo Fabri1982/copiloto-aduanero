@@ -87,7 +87,7 @@ export const processDocument = inngest.createFunction(
         .insert({
           document_id: documentId,
           status: 'processing',
-          model_name: 'gemini-2.0-flash-lite',
+          model_name: 'gemini-2.5-flash-lite',
         })
         .select()
         .single()
