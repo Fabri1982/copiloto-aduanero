@@ -13,7 +13,8 @@ export const config = {
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
      * - public files
+     * - Supabase Storage (don't intercept file uploads/downloads)
      */
-    '/((?!_next/static|_next/image|favicon.ico|api/inngest|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/((?!_next/static|_next/image|favicon.ico|api/inngest|storage/v1|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 }
