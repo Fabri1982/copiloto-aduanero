@@ -1,0 +1,232 @@
+"use client"
+
+import { useState, useEffect, useCallback } from "react"
+import { createClient } from "@/lib/supabase/client"
+import { Button } from "@/components/ui/button"
+import {
+  Loader2,
+  CheckCircle,
+  XCircle,
+  Clock,
+  FileText,
+  RefreshCw,
+} from "lucide-react"
+
+type ProcessingState = "pending" | "processing" | "completed" | "failed"
+
+interface DocumentExtraction {
+  id: string
+  document_id: string
+  status: ProcessingState
+  error_message: string | null
+  created_at: string
+  updated_at: string
+}
+
+interface Document {
+  id: string
+  file_name: string
+  file_path: string
+  document_type: string
+}
+
+interface ProcessingStatusProps {
+  caseId: string
+  documents: Document[]
+}
+
+export function ProcessingStatus({ caseId, documents }: ProcessingStatusProps) {
+  const [extractions, setExtractions] = useState<Record<string, DocumentExtraction>>({})
+  const [loading, setLoading] = useState(true)
+  const [retrying, setRetrying] = useState<Record<string, boolean>>({})
+
+  const fetchExtractions = useCallback(async () => {
+    if (documents.length === 0) {
+      setLoading(false)
+      return
+    }
+
+    const supabase = createClient()
+    const { data, error } = await supabase
+      .from("document_extractions")
+      .select("*")
+      .in(
+        "document_id",
+        documents.map((d) => d.id)
+      )
+
+    if (error) {
+      console.error("Error fetching extractions:", error)
+      setLoading(false)
+      return
+    }
+
+    const extractionMap: Record<string, DocumentExtraction> = {}
+    data?.forEach((ext) => {
+      extractionMap[ext.document_id] = ext
+    })
+    setExtractions(extractionMap)
+    setLoading(false)
+  }, [documents])
+
+  useEffect(() => {
+    fetchExtractions()
+  }, [fetchExtractions])
+
+  // Auto-refresh while any document is processing
+  useEffect(() => {
+    const hasProcessing = Object.values(extractions).some(
+      (ext) => ext.status === "processing"
+    )
+
+    if (!hasProcessing) return
+
+    const interval = setInterval(() => {
+      fetchExtractions()
+    }, 5000)
+
+    return () => clearInterval(interval)
+  }, [extractions, fetchExtractions])
+
+  const handleRetry = async (document: Document) => {
+    setRetrying((prev) => ({ ...prev, [document.id]: true }))
+
+    try {
+      const response = await fetch("/api/documents/process", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          documentId: document.id,
+          caseId: caseId,
+          filePath: document.file_path,
+          fileName: document.file_name,
+          mimeType: "application/pdf", // Default, could be improved
+          agencyId: "", // Will be handled by server
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to retry processing")
+      }
+
+      // Refresh after retry
+      await fetchExtractions()
+    } catch (err) {
+      console.error("Error retrying processing:", err)
+    } finally {
+      setRetrying((prev) => ({ ...prev, [document.id]: false }))
+    }
+  }
+
+  const getStatusIcon = (status: ProcessingState) => {
+    switch (status) {
+      case "pending":
+        return <Clock className="h-4 w-4 text-[var(--text-muted)]" />
+      case "processing":
+        return <Loader2 className="h-4 w-4 animate-spin text-[var(--primary)]" />
+      case "completed":
+        return <CheckCircle className="h-4 w-4 text-[var(--success)]" />
+      case "failed":
+        return <XCircle className="h-4 w-4 text-[var(--error)]" />
+      default:
+        return null
+    }
+  }
+
+  const getStatusLabel = (status: ProcessingState) => {
+    switch (status) {
+      case "pending":
+        return "Pendiente"
+      case "processing":
+        return "Procesando"
+      case "completed":
+        return "Completado"
+      case "failed":
+        return "Error"
+      default:
+        return status
+    }
+  }
+
+  const getStatusClass = (status: ProcessingState) => {
+    switch (status) {
+      case "pending":
+        return "bg-[var(--text-muted)]/10 text-[var(--text-muted)]"
+      case "processing":
+        return "bg-[var(--primary)]/10 text-[var(--primary)]"
+      case "completed":
+        return "bg-[var(--success)]/10 text-[var(--success)]"
+      case "failed":
+        return "bg-[var(--error)]/10 text-[var(--error)]"
+      default:
+        return ""
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-6">
+        <Loader2 className="h-5 w-5 animate-spin text-[var(--primary)]" />
+      </div>
+    )
+  }
+
+  if (documents.length === 0) {
+    return null
+  }
+
+  return (
+    <div className="space-y-3">
+      {documents.map((doc) => {
+        const extraction = extractions[doc.id]
+        const status: ProcessingState = extraction?.status || "pending"
+
+        return (
+          <div
+            key={doc.id}
+            className="flex items-center gap-3 p-3 rounded-lg bg-[var(--surface)] border border-[var(--border)]"
+          >
+            <div className="w-8 h-8 rounded-lg bg-[var(--surface-2)] flex items-center justify-center shrink-0">
+              <FileText className="h-4 w-4 text-[var(--text-muted)]" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-[var(--text)] truncate">
+                {doc.file_name}
+              </p>
+              {extraction?.error_message && status === "failed" && (
+                <p className="text-xs text-[var(--error)] truncate">
+                  {extraction.error_message}
+                </p>
+              )}
+            </div>
+            <div className="flex items-center gap-2">
+              <span
+                className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${getStatusClass(
+                  status
+                )}`}
+              >
+                {getStatusIcon(status)}
+                {getStatusLabel(status)}
+              </span>
+              {status === "failed" && (
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  onClick={() => handleRetry(doc)}
+                  disabled={retrying[doc.id]}
+                  className="h-7 w-7"
+                >
+                  {retrying[doc.id] ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  ) : (
+                    <RefreshCw className="h-3.5 w-3.5" />
+                  )}
+                </Button>
+              )}
+            </div>
+          </div>
+        )
+      })}
+    </div>
+  )
+}

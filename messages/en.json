@@ -1,0 +1,109 @@
+{
+  "common": {
+    "appName": "Customs Copilot",
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "search": "Search",
+    "filter": "Filter",
+    "export": "Export",
+    "download": "Download",
+    "upload": "Upload",
+    "close": "Close",
+    "confirm": "Confirm",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "yes": "Yes",
+    "no": "No",
+    "noResults": "No results",
+    "actions": "Actions"
+  },
+  "auth": {
+    "login": "Log in",
+    "logout": "Log out",
+    "email": "Email",
+    "password": "Password",
+    "forgotPassword": "Forgot your password?",
+    "loginTitle": "Sign in to your account",
+    "loginSubtitle": "Enter your credentials to access the system"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "cases": "Cases",
+    "exceptions": "Exceptions",
+    "provisions": "Provisions",
+    "payments": "Payments",
+    "settings": "Settings"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "activeCases": "Active cases",
+    "pendingReview": "Pending review",
+    "pendingProvisions": "Pending provisions",
+    "paymentsToValidate": "Payments to validate",
+    "recentActivity": "Recent activity"
+  },
+  "cases": {
+    "title": "Cases",
+    "createCase": "New case",
+    "clientName": "Client name",
+    "referenceCode": "Reference code",
+    "status": "Status",
+    "priority": "Priority",
+    "createdAt": "Created at",
+    "documents": "Documents",
+    "data": "Data",
+    "validations": "Validations",
+    "timeline": "Timeline",
+    "statuses": {
+      "draft": "Draft",
+      "documents_uploaded": "Documents uploaded",
+      "processing": "Processing",
+      "needs_review": "Needs review",
+      "ready_for_provision": "Ready for provision",
+      "provision_sent": "Provision sent",
+      "payment_uploaded": "Payment uploaded",
+      "payment_under_validation": "Payment under validation",
+      "closed": "Closed"
+    }
+  },
+  "documents": {
+    "upload": "Upload documents",
+    "uploadDescription": "Drag files here or click to select",
+    "types": {
+      "commercial_invoice": "Commercial invoice",
+      "packing_list": "Packing list",
+      "bl": "Bill of Lading",
+      "awb": "Air Waybill",
+      "payment_receipt": "Payment receipt",
+      "unknown": "Other"
+    },
+    "processing": "Processing document...",
+    "retry": "Retry processing"
+  },
+  "exceptions": {
+    "title": "Exception inbox",
+    "clean": "No observations",
+    "withObservations": "With observations",
+    "critical": "Critical",
+    "assignTo": "Assign to"
+  },
+  "provisions": {
+    "title": "Provisions",
+    "generate": "Generate provision",
+    "sendToClient": "Send to client",
+    "total": "Total",
+    "subtotal": "Subtotal"
+  },
+  "payments": {
+    "title": "Payments to validate",
+    "approve": "Approve",
+    "reject": "Reject",
+    "detectedAmount": "Detected amount",
+    "expectedAmount": "Expected amount"
+  }
+}

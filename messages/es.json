@@ -1,0 +1,109 @@
+{
+  "common": {
+    "appName": "Copiloto Aduanero",
+    "loading": "Cargando...",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "create": "Crear",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "export": "Exportar",
+    "download": "Descargar",
+    "upload": "Subir",
+    "close": "Cerrar",
+    "confirm": "Confirmar",
+    "back": "Volver",
+    "next": "Siguiente",
+    "previous": "Anterior",
+    "yes": "Sí",
+    "no": "No",
+    "noResults": "Sin resultados",
+    "actions": "Acciones"
+  },
+  "auth": {
+    "login": "Iniciar sesión",
+    "logout": "Cerrar sesión",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "loginTitle": "Inicia sesión en tu cuenta",
+    "loginSubtitle": "Ingresa tus credenciales para acceder al sistema"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "cases": "Expedientes",
+    "exceptions": "Excepciones",
+    "provisions": "Provisiones",
+    "payments": "Pagos",
+    "settings": "Configuración"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "activeCases": "Expedientes activos",
+    "pendingReview": "Pendientes de revisión",
+    "pendingProvisions": "Provisiones pendientes",
+    "paymentsToValidate": "Pagos por validar",
+    "recentActivity": "Actividad reciente"
+  },
+  "cases": {
+    "title": "Expedientes",
+    "createCase": "Nuevo expediente",
+    "clientName": "Nombre del cliente",
+    "referenceCode": "Código de referencia",
+    "status": "Estado",
+    "priority": "Prioridad",
+    "createdAt": "Fecha de creación",
+    "documents": "Documentos",
+    "data": "Datos",
+    "validations": "Validaciones",
+    "timeline": "Línea de tiempo",
+    "statuses": {
+      "draft": "Borrador",
+      "documents_uploaded": "Documentos subidos",
+      "processing": "Procesando",
+      "needs_review": "Requiere revisión",
+      "ready_for_provision": "Listo para provisión",
+      "provision_sent": "Provisión enviada",
+      "payment_uploaded": "Pago subido",
+      "payment_under_validation": "Pago en validación",
+      "closed": "Cerrado"
+    }
+  },
+  "documents": {
+    "upload": "Subir documentos",
+    "uploadDescription": "Arrastra archivos aquí o haz clic para seleccionar",
+    "types": {
+      "commercial_invoice": "Factura comercial",
+      "packing_list": "Packing list",
+      "bl": "Bill of Lading",
+      "awb": "Air Waybill",
+      "payment_receipt": "Comprobante de pago",
+      "unknown": "Otro"
+    },
+    "processing": "Procesando documento...",
+    "retry": "Reintentar procesamiento"
+  },
+  "exceptions": {
+    "title": "Bandeja de excepciones",
+    "clean": "Sin observaciones",
+    "withObservations": "Con observaciones",
+    "critical": "Críticas",
+    "assignTo": "Asignar a"
+  },
+  "provisions": {
+    "title": "Provisiones",
+    "generate": "Generar provisión",
+    "sendToClient": "Enviar al cliente",
+    "total": "Total",
+    "subtotal": "Subtotal"
+  },
+  "payments": {
+    "title": "Pagos por validar",
+    "approve": "Aprobar",
+    "reject": "Rechazar",
+    "detectedAmount": "Monto detectado",
+    "expectedAmount": "Monto esperado"
+  }
+}
