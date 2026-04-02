@@ -3,9 +3,7 @@ import Link from "next/link"
 import { createClient } from "@/lib/supabase/server"
 import { getUserProfile } from "@/lib/supabase/auth"
 import { Button } from "@/components/ui/button"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import { CaseStatusBadge } from "@/components/cases/case-status-badge"
 import { CaseTimeline } from "@/components/cases/case-timeline"
 import { ExportCaseDialog } from "@/components/cases/export-case-dialog"
@@ -17,7 +15,8 @@ import { DualView } from "@/components/documents/dual-view"
 import { ItemsGrid } from "@/components/cases/items-grid"
 import { AlertsPanel } from "@/components/exceptions/alerts-panel"
 import { ConflictsPanel } from "@/components/exceptions/conflicts-panel"
-import { ArrowLeft, FileText, Database, CheckCircle, Clock, List, AlertTriangle, Download } from "lucide-react"
+import { CaseDetailTabs } from "@/components/cases/case-detail-tabs"
+import { ArrowLeft, AlertTriangle, CheckCircle } from "lucide-react"
 
 interface CaseDetailPageProps {
   params: Promise<{ id: string }>
@@ -72,6 +71,98 @@ export default async function CaseDetailPage({ params }: CaseDetailPageProps) {
 
   const hasExtractedData = (extractedFieldsData?.length || 0) > 0
 
+  const tabContents = {
+    documents: (
+      <div className="space-y-6">
+        <Card className="bg-[var(--surface)] border-[var(--border)] rounded-xl">
+          <CardHeader>
+            <CardTitle className="text-base font-medium text-[var(--text)]">
+              Subir documentos
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <DocumentUpload
+              caseId={caseItem.id}
+              agencyId={profile.agency_id}
+              userId={profile.id}
+            />
+          </CardContent>
+        </Card>
+        <Card className="bg-[var(--surface)] border-[var(--border)] rounded-xl">
+          <CardHeader>
+            <CardTitle className="text-base font-medium text-[var(--text)]">
+              Estado de procesamiento
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ProcessingStatus caseId={caseItem.id} documents={documents || []} />
+          </CardContent>
+        </Card>
+        <Card className="bg-[var(--surface)] border-[var(--border)] rounded-xl">
+          <CardHeader>
+            <CardTitle className="text-base font-medium text-[var(--text)]">
+              Documentos cargados
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <DocumentList documents={documents || []} />
+          </CardContent>
+        </Card>
+      </div>
+    ),
+    data: <DualView caseId={caseItem.id} documents={documents || []} />,
+    nomenclature: (
+      <Card className="bg-[var(--surface)] border-[var(--border)] rounded-xl">
+        <CardHeader>
+          <CardTitle className="text-base font-medium text-[var(--text)]">
+            Nomenclatura arancelaria
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ItemsGrid caseId={caseItem.id} />
+        </CardContent>
+      </Card>
+    ),
+    validations: (
+      <div className="space-y-6">
+        <Card className="bg-[var(--surface)] border-[var(--border)] rounded-xl">
+          <CardHeader>
+            <CardTitle className="text-base font-medium text-[var(--text)] flex items-center gap-2">
+              <AlertTriangle className="h-4 w-4 text-[var(--warning)]" />
+              Alertas de validación
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <AlertsPanel caseId={caseItem.id} />
+          </CardContent>
+        </Card>
+        <Card className="bg-[var(--surface)] border-[var(--border)] rounded-xl">
+          <CardHeader>
+            <CardTitle className="text-base font-medium text-[var(--text)] flex items-center gap-2">
+              <CheckCircle className="h-4 w-4 text-[var(--primary)]" />
+              Conflictos entre documentos
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ConflictsPanel caseId={caseItem.id} />
+          </CardContent>
+        </Card>
+      </div>
+    ),
+    timeline: (
+      <Card className="bg-[var(--surface)] border-[var(--border)] rounded-xl">
+        <CardHeader>
+          <CardTitle className="text-base font-medium text-[var(--text)]">
+            Historial de actividad
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <CaseTimeline events={auditEvents || []} />
+        </CardContent>
+      </Card>
+    ),
+  }
+
   return (
     <div className="space-y-6">
       {/* Back Link */}
@@ -111,141 +202,10 @@ export default async function CaseDetailPage({ params }: CaseDetailPageProps) {
       </div>
 
       {/* Tabs */}
-      <Tabs defaultValue="documents" className="space-y-6">
-        <TabsList className="bg-[var(--surface)] border border-[var(--border)]">
-          <TabsTrigger value="documents" className="gap-2">
-            <FileText className="h-4 w-4" />
-            Documentos
-          </TabsTrigger>
-          <TabsTrigger value="data" className="gap-2">
-            <Database className="h-4 w-4" />
-            Datos
-          </TabsTrigger>
-          <TabsTrigger value="nomenclature" className="gap-2">
-            <List className="h-4 w-4" />
-            Nomenclatura
-          </TabsTrigger>
-          <TabsTrigger value="validations" className="gap-2">
-            <CheckCircle className="h-4 w-4" />
-            Validaciones
-            {unresolvedAlertsCount > 0 && (
-              <Badge
-                variant="destructive"
-                className="h-5 min-w-5 px-1.5 text-xs bg-[var(--error)] text-[var(--text-inverse)]"
-              >
-                {unresolvedAlertsCount}
-              </Badge>
-            )}
-          </TabsTrigger>
-          <TabsTrigger value="timeline" className="gap-2">
-            <Clock className="h-4 w-4" />
-            Línea de tiempo
-          </TabsTrigger>
-        </TabsList>
-
-        {/* Documents Tab */}
-        <TabsContent value="documents" className="space-y-6">
-          <Card className="bg-[var(--surface)] border-[var(--border)] rounded-xl">
-            <CardHeader>
-              <CardTitle className="text-base font-medium text-[var(--text)]">
-                Subir documentos
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <DocumentUpload
-                caseId={caseItem.id}
-                agencyId={profile.agency_id}
-                userId={profile.id}
-              />
-            </CardContent>
-          </Card>
-
-          <Card className="bg-[var(--surface)] border-[var(--border)] rounded-xl">
-            <CardHeader>
-              <CardTitle className="text-base font-medium text-[var(--text)]">
-                Estado de procesamiento
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ProcessingStatus
-                caseId={caseItem.id}
-                documents={documents || []}
-              />
-            </CardContent>
-          </Card>
-
-          <Card className="bg-[var(--surface)] border-[var(--border)] rounded-xl">
-            <CardHeader>
-              <CardTitle className="text-base font-medium text-[var(--text)]">
-                Documentos cargados
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <DocumentList documents={documents || []} />
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* Data Tab */}
-        <TabsContent value="data">
-          <DualView caseId={caseItem.id} documents={documents || []} />
-        </TabsContent>
-
-        {/* Nomenclature Tab */}
-        <TabsContent value="nomenclature">
-          <Card className="bg-[var(--surface)] border-[var(--border)] rounded-xl">
-            <CardHeader>
-              <CardTitle className="text-base font-medium text-[var(--text)]">
-                Nomenclatura arancelaria
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ItemsGrid caseId={caseItem.id} />
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* Validations Tab */}
-        <TabsContent value="validations" className="space-y-6">
-          <Card className="bg-[var(--surface)] border-[var(--border)] rounded-xl">
-            <CardHeader>
-              <CardTitle className="text-base font-medium text-[var(--text)] flex items-center gap-2">
-                <AlertTriangle className="h-4 w-4 text-[var(--warning)]" />
-                Alertas de validación
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <AlertsPanel caseId={caseItem.id} />
-            </CardContent>
-          </Card>
-
-          <Card className="bg-[var(--surface)] border-[var(--border)] rounded-xl">
-            <CardHeader>
-              <CardTitle className="text-base font-medium text-[var(--text)] flex items-center gap-2">
-                <CheckCircle className="h-4 w-4 text-[var(--primary)]" />
-                Conflictos entre documentos
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ConflictsPanel caseId={caseItem.id} />
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* Timeline Tab */}
-        <TabsContent value="timeline">
-          <Card className="bg-[var(--surface)] border-[var(--border)] rounded-xl">
-            <CardHeader>
-              <CardTitle className="text-base font-medium text-[var(--text)]">
-                Historial de actividad
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CaseTimeline events={auditEvents || []} />
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+      <CaseDetailTabs
+        alertsCount={unresolvedAlertsCount}
+        tabContents={tabContents}
+      />
     </div>
   )
 }

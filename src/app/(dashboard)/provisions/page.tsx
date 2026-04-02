@@ -65,7 +65,7 @@ export default async function ProvisionsPage({ searchParams }: ProvisionsPagePro
   const statusFilter = params.status || "all"
   const searchQuery = params.search || ""
 
-  // Build query
+  // Build query — provisions accessed via RLS through operation_cases FK
   let query = supabase
     .from("provisions")
     .select(`
@@ -76,11 +76,9 @@ export default async function ProvisionsPage({ searchParams }: ProvisionsPagePro
       total,
       currency,
       notes,
-      sent_at,
       created_at,
-      operation_cases:case_id (client_name, reference_code)
+      operation_cases (client_name, reference_code)
     `)
-    .eq("agency_id", profile.agency_id)
     .order("created_at", { ascending: false })
 
   if (statusFilter !== "all") {

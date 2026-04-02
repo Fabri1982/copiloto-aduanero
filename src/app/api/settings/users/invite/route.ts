@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
+import { createAdminClient } from "@/lib/supabase/admin"
 import { getUserProfile } from "@/lib/supabase/auth"
 import { NextRequest, NextResponse } from "next/server"
 
@@ -24,43 +25,42 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const supabase = await createClient()
-
-    // Create user with admin client (requires service role key)
-    // Note: In production, this should use a service role client
-    const { data: authData, error: authError } = await supabase.auth.admin.inviteUserByEmail(email, {
-      data: {
+    // Use admin client for auth operations (requires service role key)
+    const adminClient = createAdminClient()
+    const { data: authData, error: authError } = await adminClient.auth.admin.createUser({
+      email,
+      password: Math.random().toString(36).slice(-12) + "A1!",
+      email_confirm: true,
+      user_metadata: {
         name: name || email.split("@")[0],
-        agency_id: profile.agency_id,
-        role: role,
       },
     })
 
     if (authError) {
-      console.error("Error inviting user:", authError)
+      console.error("Error creating user:", authError)
       return NextResponse.json(
-        { error: "Error al invitar al usuario" },
+        { error: authError.message || "Error al crear el usuario" },
         { status: 500 }
       )
     }
 
-    // Create profile for the new user
+    // Create profile for the new user using admin client (bypasses RLS)
     if (authData.user) {
-      const { error: profileError } = await supabase.from("profiles").insert({
+      const { error: profileError } = await adminClient.from("profiles").insert({
         id: authData.user.id,
         agency_id: profile.agency_id,
         role: role,
-        user_id: authData.user.id,
+        name: name || email.split("@")[0],
+        email: email,
       })
 
       if (profileError) {
         console.error("Error creating profile:", profileError)
-        // Don't fail the request, but log the error
       }
     }
 
     return NextResponse.json({
-      message: "Invitación enviada exitosamente",
+      message: "Usuario creado exitosamente",
       user: authData.user,
     })
   } catch (error) {

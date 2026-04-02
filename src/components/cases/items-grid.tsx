@@ -68,7 +68,7 @@ export function ItemsGrid({ caseId }: ItemsGridProps) {
         .from("case_items")
         .select("*")
         .eq("case_id", caseId)
-        .order("item_number", { ascending: true })
+        .order("created_at", { ascending: true })
 
       if (itemsError) throw itemsError
 
@@ -80,12 +80,12 @@ export function ItemsGrid({ caseId }: ItemsGridProps) {
         const { data: tariffData, error: tariffError } = await supabase
           .from("tariff_classifications")
           .select("*")
-          .in("case_item_id", itemIds)
+          .in("item_id", itemIds)
 
         if (tariffError) throw tariffError
 
         tariffData?.forEach((t) => {
-          tariffMap[t.case_item_id] = t
+          tariffMap[t.item_id] = t
         })
       }
 
