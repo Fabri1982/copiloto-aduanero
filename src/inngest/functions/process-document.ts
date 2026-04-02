@@ -66,7 +66,7 @@ export const processDocument = inngest.createFunction(
         .insert({
           document_id: documentId,
           status: 'processing',
-          model_name: 'openrouter/free',
+          model_name: 'gemini-2.5-flash-lite',
         })
         .select()
         .single()
@@ -174,13 +174,27 @@ export const processDocument = inngest.createFunction(
 
       // Save extracted fields
       if (extractionResult.fields && extractionResult.fields.length > 0) {
+        const fieldLabels: Record<string, string> = {
+          invoice_number: 'Número de factura',
+          invoice_date: 'Fecha de factura',
+          supplier_name: 'Nombre del proveedor',
+          consignee_name: 'Nombre del consignatario',
+          currency: 'Moneda',
+          incoterm: 'Incoterm',
+          total_amount: 'Monto total',
+          gross_weight: 'Peso bruto',
+          net_weight: 'Peso neto',
+          package_count: 'Cantidad de bultos',
+          transport_reference: 'Referencia de transporte',
+        }
         const fieldsToInsert = extractionResult.fields.map(f => ({
           case_id: caseId,
           document_id: documentId,
           field_name: f.name,
-          field_value: f.value,
+          field_label: fieldLabels[f.name] || f.name,
+          extracted_value: f.value,
           confidence: f.confidence,
-          evidence: f.evidence,
+          evidence_text: f.evidence,
         }))
         await supabase.from('extracted_fields').insert(fieldsToInsert)
       }
