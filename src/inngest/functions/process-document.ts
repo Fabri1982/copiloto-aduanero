@@ -7,27 +7,18 @@ import { normalizeToChileanTariff } from '@/lib/agents/tariff-normalizer'
 // Helper for safe numeric parsing from AI strings
 const safeParseFloat = (val: string | null | undefined): number | null => {
   if (!val) return null
-  // Replace comma with dot ONLY if there is one comma and no other dots after it
-  // Or more simply: remove all dots, then replace comma with dot
-  // But wait, what if it is 1,200.00?
-  // Let's use a more robust approach:
   let cleaned = val.trim().replace(/[^\d.,-]/g, '')
   
-  // If there are multiple dots/commas, it's a thousand separator
   const hasComma = cleaned.includes(',')
   const hasDot = cleaned.includes('.')
   
   if (hasComma && hasDot) {
-    // Determine which one is used for thousands
     if (cleaned.lastIndexOf('.') > cleaned.lastIndexOf(',')) {
-      // Dot is decimal (1,234.56)
       cleaned = cleaned.replace(/,/g, '')
     } else {
-      // Comma is decimal (1.234,56)
       cleaned = cleaned.replace(/\./g, '').replace(/,/g, '.')
     }
   } else if (hasComma) {
-    // Only comma (1234,56)
     cleaned = cleaned.replace(/,/g, '.')
   }
   
@@ -38,16 +29,15 @@ const safeParseFloat = (val: string | null | undefined): number | null => {
 export const processDocument = inngest.createFunction(
   { 
     id: 'process-uploaded-document', 
-    retries: 3, // Allow 3 retries for rate limits
+    retries: 3,
     throttle: {
-      limit: 10, // Global limit across all processing
-      period: '1m', // 10 documents per minute max
+      limit: 10,
+      period: '1m',
     },
-    concurrency: 2, // Only process 2 documents at a time to prevent spikes
+    concurrency: 2,
     triggers: [{ event: 'document/uploaded' }] 
   },
   async ({ event, step }) => {
-    // HUGE LOG to detect if function is triggered
     console.log('🚀🚀🚀 [PROCESS-DOCUMENT] FUNCTION TRIGGERED! 🚀🚀🚀')
     console.log('🚀 Event ID:', event.id)
     console.log('🚀 Document ID:', event.data?.documentId)
@@ -55,28 +45,17 @@ export const processDocument = inngest.createFunction(
     console.log('🚀 Timestamp:', new Date().toISOString())
     console.log('Full event:', JSON.stringify(event, null, 2))
     
-    // Defensive: Check if event.data exists (Inngest v4 rerun issue)
     if (!event.data || !event.data.documentId) {
       console.error('[process-document] Invalid event data received:', event)
       throw new Error('Invalid event data: missing documentId')
     }
     
-    // Log invocation time for debugging
     const startTime = Date.now()
     console.log(`[process-document] Starting processing at ${new Date().toISOString()}`)
 
     const { documentId, caseId, filePath, fileName, mimeType } = event.data
-    const agencyId = event.data.agencyId // Keep agencyId for audit events
+    const agencyId = event.data.agencyId
     const supabase = createAdminClient()
-
-    // Skip internal invocations (retries/reruns) that don't have event data
-    if (!documentId) {
-      if (event.data._inngest) {
-        console.log('[process-document] Skipping: internal invocation without original event data')
-        return { status: 'skipped', reason: 'Internal invocation without event data' }
-      }
-      throw new Error(`documentId is missing from event data. Received: ${JSON.stringify(event.data)}`)
-    }
 
     // Step 1: Create extraction record
     const extraction = await step.run('create-extraction-record', async () => {
@@ -87,7 +66,7 @@ export const processDocument = inngest.createFunction(
         .insert({
           document_id: documentId,
           status: 'processing',
-          model_name: 'gemini-2.5-flash-lite',
+          model_name: 'openrouter/free',
         })
         .select()
         .single()
@@ -120,10 +99,9 @@ export const processDocument = inngest.createFunction(
       try {
         return await extractTextFromDocument(buffer, detectedMimeType)
       } catch (error: any) {
-        // Check if it's a rate limit error from Gemini
         if (error?.message?.includes('429') || error?.message?.includes('Quota exceeded')) {
-          console.warn('[process-document] Gemini rate limit hit - will retry automatically')
-          throw error // Inngest will retry
+          console.warn('[process-document] Rate limit hit - Inngest will retry automatically')
+          throw error
         }
         throw error
       }
@@ -135,13 +113,36 @@ export const processDocument = inngest.createFunction(
           .from('document_extractions')
           .update({ status: 'failed', raw_text: ocrResult.error })
           .eq('id', extraction.id)
+        
+        await supabase.from('audit_events').insert({
+          agency_id: agencyId,
+          case_id: caseId,
+          actor_type: 'agent',
+          actor_id: 'document-agent',
+          event_name: 'document_processing_failed',
+          event_payload_json: {
+            document_id: documentId,
+            error: ocrResult.error,
+          },
+        })
       })
       return { status: 'error', error: ocrResult.error }
     }
 
     // Step 4: Classify and extract with Document Agent
     const extractionResult = await step.run('classify-and-extract', async () => {
-      return await classifyAndExtract(ocrResult.rawText, caseId)
+      try {
+        return await classifyAndExtract(ocrResult.rawText, caseId)
+      } catch (error: any) {
+        console.error('[process-document] Classification failed:', error)
+        // Return a minimal result instead of crashing
+        return {
+          document_type: 'unknown',
+          fields: [],
+          items: [],
+          warnings: [`Classification failed: ${error?.message || 'Unknown error'}`],
+        }
+      }
     })
 
     // Step 5: Save results
@@ -161,7 +162,6 @@ export const processDocument = inngest.createFunction(
         const validTypes = ['commercial_invoice', 'packing_list', 'bl', 'awb', 'payment_receipt', 'unknown']
         let normalizedType = extractionResult.document_type as string
         
-        // Some common mapping fallbacks
         if (normalizedType === 'invoice') normalizedType = 'commercial_invoice'
         
         if (validTypes.includes(normalizedType)) {
@@ -225,7 +225,6 @@ export const processDocument = inngest.createFunction(
     // Step 6: Run tariff classification for items
     if (extractionResult.items && extractionResult.items.length > 0) {
       await step.run('tariff-classification', async () => {
-        // Get saved items
         const { data: savedItems } = await supabase
           .from('case_items')
           .select('*')
@@ -257,6 +256,7 @@ export const processDocument = inngest.createFunction(
             })
           } catch (e) {
             console.error(`Tariff classification failed for item ${item.id}:`, e)
+            // Continue with next item instead of failing the whole step
           }
         }
       })
@@ -275,7 +275,6 @@ export const processDocument = inngest.createFunction(
         .in('document_id', allDocs?.map(d => d.id) || [])
         .eq('status', 'completed')
 
-      // If all documents have completed extractions, trigger orchestration
       if (allDocs && completedExtractions && allDocs.length === completedExtractions.length && allDocs.length > 0) {
         await inngest.send({
           name: 'case/ready-for-orchestration',

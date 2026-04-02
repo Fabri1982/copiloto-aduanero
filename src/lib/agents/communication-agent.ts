@@ -1,4 +1,4 @@
-import { generateWithOpenRouter } from './openrouter'
+import { generateWithOpenRouter, safeParseJson } from './openrouter'
 
 export type CommunicationType = 'missing_documents' | 'explain_provision' | 'request_payment_proof' | 'general_update'
 
@@ -18,6 +18,13 @@ export interface CommunicationContext {
   provisionTotal?: number
   provisionCurrency?: string
   customMessage?: string
+}
+
+const EMPTY_RESULT: CommunicationResult = {
+  subject: 'Actualización de expediente',
+  message: 'Estimado cliente, nos ponemos en contacto para informarle sobre el estado de su expediente. Por favor, contáctenos para más detalles.',
+  channel: 'email',
+  cta_text: 'Contactar',
 }
 
 export async function generateCommunication(context: CommunicationContext): Promise<CommunicationResult> {
@@ -100,5 +107,6 @@ Salida esperada (JSON):
 }`
 
   const response = await generateWithOpenRouter(prompt, true)
-  return JSON.parse(response.content) as CommunicationResult
+  const { result } = safeParseJson(response.content, EMPTY_RESULT)
+  return result
 }

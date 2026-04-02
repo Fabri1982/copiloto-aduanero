@@ -1,4 +1,4 @@
-import { generateWithOpenRouter } from './openrouter'
+import { generateWithOpenRouter, safeParseJson } from './openrouter'
 
 export interface DocumentExtractionResult {
   document_type: string
@@ -16,6 +16,13 @@ export interface DocumentExtractionResult {
     confidence: number
   }>
   warnings: string[]
+}
+
+const EMPTY_RESULT: DocumentExtractionResult = {
+  document_type: 'unknown',
+  fields: [],
+  items: [],
+  warnings: ['AI response parsing failed'],
 }
 
 export async function classifyAndExtract(
@@ -85,5 +92,9 @@ Formato de salida (JSON):
 }`
 
   const response = await generateWithOpenRouter(prompt, true)
-  return JSON.parse(response.content) as DocumentExtractionResult
+  const { result, usedFallback } = safeParseJson(response.content, EMPTY_RESULT)
+  if (usedFallback) {
+    result.warnings.push('JSON parsing failed, empty result returned')
+  }
+  return result
 }

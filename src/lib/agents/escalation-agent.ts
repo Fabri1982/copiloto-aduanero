@@ -1,10 +1,17 @@
-import { generateWithOpenRouter } from './openrouter'
+import { generateWithOpenRouter, safeParseJson } from './openrouter'
 
 export interface EscalationResult {
   decision: 'auto_continue' | 'needs_human_review'
   priority: 'low' | 'medium' | 'high'
   reasons: string[]
   next_step: string
+}
+
+const EMPTY_RESULT: EscalationResult = {
+  decision: 'needs_human_review',
+  priority: 'high',
+  reasons: ['AI response parsing failed'],
+  next_step: 'Manual review required',
 }
 
 export async function decideEscalation(input: {
@@ -48,5 +55,9 @@ Output (JSON):
 }`
 
   const response = await generateWithOpenRouter(prompt, true)
-  return JSON.parse(response.content) as EscalationResult
+  const { result, usedFallback } = safeParseJson(response.content, EMPTY_RESULT)
+  if (usedFallback) {
+    result.reasons.push('JSON parsing failed')
+  }
+  return result
 }

@@ -1,4 +1,4 @@
-import { generateWithOpenRouter } from './openrouter'
+import { generateWithOpenRouter, safeParseJson } from './openrouter'
 
 export interface ValidationResult {
   status: 'approvable' | 'needs_review' | 'missing_documents'
@@ -12,6 +12,20 @@ export interface ValidationResult {
   }>
   human_review_required: boolean
   review_reasons: string[]
+}
+
+const EMPTY_RESULT: ValidationResult = {
+  status: 'needs_review',
+  risk_score: 1,
+  alerts: [{
+    type: 'parse_error',
+    severity: 'high',
+    message: 'AI response could not be parsed, manual review required',
+    affected_fields: [],
+    recommended_action: 'Review all case data manually',
+  }],
+  human_review_required: true,
+  review_reasons: ['JSON parsing failed'],
 }
 
 export async function validateCase(
@@ -64,5 +78,9 @@ Devuelve JSON (JSON):
 }`
 
   const response = await generateWithOpenRouter(prompt, true)
-  return JSON.parse(response.content) as ValidationResult
+  const { result, usedFallback } = safeParseJson(response.content, EMPTY_RESULT)
+  if (usedFallback) {
+    result.review_reasons.push('JSON parsing failed')
+  }
+  return result
 }

@@ -1,18 +1,47 @@
 import { inngest } from '../client'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { consolidateCase } from '@/lib/agents/structurer-agent'
-import { validateCase } from '@/lib/agents/validator-agent'
-import { decideEscalation } from '@/lib/agents/escalation-agent'
+import { consolidateCase, StructuredCase } from '@/lib/agents/structurer-agent'
+import { validateCase, ValidationResult } from '@/lib/agents/validator-agent'
+import { decideEscalation, EscalationResult } from '@/lib/agents/escalation-agent'
+
+const EMPTY_STRUCTURED: StructuredCase = {
+  header: {},
+  items: [],
+  conflicts: [],
+  draft_din: {},
+  field_sources: [],
+}
+
+const EMPTY_VALIDATION: ValidationResult = {
+  status: 'needs_review',
+  risk_score: 1,
+  alerts: [{
+    type: 'processing_error',
+    severity: 'high',
+    message: 'Case processing encountered an error, manual review required',
+    affected_fields: [],
+    recommended_action: 'Review case data manually',
+  }],
+  human_review_required: true,
+  review_reasons: ['Processing error'],
+}
+
+const EMPTY_ESCALATION: EscalationResult = {
+  decision: 'needs_human_review',
+  priority: 'high',
+  reasons: ['Processing error'],
+  next_step: 'Manual review required',
+}
 
 export const orchestrateCase = inngest.createFunction(
   { 
     id: 'orchestrate-case', 
     retries: 1, 
     throttle: {
-      limit: 5, // Global limit for orchestration
-      period: '1m', // 5 cases per minute max
+      limit: 5,
+      period: '1m',
     },
-    concurrency: 1, // Only one orchestration at a time to reduce peak load
+    concurrency: 1,
     triggers: [{ event: 'case/ready-for-orchestration' }] 
   },
   async ({ event, step }) => {
@@ -56,7 +85,12 @@ export const orchestrateCase = inngest.createFunction(
 
     // Step 2: Consolidate with Structurer Agent
     const structured = await step.run('consolidate-case', async () => {
-      return await consolidateCase(extractions, caseId)
+      try {
+        return await consolidateCase(extractions, caseId)
+      } catch (error: any) {
+        console.error('[orchestrate-case] Consolidation failed:', error)
+        return EMPTY_STRUCTURED
+      }
     })
 
     // Step 3: Save conflicts
@@ -73,7 +107,6 @@ export const orchestrateCase = inngest.createFunction(
         await supabase.from('case_conflicts').insert(conflictsToInsert)
       }
 
-      // Audit event
       await supabase.from('audit_events').insert({
         agency_id: agencyId,
         case_id: caseId,
@@ -91,12 +124,17 @@ export const orchestrateCase = inngest.createFunction(
     // Step 4: Validate
     const documentTypes = extractions.map(e => e.documentType)
     const validation = await step.run('validate-case', async () => {
-      return await validateCase(
-        structured.header as unknown as Record<string, unknown>,
-        structured.conflicts as unknown as Array<Record<string, unknown>>,
-        documentTypes,
-        caseId
-      )
+      try {
+        return await validateCase(
+          structured.header as unknown as Record<string, unknown>,
+          structured.conflicts as unknown as Array<Record<string, unknown>>,
+          documentTypes,
+          caseId
+        )
+      } catch (error: any) {
+        console.error('[orchestrate-case] Validation failed:', error)
+        return EMPTY_VALIDATION
+      }
     })
 
     // Step 5: Save validation alerts
@@ -130,33 +168,36 @@ export const orchestrateCase = inngest.createFunction(
 
     // Step 6: Decide escalation
     const escalation = await step.run('decide-escalation', async () => {
-      // Get critical field confidences
-      const { data: fields } = await supabase
-        .from('extracted_fields')
-        .select('field_name, confidence')
-        .eq('case_id', caseId)
+      try {
+        const { data: fields } = await supabase
+          .from('extracted_fields')
+          .select('field_name, confidence')
+          .eq('case_id', caseId)
 
-      const criticalFields = ['invoice_number', 'invoice_date', 'supplier_name', 'currency', 'total_amount', 'transport_reference', 'gross_weight', 'package_count']
-      const criticalConfidence: Record<string, number> = {}
-      for (const cf of criticalFields) {
-        const field = fields?.find(f => f.field_name === cf)
-        criticalConfidence[cf] = field?.confidence ?? 0
+        const criticalFields = ['invoice_number', 'invoice_date', 'supplier_name', 'currency', 'total_amount', 'transport_reference', 'gross_weight', 'package_count']
+        const criticalConfidence: Record<string, number> = {}
+        for (const cf of criticalFields) {
+          const field = fields?.find(f => f.field_name === cf)
+          criticalConfidence[cf] = field?.confidence ?? 0
+        }
+
+        const requiredTypes = ['commercial_invoice']
+        const presentTypes = documentTypes
+        const missingDocs = requiredTypes.filter(t => !presentTypes.includes(t))
+
+        return await decideEscalation({
+          validationStatus: validation.status,
+          riskScore: validation.risk_score,
+          criticalFieldConfidence: criticalConfidence,
+          missingDocuments: missingDocs,
+          alertSummary: validation.alerts.map(a => ({ type: a.type, severity: a.severity })),
+          unresolvedConflicts: structured.conflicts?.length || 0,
+          caseId,
+        })
+      } catch (error: any) {
+        console.error('[orchestrate-case] Escalation failed:', error)
+        return EMPTY_ESCALATION
       }
-
-      // Check missing document types
-      const requiredTypes = ['commercial_invoice']
-      const presentTypes = documentTypes
-      const missingDocs = requiredTypes.filter(t => !presentTypes.includes(t))
-
-      return await decideEscalation({
-        validationStatus: validation.status,
-        riskScore: validation.risk_score,
-        criticalFieldConfidence: criticalConfidence,
-        missingDocuments: missingDocs,
-        alertSummary: validation.alerts.map(a => ({ type: a.type, severity: a.severity })),
-        unresolvedConflicts: structured.conflicts?.length || 0,
-        caseId,
-      })
     })
 
     // Step 7: Update case status based on escalation

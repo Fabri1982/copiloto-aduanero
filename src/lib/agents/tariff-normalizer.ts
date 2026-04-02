@@ -1,4 +1,4 @@
-import { generateWithOpenRouter } from './openrouter'
+import { generateWithOpenRouter, safeParseJson } from './openrouter'
 
 export interface TariffResult {
   chile_hs_code_8: string
@@ -8,6 +8,16 @@ export interface TariffResult {
   classification_notes: string[]
   confidence: number
   needs_human_review: boolean
+}
+
+const EMPTY_RESULT: TariffResult = {
+  chile_hs_code_8: '',
+  short_description: '',
+  long_description: '',
+  normalized_composition: '',
+  classification_notes: ['JSON parsing failed'],
+  confidence: 0,
+  needs_human_review: true,
 }
 
 export async function normalizeToChileanTariff(input: {
@@ -57,5 +67,10 @@ Formato de salida (JSON):
 }`
 
   const response = await generateWithOpenRouter(prompt, true)
-  return JSON.parse(response.content) as TariffResult
+  const { result, usedFallback } = safeParseJson(response.content, EMPTY_RESULT)
+  if (usedFallback) {
+    result.needs_human_review = true
+    result.classification_notes.push('JSON parsing failed, manual review required')
+  }
+  return result
 }

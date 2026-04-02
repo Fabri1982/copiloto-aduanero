@@ -1,4 +1,4 @@
-import { generateWithOpenRouter } from './openrouter'
+import { generateWithOpenRouter, safeParseJson } from './openrouter'
 
 export interface StructuredCase {
   header: Record<string, {
@@ -27,6 +27,14 @@ export interface StructuredCase {
     source: string
     document_type: string
   }>
+}
+
+const EMPTY_RESULT: StructuredCase = {
+  header: {},
+  items: [],
+  conflicts: [],
+  draft_din: {},
+  field_sources: [],
 }
 
 export async function consolidateCase(
@@ -71,5 +79,15 @@ Salida (JSON):
 }`
 
   const response = await generateWithOpenRouter(prompt, true)
-  return JSON.parse(response.content) as StructuredCase
+  const { result, usedFallback } = safeParseJson(response.content, EMPTY_RESULT)
+  if (usedFallback) {
+    result.conflicts.push({
+      field_name: 'consolidation',
+      conflict_type: 'parse_error',
+      left_value: '',
+      right_value: '',
+      severity: 'high',
+    })
+  }
+  return result
 }

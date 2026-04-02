@@ -27,10 +27,10 @@ export const generateProvision = inngest.createFunction(
         .select('field_name, field_value, confidence, document_id')
         .eq('case_id', caseId)
 
-      // Get extracted items
-      const { data: extractedItems } = await supabase
-        .from('extracted_items')
-        .select('id, description, quantity, unit_price, total_price, confidence, document_id')
+      // Get case items (not extracted_items - items are stored in case_items table)
+      const { data: caseItems } = await supabase
+        .from('case_items')
+        .select('id, description, quantity, unit_price, total_price, confidence, source_document_id')
         .eq('case_id', caseId)
 
       // Get tariff classifications for items
@@ -50,14 +50,14 @@ export const generateProvision = inngest.createFunction(
       }
 
       // Build items array with classifications
-      const items: CaseData['items'] = (extractedItems || []).map(item => {
+      const items: CaseData['items'] = (caseItems || []).map(item => {
         const classification = classifications?.find(c => c.item_id === item.id)
         return {
           description: item.description || '',
           quantity: item.quantity,
           unit_price: item.unit_price,
           total_price: item.total_price,
-          source_document: item.document_id,
+          source_document: item.source_document_id,
           confidence: item.confidence,
           tariff_classification: classification ? {
             hs_code: classification.hs_code,
@@ -80,7 +80,19 @@ export const generateProvision = inngest.createFunction(
 
     // Step 2: Run provision agent
     const provisionResult = await step.run('generate-provision-draft', async () => {
-      return await generateProvisionDraft(caseData)
+      try {
+        return await generateProvisionDraft(caseData)
+      } catch (error: any) {
+        console.error('[generate-provision] Provision generation failed:', error)
+        return {
+          items: [],
+          subtotal: 0,
+          total: 0,
+          currency: 'CLP',
+          notes: 'Provision could not be generated automatically due to an error',
+          confidence: 0,
+        }
+      }
     })
 
     // Step 3: Save provision + provision_items en DB

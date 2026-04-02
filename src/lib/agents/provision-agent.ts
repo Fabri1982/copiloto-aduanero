@@ -1,4 +1,4 @@
-import { generateWithOpenRouter } from './openrouter'
+import { generateWithOpenRouter, safeParseJson } from './openrouter'
 
 export interface ProvisionItem {
   label: string
@@ -39,6 +39,15 @@ export interface CaseData {
       confidence: number
     }
   }>
+}
+
+const EMPTY_RESULT: ProvisionResult = {
+  items: [],
+  subtotal: 0,
+  total: 0,
+  currency: 'CLP',
+  notes: 'Provision could not be generated automatically, manual review required',
+  confidence: 0,
 }
 
 export async function generateProvisionDraft(caseData: CaseData): Promise<ProvisionResult> {
@@ -95,5 +104,9 @@ Salida esperada (JSON):
 }`
 
   const response = await generateWithOpenRouter(prompt, true)
-  return JSON.parse(response.content) as ProvisionResult
+  const { result, usedFallback } = safeParseJson(response.content, EMPTY_RESULT)
+  if (usedFallback) {
+    result.notes = 'Provision could not be generated automatically due to AI response parsing error'
+  }
+  return result
 }

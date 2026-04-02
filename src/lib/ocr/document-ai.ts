@@ -1,4 +1,4 @@
-import { getOpenRouter, FREE_MODELS } from '../agents/openrouter'
+import { getOpenRouter, FALLBACK_MODELS } from '../agents/openrouter'
 
 export interface OCRResult {
   rawText: string
@@ -13,43 +13,62 @@ export async function extractTextFromDocument(
 ): Promise<OCRResult> {
   try {
     const base64Data = fileBuffer.toString('base64')
-    // Use the first valid free model from OpenRouter config
-    const model = FREE_MODELS[0]
 
-    const response = await getOpenRouter().chat.completions.create({
-      model: model,
-      messages: [
-        {
-          role: 'user',
-          content: [
+    for (const model of FALLBACK_MODELS) {
+      try {
+        const response = await getOpenRouter().chat.completions.create({
+          model,
+          messages: [
             {
-              type: 'text',
-              text: `Extract ALL text from this document exactly as it appears. 
+              role: 'user',
+              content: [
+                {
+                  type: 'text',
+                  text: `Extract ALL text from this document exactly as it appears. 
 Preserve the structure, tables, headers, and formatting.
 Return only the extracted text, nothing else.
 If this is a table or invoice, preserve the tabular structure using pipes (|).`
-            },
-            {
-              type: 'image_url',
-              image_url: {
-                url: `data:${mimeType};base64,${base64Data}`
-              }
+                },
+                {
+                  type: 'image_url',
+                  image_url: {
+                    url: `data:${mimeType};base64,${base64Data}`
+                  }
+                }
+              ]
             }
-          ]
-        }
-      ],
-      max_tokens: 4000,
-    })
+          ],
+          max_tokens: 8000,
+        })
 
-    const rawText = response.choices[0].message.content || ''
-    
+        const rawText = response.choices[0].message.content || ''
+        
+        return {
+          rawText,
+          pages: 1,
+          status: 'success',
+        }
+      } catch (modelError: any) {
+        const isRateLimit = modelError?.status === 429 || modelError?.message?.includes('429')
+        const isQuotaExceeded = modelError?.message?.includes('Quota exceeded')
+        const isRetryable = isRateLimit || isQuotaExceeded || modelError?.status >= 500
+
+        if (!isRetryable) {
+          throw modelError
+        }
+
+        console.warn(`[OCR] Model ${model} failed (${modelError?.status || modelError?.message}), trying next...`)
+      }
+    }
+
     return {
-      rawText,
-      pages: 1,
-      status: 'success',
+      rawText: '',
+      pages: 0,
+      status: 'error',
+      error: 'All OCR models failed after retries',
     }
   } catch (error: any) {
-    console.error('[OCR-OpenRouter] Error:', error)
+    console.error('[OCR-OpenRouter] Unexpected error:', error)
     return {
       rawText: '',
       pages: 0,
