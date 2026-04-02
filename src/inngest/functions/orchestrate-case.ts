@@ -5,7 +5,16 @@ import { validateCase } from '@/lib/agents/validator-agent'
 import { decideEscalation } from '@/lib/agents/escalation-agent'
 
 export const orchestrateCase = inngest.createFunction(
-  { id: 'orchestrate-case', retries: 1, triggers: [{ event: 'case/ready-for-orchestration' }] },
+  { 
+    id: 'orchestrate-case', 
+    retries: 1, 
+    throttle: {
+      limit: 5, // Global limit for orchestration
+      period: '1m', // 5 cases per minute max
+    },
+    concurrency: 1, // Only one orchestration at a time to reduce peak load
+    triggers: [{ event: 'case/ready-for-orchestration' }] 
+  },
   async ({ event, step }) => {
     const { caseId, agencyId } = event.data
     const supabase = createAdminClient()

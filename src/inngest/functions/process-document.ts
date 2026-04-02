@@ -40,10 +40,10 @@ export const processDocument = inngest.createFunction(
     id: 'process-uploaded-document', 
     retries: 3, // Allow 3 retries for rate limits
     throttle: {
-      limit: 5, // Max 5 executions per period
-      period: '1m', // per minute
-      key: 'event.data.caseId' // Throttle per case
+      limit: 10, // Global limit across all processing
+      period: '1m', // 10 documents per minute max
     },
+    concurrency: 2, // Only process 2 documents at a time to prevent spikes
     triggers: [{ event: 'document/uploaded' }] 
   },
   async ({ event, step }) => {
