@@ -3,6 +3,8 @@ import { createClient } from "@/lib/supabase/server"
 import { Button } from "@/components/ui/button"
 import { LogOut } from "lucide-react"
 
+const CURRENT_YEAR = 2026
+
 export default async function ClientLayout({
   children,
 }: {
@@ -77,7 +79,7 @@ export default async function ClientLayout({
       <footer className="bg-[var(--surface)] border-t border-[var(--border)] py-4">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <p className="text-center text-xs text-[var(--text-muted)]">
-            © {new Date().getFullYear()} {agency?.name || "Copiloto Aduanero"} — Portal de Clientes
+            © {CURRENT_YEAR} {agency?.name || "Copiloto Aduanero"} — Portal de Clientes
           </p>
         </div>
       </footer>

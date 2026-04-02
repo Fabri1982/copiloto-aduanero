@@ -66,7 +66,9 @@ export function useUser(): UseUserReturn {
 
   const signOut = async () => {
     await supabase.auth.signOut()
-    window.location.href = "/login"
+    if (typeof window !== "undefined") {
+      window.location.href = "/login"
+    }
   }
 
   return { user, profile, loading, signOut }

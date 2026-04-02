@@ -77,12 +77,9 @@ export default function PaymentsPage() {
   const fetchReceipts = async () => {
     try {
       setLoading(true)
-      const url = new URL("/api/payments", window.location.origin)
-      if (statusFilter !== "all") {
-        url.searchParams.set("status", statusFilter)
-      }
-
-      const response = await fetch(url)
+      // Use relative URL for the fetch
+      const fetchUrl = statusFilter !== "all" ? `/api/payments?status=${statusFilter}` : "/api/payments"
+      const response = await fetch(fetchUrl)
       
       if (!response.ok) {
         throw new Error("Error al cargar los comprobantes")

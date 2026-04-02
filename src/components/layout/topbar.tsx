@@ -16,9 +16,11 @@ import {
 
 export function Topbar() {
   const [isDark, setIsDark] = useState(false)
+  const [mounted, setMounted] = useState(false)
 
   // Initialize dark mode from localStorage or system preference
   useEffect(() => {
+    setMounted(true)
     const savedTheme = localStorage.getItem("theme")
     const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
     const initialDark = savedTheme === "dark" || (!savedTheme && prefersDark)
@@ -62,9 +64,14 @@ export function Topbar() {
           size="icon"
           onClick={toggleDarkMode}
           className="h-9 w-9 text-[var(--text-muted)] hover:text-[var(--text)] hover:bg-[var(--surface-2)]"
+          suppressHydrationWarning
         >
-          {isDark ? (
-            <Sun className="h-4 w-4" strokeWidth={1.5} />
+          {mounted ? (
+            isDark ? (
+              <Sun className="h-4 w-4" strokeWidth={1.5} />
+            ) : (
+              <Moon className="h-4 w-4" strokeWidth={1.5} />
+            )
           ) : (
             <Moon className="h-4 w-4" strokeWidth={1.5} />
           )}

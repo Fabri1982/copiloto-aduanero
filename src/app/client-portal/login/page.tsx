@@ -9,6 +9,8 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Package } from "lucide-react"
 
+const CURRENT_YEAR = 2026
+
 export default function ClientLoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -142,7 +144,7 @@ export default function ClientLoginPage() {
       </Card>
 
       <p className="mt-8 text-xs text-[var(--text-faint)]">
-        © {new Date().getFullYear()} Copiloto Aduanero
+        © {CURRENT_YEAR} Copiloto Aduanero
       </p>
     </div>
   )

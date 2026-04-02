@@ -1,36 +1,8 @@
 import { createClient } from "@/lib/supabase/server"
 import { getUserProfile } from "@/lib/supabase/auth"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { OperationCase } from "@/types/database"
-
-function getGreeting(): string {
-  const hour = new Date().getHours()
-  if (hour < 12) return "Buenos días"
-  if (hour < 18) return "Buenas tardes"
-  return "Buenas noches"
-}
-
-function formatDate(date: Date): string {
-  const options: Intl.DateTimeFormatOptions = {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  }
-  return date.toLocaleDateString("es-ES", options)
-}
-
-function formatRelativeTime(dateString: string): string {
-  const date = new Date(dateString)
-  const now = new Date()
-  const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60))
-  
-  if (diffInHours < 1) return "Hace unos minutos"
-  if (diffInHours < 24) return `Hace ${diffInHours} hora${diffInHours > 1 ? "s" : ""}`
-  const diffInDays = Math.floor(diffInHours / 24)
-  if (diffInDays < 7) return `Hace ${diffInDays} día${diffInDays > 1 ? "s" : ""}`
-  return date.toLocaleDateString("es-ES", { day: "numeric", month: "short" })
-}
+import { GreetingSection } from "@/components/dashboard/greeting-section"
+import { RelativeTime } from "@/components/dashboard/relative-time"
 
 function getStatusLabel(status: string): string {
   const labels: Record<string, string> = {
@@ -114,14 +86,7 @@ export default async function DashboardPage() {
   return (
     <div className="space-y-6">
       {/* Greeting Section */}
-      <div>
-        <h1 className="text-2xl font-semibold text-[var(--text)]">
-          {getGreeting()}, {profile.name?.split(" ")[0] || "Usuario"}
-        </h1>
-        <p className="mt-1 text-sm text-[var(--text-muted)]">
-          {formatDate(new Date())}
-        </p>
-      </div>
+      <GreetingSection userName={profile.name} />
 
       {/* Metrics Grid */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -182,7 +147,7 @@ export default async function DashboardPage() {
                       {getStatusLabel(caseItem.status)}
                     </span>
                     <p className="text-xs text-[var(--text-faint)] mt-1">
-                      {formatRelativeTime(caseItem.updated_at)}
+                      <RelativeTime dateString={caseItem.updated_at} />
                     </p>
                   </div>
                 </div>

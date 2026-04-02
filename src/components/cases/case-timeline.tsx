@@ -272,7 +272,7 @@ function TimelineEvent({ event, review, isExpanded, onToggle }: TimelineEventPro
               <span className="text-sm font-medium text-[var(--text)]">
                 {config.label}
               </span>
-              <span className="text-xs text-[var(--text-muted)]">
+              <span className="text-xs text-[var(--text-muted)]" suppressHydrationWarning>
                 {formatRelativeTime(event.created_at)}
               </span>
             </div>
