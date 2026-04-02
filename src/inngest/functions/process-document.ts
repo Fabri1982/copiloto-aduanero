@@ -11,8 +11,13 @@ export const processDocument = inngest.createFunction(
     triggers: [{ event: 'document/uploaded' }] 
   },
   async ({ event, step }) => {
-    console.log('[process-document] Full event:', JSON.stringify(event))
-    console.log('[process-document] Event data:', JSON.stringify(event.data))
+    // HUGE LOG to detect if function is triggered
+    console.log('🚀🚀🚀 [PROCESS-DOCUMENT] FUNCTION TRIGGERED! 🚀🚀🚀')
+    console.log('🚀 Event ID:', event.id)
+    console.log('🚀 Document ID:', event.data?.documentId)
+    console.log('🚀 Case ID:', event.data?.caseId)
+    console.log('🚀 Timestamp:', new Date().toISOString())
+    console.log('Full event:', JSON.stringify(event, null, 2))
     
     // Defensive: Check if event.data exists (Inngest v4 rerun issue)
     if (!event.data || !event.data.documentId) {
