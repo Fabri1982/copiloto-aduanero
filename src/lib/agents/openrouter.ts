@@ -19,10 +19,10 @@ export function getOpenRouter() {
   return openRouterInstance
 }
 
-// Default free models to rotate if one fails
+// openrouter/free automatically routes to the best available free model
 export const FREE_MODELS = [
-  'google/gemini-2.0-flash-lite:free',
-  'google/gemini-2.0-flash:free',
+  'openrouter/free',
+  'google/gemini-2.0-flash-exp:free',
   'meta-llama/llama-3.3-70b-instruct:free',
 ]
 
@@ -34,7 +34,7 @@ export interface AIResponse {
 export async function generateWithOpenRouter(
   prompt: string, 
   jsonMode = true,
-  preferredModel = 'google/gemini-2.0-flash-lite:free'
+  preferredModel = 'openrouter/free'
 ): Promise<AIResponse> {
   if (!process.env.OPENROUTER_API_KEY) {
     throw new Error('OPENROUTER_API_KEY is missing')

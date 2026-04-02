@@ -1,4 +1,4 @@
-import { getOpenRouter } from '../agents/openrouter'
+import { getOpenRouter, FREE_MODELS } from '../agents/openrouter'
 
 export interface OCRResult {
   rawText: string
@@ -13,7 +13,8 @@ export async function extractTextFromDocument(
 ): Promise<OCRResult> {
   try {
     const base64Data = fileBuffer.toString('base64')
-    const model = 'google/gemini-2.0-flash-lite:free'
+    // Use the first valid free model from OpenRouter config
+    const model = FREE_MODELS[0]
 
     const response = await getOpenRouter().chat.completions.create({
       model: model,
