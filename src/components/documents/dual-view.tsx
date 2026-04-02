@@ -68,10 +68,10 @@ export function DualView({ caseId, documents }: DualViewProps) {
     if (documents.length > 0) {
       fetchExtractions()
       
-      // Auto-refresh while any document is processing or pending
-      const hasProcessing = documents.some(doc => {
-        const status = extractions[doc.id]?.status
-        return status === 'processing' || status === 'pending'
+      // Auto-refresh while any document is processing, pending, or missing from extractions
+      const hasProcessing = documents.some((doc) => {
+        const ext = extractions[doc.id]
+        return !ext || ext.status === "processing" || ext.status === "pending"
       })
       
       if (hasProcessing) {

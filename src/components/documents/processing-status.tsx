@@ -91,11 +91,12 @@ export function ProcessingStatus({ caseId, documents, agencyId }: ProcessingStat
     }
   }, [manualRefresh, fetchExtractions])
 
-  // Auto-refresh while any document is processing or pending
+  // Auto-refresh while any document is processing, pending, or missing from extractions
   useEffect(() => {
-    const hasProcessing = Object.values(extractions).some(
-      (ext) => ext.status === "processing" || ext.status === "pending"
-    )
+    const hasProcessing = documents.some((doc) => {
+      const ext = extractions[doc.id]
+      return !ext || ext.status === "processing" || ext.status === "pending"
+    })
 
     if (!hasProcessing) return
 

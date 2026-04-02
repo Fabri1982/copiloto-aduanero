@@ -4,6 +4,37 @@ import { extractTextFromDocument } from '@/lib/ocr/document-ai'
 import { classifyAndExtract } from '@/lib/agents/document-agent'
 import { normalizeToChileanTariff } from '@/lib/agents/tariff-normalizer'
 
+// Helper for safe numeric parsing from AI strings
+const safeParseFloat = (val: string | null | undefined): number | null => {
+  if (!val) return null
+  // Replace comma with dot ONLY if there is one comma and no other dots after it
+  // Or more simply: remove all dots, then replace comma with dot
+  // But wait, what if it is 1,200.00?
+  // Let's use a more robust approach:
+  let cleaned = val.trim().replace(/[^\d.,-]/g, '')
+  
+  // If there are multiple dots/commas, it's a thousand separator
+  const hasComma = cleaned.includes(',')
+  const hasDot = cleaned.includes('.')
+  
+  if (hasComma && hasDot) {
+    // Determine which one is used for thousands
+    if (cleaned.lastIndexOf('.') > cleaned.lastIndexOf(',')) {
+      // Dot is decimal (1,234.56)
+      cleaned = cleaned.replace(/,/g, '')
+    } else {
+      // Comma is decimal (1.234,56)
+      cleaned = cleaned.replace(/\./g, '').replace(/,/g, '.')
+    }
+  } else if (hasComma) {
+    // Only comma (1234,56)
+    cleaned = cleaned.replace(/,/g, '.')
+  }
+  
+  const parsed = parseFloat(cleaned)
+  return isNaN(parsed) ? null : parsed
+}
+
 export const processDocument = inngest.createFunction(
   { 
     id: 'process-uploaded-document', 
@@ -125,12 +156,20 @@ export const processDocument = inngest.createFunction(
         })
         .eq('id', extraction.id)
 
-      // Update document type if classified
+      // Update document type if classified (Normalize to allowed enum values)
       if (extractionResult.document_type !== 'unknown') {
-        await supabase
-          .from('case_documents')
-          .update({ document_type: extractionResult.document_type })
-          .eq('id', documentId)
+        const validTypes = ['commercial_invoice', 'packing_list', 'bl', 'awb', 'payment_receipt', 'unknown']
+        let normalizedType = extractionResult.document_type as string
+        
+        // Some common mapping fallbacks
+        if (normalizedType === 'invoice') normalizedType = 'commercial_invoice'
+        
+        if (validTypes.includes(normalizedType)) {
+          await supabase
+            .from('case_documents')
+            .update({ document_type: normalizedType })
+            .eq('id', documentId)
+        }
       }
 
       // Save extracted fields
@@ -151,9 +190,9 @@ export const processDocument = inngest.createFunction(
         const itemsToInsert = extractionResult.items.map(item => ({
           case_id: caseId,
           description: item.description,
-          quantity: item.quantity ? parseFloat(item.quantity) : null,
-          unit_price: item.unit_price ? parseFloat(item.unit_price) : null,
-          total_price: item.total_price ? parseFloat(item.total_price) : null,
+          quantity: safeParseFloat(item.quantity),
+          unit_price: safeParseFloat(item.unit_price),
+          total_price: safeParseFloat(item.total_price),
           source_document_id: documentId,
           confidence: item.confidence,
         }))
