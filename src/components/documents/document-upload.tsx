@@ -187,7 +187,7 @@ export function DocumentUpload({ caseId, agencyId, userId }: DocumentUploadProps
         // Trigger document processing via API
         if (createdDoc) {
           try {
-            await fetch("/api/documents/process", {
+            const response = await fetch("/api/documents/process", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
@@ -199,9 +199,21 @@ export function DocumentUpload({ caseId, agencyId, userId }: DocumentUploadProps
                 agencyId: agencyId,
               }),
             })
+            
+            if (!response.ok) {
+              const errorData = await response.json().catch(() => ({}))
+              console.error("[DocumentUpload] Processing API error:", {
+                status: response.status,
+                statusText: response.statusText,
+                error: errorData,
+              })
+            } else {
+              const result = await response.json()
+              console.log("[DocumentUpload] Processing started:", result)
+            }
           } catch (processErr) {
             // Don't fail the upload if processing fails - it can be retried
-            console.error("Error triggering document processing:", processErr)
+            console.error("[DocumentUpload] Error triggering document processing:", processErr)
           }
         }
 

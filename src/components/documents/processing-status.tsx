@@ -33,9 +33,10 @@ interface Document {
 interface ProcessingStatusProps {
   caseId: string
   documents: Document[]
+  agencyId: string
 }
 
-export function ProcessingStatus({ caseId, documents }: ProcessingStatusProps) {
+export function ProcessingStatus({ caseId, documents, agencyId }: ProcessingStatusProps) {
   const [extractions, setExtractions] = useState<Record<string, DocumentExtraction>>({})
   const [loading, setLoading] = useState(true)
   const [retrying, setRetrying] = useState<Record<string, boolean>>({})
@@ -101,7 +102,7 @@ export function ProcessingStatus({ caseId, documents }: ProcessingStatusProps) {
           filePath: document.file_path,
           fileName: document.file_name,
           mimeType: "application/pdf", // Default, could be improved
-          agencyId: "", // Will be handled by server
+          agencyId: agencyId,
         }),
       })
 

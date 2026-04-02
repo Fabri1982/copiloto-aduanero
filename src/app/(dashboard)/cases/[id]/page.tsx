@@ -95,7 +95,7 @@ export default async function CaseDetailPage({ params }: CaseDetailPageProps) {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <ProcessingStatus caseId={caseItem.id} documents={documents || []} />
+            <ProcessingStatus caseId={caseItem.id} documents={documents || []} agencyId={profile.agency_id} />
           </CardContent>
         </Card>
         <Card className="bg-[var(--surface)] border-[var(--border)] rounded-xl">
