@@ -7,7 +7,12 @@ import { normalizeToChileanTariff } from '@/lib/agents/tariff-normalizer'
 export const processDocument = inngest.createFunction(
   { 
     id: 'process-uploaded-document', 
-    retries: 1, // Allow 1 retry on failure
+    retries: 3, // Allow 3 retries for rate limits
+    throttle: {
+      limit: 5, // Max 5 executions per period
+      period: '1m', // per minute
+      key: 'event.data.caseId' // Throttle per case
+    },
     triggers: [{ event: 'document/uploaded' }] 
   },
   async ({ event, step }) => {
@@ -76,11 +81,21 @@ export const processDocument = inngest.createFunction(
       return buffer.toString('base64')
     })
 
-    // Step 3: OCR - Extract text
+    // Step 3: OCR - Extract text (with retry for rate limits)
     const ocrResult = await step.run('ocr-extract-text', async () => {
       const buffer = Buffer.from(fileBuffer, 'base64')
       const detectedMimeType = mimeType || (fileName.endsWith('.pdf') ? 'application/pdf' : 'image/jpeg')
-      return await extractTextFromDocument(buffer, detectedMimeType)
+      
+      try {
+        return await extractTextFromDocument(buffer, detectedMimeType)
+      } catch (error: any) {
+        // Check if it's a rate limit error from Gemini
+        if (error?.message?.includes('429') || error?.message?.includes('Quota exceeded')) {
+          console.warn('[process-document] Gemini rate limit hit - will retry automatically')
+          throw error // Inngest will retry
+        }
+        throw error
+      }
     })
 
     if (ocrResult.status === 'error') {
