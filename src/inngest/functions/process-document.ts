@@ -10,6 +10,12 @@ export const processDocument = inngest.createFunction(
     const { documentId, caseId, filePath, fileName, mimeType } = event.data
     const supabase = createAdminClient()
 
+    console.log('[process-document] Event data received:', JSON.stringify(event.data))
+
+    if (!documentId) {
+      throw new Error(`documentId is missing from event data. Received: ${JSON.stringify(event.data)}`)
+    }
+
     // Step 1: Create extraction record
     const extraction = await step.run('create-extraction-record', async () => {
       const { data, error } = await supabase
