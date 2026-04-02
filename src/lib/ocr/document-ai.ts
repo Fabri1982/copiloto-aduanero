@@ -1,4 +1,4 @@
-import { getOpenRouter, FALLBACK_MODELS } from '../agents/openrouter'
+import { GoogleGenerativeAI } from '@google/generative-ai'
 
 export interface OCRResult {
   rawText: string
@@ -7,73 +7,64 @@ export interface OCRResult {
   error?: string
 }
 
+let geminiInstance: GoogleGenerativeAI | null = null
+
+function getGemini() {
+  if (!geminiInstance) {
+    if (!process.env.GOOGLE_AI_API_KEY) {
+      throw new Error('GOOGLE_AI_API_KEY is missing')
+    }
+    geminiInstance = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY)
+  }
+  return geminiInstance
+}
+
 export async function extractTextFromDocument(
   fileBuffer: Buffer,
   mimeType: string
 ): Promise<OCRResult> {
   try {
     const base64Data = fileBuffer.toString('base64')
+    const genAI = getGemini()
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash-lite' })
 
-    for (const model of FALLBACK_MODELS) {
-      try {
-        const response = await getOpenRouter().chat.completions.create({
-          model,
-          messages: [
-            {
-              role: 'user',
-              content: [
-                {
-                  type: 'text',
-                  text: `Extract ALL text from this document exactly as it appears. 
+    const result = await model.generateContent([
+      {
+        inlineData: {
+          data: base64Data,
+          mimeType,
+        },
+      },
+      {
+        text: `Extract ALL text from this document exactly as it appears. 
 Preserve the structure, tables, headers, and formatting.
 Return only the extracted text, nothing else.
-If this is a table or invoice, preserve the tabular structure using pipes (|).`
-                },
-                {
-                  type: 'image_url',
-                  image_url: {
-                    url: `data:${mimeType};base64,${base64Data}`
-                  }
-                }
-              ]
-            }
-          ],
-          max_tokens: 8000,
-        })
+If this is a table or invoice, preserve the tabular structure using pipes (|).`,
+      },
+    ])
 
-        const rawText = response.choices[0].message.content || ''
-        
-        return {
-          rawText,
-          pages: 1,
-          status: 'success',
-        }
-      } catch (modelError: any) {
-        const isRateLimit = modelError?.status === 429 || modelError?.message?.includes('429')
-        const isQuotaExceeded = modelError?.message?.includes('Quota exceeded')
-        const isRetryable = isRateLimit || isQuotaExceeded || modelError?.status >= 500
-
-        if (!isRetryable) {
-          throw modelError
-        }
-
-        console.warn(`[OCR] Model ${model} failed (${modelError?.status || modelError?.message}), trying next...`)
-      }
-    }
+    const rawText = result.response.text()
 
     return {
-      rawText: '',
-      pages: 0,
-      status: 'error',
-      error: 'All OCR models failed after retries',
+      rawText,
+      pages: 1,
+      status: 'success',
     }
   } catch (error: any) {
-    console.error('[OCR-OpenRouter] Unexpected error:', error)
+    const isRateLimit = error?.status === 429 || error?.message?.includes('429') || error?.message?.includes('Quota exceeded')
+
+    if (isRateLimit) {
+      console.warn('[OCR] Rate limit hit, retrying in 60s...')
+      await new Promise(resolve => setTimeout(resolve, 60000))
+      return extractTextFromDocument(fileBuffer, mimeType)
+    }
+
+    console.error('[OCR-Gemini] Error:', error)
     return {
       rawText: '',
       pages: 0,
       status: 'error',
-      error: error instanceof Error ? error.message : 'OpenRouter OCR failure',
+      error: error instanceof Error ? error.message : 'Gemini OCR failure',
     }
   }
 }

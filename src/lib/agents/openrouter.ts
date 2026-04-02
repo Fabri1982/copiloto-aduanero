@@ -1,33 +1,18 @@
-import OpenAI from 'openai'
+import { GoogleGenerativeAI } from '@google/generative-ai'
 
-let openRouterInstance: OpenAI | null = null
+let geminiInstance: GoogleGenerativeAI | null = null
 
-export function getOpenRouter() {
-  if (!openRouterInstance) {
-    if (!process.env.OPENROUTER_API_KEY) {
-      throw new Error('OPENROUTER_API_KEY is missing in environment variables')
+export function getGemini() {
+  if (!geminiInstance) {
+    if (!process.env.GOOGLE_AI_API_KEY) {
+      throw new Error('GOOGLE_AI_API_KEY is missing in environment variables')
     }
-    openRouterInstance = new OpenAI({
-      baseURL: 'https://openrouter.ai/api/v1',
-      apiKey: process.env.OPENROUTER_API_KEY,
-      defaultHeaders: {
-        'HTTP-Referer': 'https://copiloto-aduanero.vercel.app',
-        'X-Title': 'Copiloto Aduanero',
-      },
-      timeout: 60000,
-      maxRetries: 2,
-    })
+    geminiInstance = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY)
   }
-  return openRouterInstance
+  return geminiInstance
 }
 
-export const FALLBACK_MODELS = [
-  'openrouter/free',
-  'google/gemini-2.0-flash-exp:free',
-  'meta-llama/llama-3.3-70b-instruct:free',
-  'google/gemini-2.5-flash-lite:free',
-  'qwen/qwen-2.5-72b-instruct:free',
-]
+export const GEMINI_MODEL = 'gemini-2.5-flash-lite'
 
 export interface AIResponse {
   content: string
@@ -43,61 +28,45 @@ export function safeParseJson<T>(content: string, fallback: T): { result: T; use
       .trim()
     return { result: JSON.parse(cleaned) as T, usedFallback: false }
   } catch {
-    console.warn('[OpenRouter] JSON parse failed, using fallback result')
+    console.warn('[Gemini] JSON parse failed, using fallback result')
     return { result: fallback, usedFallback: true }
   }
 }
 
-async function tryModel(
-  model: string,
-  prompt: string,
-  jsonMode: boolean,
-): Promise<AIResponse> {
-  const response = await getOpenRouter().chat.completions.create({
-    model,
-    messages: [{ role: 'user', content: prompt }],
-    response_format: jsonMode ? { type: 'json_object' } : undefined,
-    temperature: 0.1,
-  })
-
-  return {
-    content: response.choices[0].message.content || '',
-    model_used: model,
-  }
-}
-
-export async function generateWithOpenRouter(
+export async function generateWithGemini(
   prompt: string,
   jsonMode = true,
 ): Promise<AIResponse> {
-  if (!process.env.OPENROUTER_API_KEY) {
-    throw new Error('OPENROUTER_API_KEY is missing')
+  if (!process.env.GOOGLE_AI_API_KEY) {
+    throw new Error('GOOGLE_AI_API_KEY is missing')
   }
 
-  let lastError: Error | null = null
+  try {
+    const genAI = getGemini()
+    const model = genAI.getGenerativeModel({
+      model: GEMINI_MODEL,
+      generationConfig: {
+        temperature: 0.1,
+        ...(jsonMode && {
+          responseMimeType: 'application/json',
+        }),
+      },
+    })
 
-  for (let i = 0; i < FALLBACK_MODELS.length; i++) {
-    const model = FALLBACK_MODELS[i]
-    try {
-      console.log(`[OpenRouter] Trying model: ${model}`)
-      return await tryModel(model, prompt, jsonMode)
-    } catch (error: any) {
-      lastError = error
-      const isRateLimit = error?.status === 429 || error?.message?.includes('429')
-      const isQuotaExceeded = error?.message?.includes('Quota exceeded')
-      const isRetryable = isRateLimit || isQuotaExceeded || error?.status >= 500
+    const result = await model.generateContent(prompt)
+    const text = result.response.text()
 
-      console.error(`[OpenRouter] Error with ${model}: ${error?.message || error}`)
-
-      if (!isRetryable) {
-        throw error
-      }
-
-      if (i < FALLBACK_MODELS.length - 1) {
-        console.log(`[OpenRouter] Retrying with next model: ${FALLBACK_MODELS[i + 1]}`)
-      }
+    return {
+      content: text,
+      model_used: GEMINI_MODEL,
     }
+  } catch (error: any) {
+    const isRateLimit = error?.status === 429 || error?.message?.includes('429') || error?.message?.includes('Quota exceeded')
+    if (isRateLimit) {
+      console.warn('[Gemini] Rate limit hit, retrying in 60s...')
+      await new Promise(resolve => setTimeout(resolve, 60000))
+      return generateWithGemini(prompt, jsonMode)
+    }
+    throw error
   }
-
-  throw lastError || new Error('All OpenRouter models failed')
 }

@@ -1,4 +1,4 @@
-import { generateWithOpenRouter, safeParseJson } from './openrouter'
+import { generateWithGemini, safeParseJson } from './openrouter'
 
 export interface ProvisionItem {
   label: string
@@ -103,7 +103,7 @@ Salida esperada (JSON):
   "confidence": 0.0
 }`
 
-  const response = await generateWithOpenRouter(prompt, true)
+  const response = await generateWithGemini(prompt, true)
   const { result, usedFallback } = safeParseJson(response.content, EMPTY_RESULT)
   if (usedFallback) {
     result.notes = 'Provision could not be generated automatically due to AI response parsing error'

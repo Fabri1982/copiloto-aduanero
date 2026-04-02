@@ -1,4 +1,4 @@
-import { generateWithOpenRouter, safeParseJson } from './openrouter'
+import { generateWithGemini, safeParseJson } from './openrouter'
 
 export interface EscalationResult {
   decision: 'auto_continue' | 'needs_human_review'
@@ -54,7 +54,7 @@ Output (JSON):
   "next_step": "..."
 }`
 
-  const response = await generateWithOpenRouter(prompt, true)
+  const response = await generateWithGemini(prompt, true)
   const { result, usedFallback } = safeParseJson(response.content, EMPTY_RESULT)
   if (usedFallback) {
     result.reasons.push('JSON parsing failed')

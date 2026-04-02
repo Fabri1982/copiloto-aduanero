@@ -1,4 +1,4 @@
-import { generateWithOpenRouter } from './openrouter'
+import { generateWithGemini, safeParseJson } from './openrouter'
 
 export interface ApparelResult {
   category_normalized: string
@@ -8,6 +8,16 @@ export interface ApparelResult {
   normalized_composition: string
   missing_attributes: string[]
   confidence: number
+}
+
+const EMPTY_RESULT: ApparelResult = {
+  category_normalized: '',
+  target_user: '',
+  short_description: '',
+  long_description: '',
+  normalized_composition: '',
+  missing_attributes: ['JSON parsing failed'],
+  confidence: 0,
 }
 
 export async function normalizeApparel(input: {
@@ -39,6 +49,7 @@ Devuelve (JSON):
   "confidence": 0.0
 }`
 
-  const response = await generateWithOpenRouter(prompt, true)
-  return JSON.parse(response.content) as ApparelResult
+  const response = await generateWithGemini(prompt, true)
+  const { result } = safeParseJson(response.content, EMPTY_RESULT)
+  return result
 }

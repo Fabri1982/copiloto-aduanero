@@ -1,4 +1,4 @@
-import { generateWithOpenRouter, safeParseJson } from './openrouter'
+import { generateWithGemini, safeParseJson } from './openrouter'
 
 export interface DocumentExtractionResult {
   document_type: string
@@ -91,7 +91,7 @@ Formato de salida (JSON):
   "warnings": []
 }`
 
-  const response = await generateWithOpenRouter(prompt, true)
+  const response = await generateWithGemini(prompt, true)
   const { result, usedFallback } = safeParseJson(response.content, EMPTY_RESULT)
   if (usedFallback) {
     result.warnings.push('JSON parsing failed, empty result returned')

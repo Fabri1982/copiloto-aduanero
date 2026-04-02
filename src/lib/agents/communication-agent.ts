@@ -1,4 +1,4 @@
-import { generateWithOpenRouter, safeParseJson } from './openrouter'
+import { generateWithGemini, safeParseJson } from './openrouter'
 
 export type CommunicationType = 'missing_documents' | 'explain_provision' | 'request_payment_proof' | 'general_update'
 
@@ -106,7 +106,7 @@ Salida esperada (JSON):
   "cta_text": "Texto para el botón o llamada a la acción"
 }`
 
-  const response = await generateWithOpenRouter(prompt, true)
+  const response = await generateWithGemini(prompt, true)
   const { result } = safeParseJson(response.content, EMPTY_RESULT)
   return result
 }

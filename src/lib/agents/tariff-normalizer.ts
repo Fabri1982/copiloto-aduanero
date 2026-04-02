@@ -1,4 +1,4 @@
-import { generateWithOpenRouter, safeParseJson } from './openrouter'
+import { generateWithGemini, safeParseJson } from './openrouter'
 
 export interface TariffResult {
   chile_hs_code_8: string
@@ -66,7 +66,7 @@ Formato de salida (JSON):
   "needs_human_review": true
 }`
 
-  const response = await generateWithOpenRouter(prompt, true)
+  const response = await generateWithGemini(prompt, true)
   const { result, usedFallback } = safeParseJson(response.content, EMPTY_RESULT)
   if (usedFallback) {
     result.needs_human_review = true

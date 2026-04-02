@@ -1,4 +1,4 @@
-import { generateWithOpenRouter, safeParseJson } from './openrouter'
+import { generateWithGemini, safeParseJson } from './openrouter'
 
 export interface ValidationResult {
   status: 'approvable' | 'needs_review' | 'missing_documents'
@@ -77,7 +77,7 @@ Devuelve JSON (JSON):
   "review_reasons": []
 }`
 
-  const response = await generateWithOpenRouter(prompt, true)
+  const response = await generateWithGemini(prompt, true)
   const { result, usedFallback } = safeParseJson(response.content, EMPTY_RESULT)
   if (usedFallback) {
     result.review_reasons.push('JSON parsing failed')
