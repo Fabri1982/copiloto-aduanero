@@ -5,14 +5,20 @@ import { classifyAndExtract } from '@/lib/agents/document-agent'
 import { normalizeToChileanTariff } from '@/lib/agents/tariff-normalizer'
 
 export const processDocument = inngest.createFunction(
-  { id: 'process-uploaded-document', triggers: [{ event: 'document/uploaded' }] },
+  { id: 'process-uploaded-document', retries: 0, triggers: [{ event: 'document/uploaded' }] },
   async ({ event, step }) => {
+    console.log('[process-document] Full event:', JSON.stringify(event))
+    console.log('[process-document] Event data:', JSON.stringify(event.data))
+
     const { documentId, caseId, filePath, fileName, mimeType } = event.data
     const supabase = createAdminClient()
 
-    console.log('[process-document] Event data received:', JSON.stringify(event.data))
-
+    // Skip internal invocations (retries/reruns) that don't have event data
     if (!documentId) {
+      if (event.data._inngest) {
+        console.log('[process-document] Skipping: internal invocation without original event data')
+        return { status: 'skipped', reason: 'Internal invocation without event data' }
+      }
       throw new Error(`documentId is missing from event data. Received: ${JSON.stringify(event.data)}`)
     }
 
