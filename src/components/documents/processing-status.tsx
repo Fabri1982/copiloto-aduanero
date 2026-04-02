@@ -232,7 +232,16 @@ export function ProcessingStatus({ caseId, documents, agencyId }: ProcessingStat
       </div>
       {documents.map((doc) => {
         const extraction = extractions[doc.id]
-        const status: ProcessingState = extraction?.status || "pending"
+        // Treat "pending" as "processing" since Inngest may have created the record but not updated yet
+        const rawStatus: ProcessingState = extraction?.status || "pending"
+        const status: ProcessingState = rawStatus === "pending" ? "processing" : rawStatus
+        
+        console.log(`[Document ${doc.file_name}] Status:`, { 
+          raw: rawStatus, 
+          display: status,
+          extractionId: extraction?.id,
+          updatedAt: extraction?.updated_at 
+        })
 
         return (
           <div
