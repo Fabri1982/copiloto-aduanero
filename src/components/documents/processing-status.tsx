@@ -42,13 +42,19 @@ export function ProcessingStatus({ caseId, documents, agencyId }: ProcessingStat
   const [retrying, setRetrying] = useState<Record<string, boolean>>({})
   const [manualRefresh, setManualRefresh] = useState(0)
 
-  const fetchExtractions = useCallback(async () => {
+  const fetchExtractions = useCallback(async (forceRefresh = false) => {
     if (documents.length === 0) {
       setLoading(false)
       return
     }
 
-    console.log('[ProcessingStatus] Fetching extractions...')
+    if (forceRefresh) {
+      console.log('[ProcessingStatus] Manual refresh triggered...')
+      setLoading(true) // Show loading indicator on manual refresh
+    } else {
+      console.log('[ProcessingStatus] Fetching extractions...')
+    }
+    
     const supabase = createClient()
     const { data, error } = await supabase
       .from("document_extractions")
@@ -73,9 +79,17 @@ export function ProcessingStatus({ caseId, documents, agencyId }: ProcessingStat
     setLoading(false)
   }, [documents])
 
+  // Initial load and manual refresh
   useEffect(() => {
     fetchExtractions()
-  }, [fetchExtractions, manualRefresh])
+  }, []) // Only on mount
+
+  // Manual refresh trigger
+  useEffect(() => {
+    if (manualRefresh > 0) {
+      fetchExtractions(true)
+    }
+  }, [manualRefresh, fetchExtractions])
 
   // Auto-refresh while any document is processing or pending
   useEffect(() => {
