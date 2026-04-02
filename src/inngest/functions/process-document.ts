@@ -5,10 +5,18 @@ import { classifyAndExtract } from '@/lib/agents/document-agent'
 import { normalizeToChileanTariff } from '@/lib/agents/tariff-normalizer'
 
 export const processDocument = inngest.createFunction(
-  { id: 'process-uploaded-document', retries: 0, triggers: [{ event: 'document/uploaded' }] },
+  { 
+    id: 'process-uploaded-document', 
+    retries: 1, // Allow 1 retry on failure
+    triggers: [{ event: 'document/uploaded' }] 
+  },
   async ({ event, step }) => {
     console.log('[process-document] Full event:', JSON.stringify(event))
     console.log('[process-document] Event data:', JSON.stringify(event.data))
+    
+    // Log invocation time for debugging
+    const startTime = Date.now()
+    console.log(`[process-document] Starting processing at ${new Date().toISOString()}`)
 
     const { documentId, caseId, filePath, fileName, mimeType } = event.data
     const supabase = createAdminClient()
@@ -203,6 +211,9 @@ export const processDocument = inngest.createFunction(
       }
     })
 
+    const duration = Date.now() - startTime
+    console.log(`[process-document] Processing completed successfully in ${duration}ms`)
+    
     return { status: 'success', documentType: extractionResult.document_type }
   }
 )
