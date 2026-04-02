@@ -14,11 +14,18 @@ export const processDocument = inngest.createFunction(
     console.log('[process-document] Full event:', JSON.stringify(event))
     console.log('[process-document] Event data:', JSON.stringify(event.data))
     
+    // Defensive: Check if event.data exists (Inngest v4 rerun issue)
+    if (!event.data || !event.data.documentId) {
+      console.error('[process-document] Invalid event data received:', event)
+      throw new Error('Invalid event data: missing documentId')
+    }
+    
     // Log invocation time for debugging
     const startTime = Date.now()
     console.log(`[process-document] Starting processing at ${new Date().toISOString()}`)
 
     const { documentId, caseId, filePath, fileName, mimeType } = event.data
+    const agencyId = event.data.agencyId // Keep agencyId for audit events
     const supabase = createAdminClient()
 
     // Skip internal invocations (retries/reruns) that don't have event data
@@ -32,6 +39,8 @@ export const processDocument = inngest.createFunction(
 
     // Step 1: Create extraction record
     const extraction = await step.run('create-extraction-record', async () => {
+      console.log('[process-document] Creating extraction record for document:', documentId)
+      
       const { data, error } = await supabase
         .from('document_extractions')
         .insert({
@@ -42,7 +51,12 @@ export const processDocument = inngest.createFunction(
         .select()
         .single()
       
-      if (error) throw new Error(`Failed to create extraction: ${error.message}`)
+      if (error) {
+        console.error('[process-document] Failed to create extraction:', error)
+        throw new Error(`Failed to create extraction: ${error.message}`)
+      }
+      
+      console.log('[process-document] Extraction created successfully:', data.id)
       return data
     })
 
@@ -128,7 +142,7 @@ export const processDocument = inngest.createFunction(
 
       // Create audit event
       await supabase.from('audit_events').insert({
-        agency_id: event.data.agencyId,
+        agency_id: agencyId,
         case_id: caseId,
         actor_type: 'agent',
         actor_id: 'document-agent',
