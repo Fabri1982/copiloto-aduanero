@@ -2,7 +2,7 @@
 -- DOCUMENT EXTRACTIONS TABLE
 -- Stores OCR/AI extraction results per document
 -- ============================================
-CREATE TABLE IF NOT EXISTS public.document_extractions (
+CREATE TABLE public.document_extractions (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   document_id UUID NOT NULL REFERENCES public.case_documents(id) ON DELETE CASCADE,
   status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'processing', 'completed', 'failed')),
@@ -34,7 +34,7 @@ CREATE TRIGGER update_document_extractions_updated_at
 -- CASE ITEMS TABLE
 -- Individual items extracted from documents
 -- ============================================
-CREATE TABLE IF NOT EXISTS public.case_items (
+CREATE TABLE public.case_items (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   case_id UUID NOT NULL REFERENCES public.operation_cases(id) ON DELETE CASCADE,
   description TEXT,
@@ -52,7 +52,7 @@ ALTER TABLE public.case_items ENABLE ROW LEVEL SECURITY;
 -- TARIFF CLASSIFICATIONS TABLE
 -- Tariff/HS code classifications for items
 -- ============================================
-CREATE TABLE IF NOT EXISTS public.tariff_classifications (
+CREATE TABLE public.tariff_classifications (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   case_id UUID NOT NULL REFERENCES public.operation_cases(id) ON DELETE CASCADE,
   item_id UUID REFERENCES public.case_items(id) ON DELETE CASCADE,
@@ -76,24 +76,20 @@ ALTER TABLE public.tariff_classifications ENABLE ROW LEVEL SECURITY;
 -- Service role can do ALL operations on all tables
 
 -- Document extractions service_role policies
-DROP POLICY IF EXISTS "Service role can do all on document_extractions" ON public.document_extractions;
 CREATE POLICY "Service role can do all on document_extractions" ON public.document_extractions
   FOR ALL USING (true) WITH CHECK (true);
 
 -- Case items service_role policies
-DROP POLICY IF EXISTS "Service role can do all on case_items" ON public.case_items;
 CREATE POLICY "Service role can do all on case_items" ON public.case_items
   FOR ALL USING (true) WITH CHECK (true);
 
 -- Tariff classifications service_role policies
-DROP POLICY IF EXISTS "Service role can do all on tariff_classifications" ON public.tariff_classifications;
 CREATE POLICY "Service role can do all on tariff_classifications" ON public.tariff_classifications
   FOR ALL USING (true) WITH CHECK (true);
 
 -- AUTHENTICATED USER POLICIES (agency-based access)
 
 -- DOCUMENT EXTRACTIONS: Access through document's case agency
-DROP POLICY IF EXISTS "Users can view agency document_extractions" ON public.document_extractions;
 CREATE POLICY "Users can view agency document_extractions" ON public.document_extractions
   FOR SELECT USING (
     EXISTS (
@@ -104,7 +100,6 @@ CREATE POLICY "Users can view agency document_extractions" ON public.document_ex
     )
   );
 
-DROP POLICY IF EXISTS "Users can insert agency document_extractions" ON public.document_extractions;
 CREATE POLICY "Users can insert agency document_extractions" ON public.document_extractions
   FOR INSERT WITH CHECK (
     EXISTS (
@@ -115,7 +110,6 @@ CREATE POLICY "Users can insert agency document_extractions" ON public.document_
     )
   );
 
-DROP POLICY IF EXISTS "Users can update agency document_extractions" ON public.document_extractions;
 CREATE POLICY "Users can update agency document_extractions" ON public.document_extractions
   FOR UPDATE USING (
     EXISTS (
@@ -203,9 +197,9 @@ CREATE POLICY "Users can delete agency tariff_classifications" ON public.tariff_
 -- ============================================
 -- INDEXES
 -- ============================================
-CREATE INDEX IF NOT EXISTS idx_document_extractions_document ON public.document_extractions(document_id);
-CREATE INDEX IF NOT EXISTS idx_document_extractions_status ON public.document_extractions(status);
-CREATE INDEX IF NOT EXISTS idx_case_items_case ON public.case_items(case_id);
-CREATE INDEX IF NOT EXISTS idx_case_items_source_document ON public.case_items(source_document_id);
-CREATE INDEX IF NOT EXISTS idx_tariff_classifications_case ON public.tariff_classifications(case_id);
-CREATE INDEX IF NOT EXISTS idx_tariff_classifications_item ON public.tariff_classifications(item_id);
+CREATE INDEX idx_document_extractions_document ON public.document_extractions(document_id);
+CREATE INDEX idx_document_extractions_status ON public.document_extractions(status);
+CREATE INDEX idx_case_items_case ON public.case_items(case_id);
+CREATE INDEX idx_case_items_source_document ON public.case_items(source_document_id);
+CREATE INDEX idx_tariff_classifications_case ON public.tariff_classifications(case_id);
+CREATE INDEX idx_tariff_classifications_item ON public.tariff_classifications(item_id);
