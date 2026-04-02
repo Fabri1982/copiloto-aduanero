@@ -211,7 +211,15 @@ export function ProcessingStatus({ caseId, documents, agencyId }: ProcessingStat
   return (
     <div className="space-y-3">
       {/* Manual refresh button */}
-      <div className="flex justify-end">
+      <div className="flex justify-end gap-2">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => console.log('[Debug] Current extractions:', extractions)}
+          className="h-8 text-xs"
+        >
+          Debug
+        </Button>
         <Button
           variant="ghost"
           size="sm"
