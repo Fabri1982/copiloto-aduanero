@@ -1,4 +1,4 @@
-import { getFlashModel, generateJSON } from './gemini'
+import { generateWithOpenRouter } from './openrouter'
 
 export interface ValidationResult {
   status: 'approvable' | 'needs_review' | 'missing_documents'
@@ -20,8 +20,6 @@ export async function validateCase(
   documentTypes: string[],
   caseId: string
 ): Promise<ValidationResult> {
-  const model = getFlashModel()
-
   const prompt = `SYSTEM
 Eres un agente validador para expedientes aduaneros.
 Tu misión es detectar inconsistencias y señalar lo que debe revisar un operador humano.
@@ -50,7 +48,7 @@ Revisa:
 - conflictos entre documentos
 - campos críticos vacíos (invoice_number, invoice_date, supplier_name, currency, total_amount, transport_reference, gross_weight, package_count)
 
-Devuelve:
+Devuelve JSON (JSON):
 {
   "status": "approvable | needs_review | missing_documents",
   "risk_score": 0,
@@ -65,5 +63,6 @@ Devuelve:
   "review_reasons": []
 }`
 
-  return await generateJSON(model, prompt) as ValidationResult
+  const response = await generateWithOpenRouter(prompt, true)
+  return JSON.parse(response.content) as ValidationResult
 }

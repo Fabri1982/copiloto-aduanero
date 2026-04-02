@@ -1,4 +1,4 @@
-import { getFlashLiteModel, generateJSON } from './gemini'
+import { generateWithOpenRouter } from './openrouter'
 
 export interface DocumentExtractionResult {
   document_type: string
@@ -22,8 +22,6 @@ export async function classifyAndExtract(
   rawText: string,
   caseId: string
 ): Promise<DocumentExtractionResult> {
-  const model = getFlashLiteModel()
-  
   const prompt = `SYSTEM
 Eres un agente documental experto en expedientes de importación para agencias de aduana en Chile.
 Tu tarea es analizar documentos comerciales y de transporte, identificar su tipo y extraer solo información visible o altamente sustentada por evidencia documental.
@@ -67,7 +65,7 @@ Campos deseados:
 - transport_reference
 - items[]
 
-Formato de salida:
+Formato de salida (JSON):
 {
   "document_type": "...",
   "fields": [{
@@ -86,6 +84,6 @@ Formato de salida:
   "warnings": []
 }`
 
-  const result = await generateJSON(model, prompt) as DocumentExtractionResult
-  return result
+  const response = await generateWithOpenRouter(prompt, true)
+  return JSON.parse(response.content) as DocumentExtractionResult
 }

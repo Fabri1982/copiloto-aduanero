@@ -1,4 +1,4 @@
-import { getFlashModel, generateJSON } from './gemini'
+import { generateWithOpenRouter } from './openrouter'
 
 export interface StructuredCase {
   header: Record<string, {
@@ -38,8 +38,6 @@ export async function consolidateCase(
   }>,
   caseId: string
 ): Promise<StructuredCase> {
-  const model = getFlashModel()
-
   const prompt = `SYSTEM
 Eres un agente estructurador de expedientes aduaneros.
 Debes consolidar información proveniente de múltiples documentos del mismo caso.
@@ -61,7 +59,7 @@ Reglas:
 4. Devuelve confianza consolidada.
 5. Devuelve estructura JSON válida.
 
-Salida:
+Salida (JSON):
 {
   "header": {
     "campo": { "value": "...", "source_document": "docId", "confidence": 0.0 }
@@ -72,5 +70,6 @@ Salida:
   "field_sources": [{ "field": "...", "source": "docId", "document_type": "..." }]
 }`
 
-  return await generateJSON(model, prompt) as StructuredCase
+  const response = await generateWithOpenRouter(prompt, true)
+  return JSON.parse(response.content) as StructuredCase
 }

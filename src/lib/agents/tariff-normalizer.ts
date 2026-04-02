@@ -1,4 +1,4 @@
-import { getFlashModel, generateJSON } from './gemini'
+import { generateWithOpenRouter } from './openrouter'
 
 export interface TariffResult {
   chile_hs_code_8: string
@@ -19,8 +19,6 @@ export async function normalizeToChileanTariff(input: {
   brand?: string
   caseId: string
 }): Promise<TariffResult> {
-  const model = getFlashModel()
-
   const prompt = `SYSTEM
 Eres un agente experto en homologación arancelaria para operaciones de importación en Chile.
 Tu objetivo es transformar descripciones comerciales desordenadas en una salida operativa útil para una agencia de aduanas.
@@ -47,7 +45,7 @@ Objetivos:
 4. Normalizar la composición en español y en formato claro.
 5. Indicar confianza y necesidad de revisión humana.
 
-Formato de salida:
+Formato de salida (JSON):
 {
   "chile_hs_code_8": "",
   "short_description": "",
@@ -58,6 +56,6 @@ Formato de salida:
   "needs_human_review": true
 }`
 
-  const result = await generateJSON(model, prompt) as TariffResult
-  return result
+  const response = await generateWithOpenRouter(prompt, true)
+  return JSON.parse(response.content) as TariffResult
 }

@@ -1,4 +1,4 @@
-import { getFlashModel, generateJSON } from './gemini'
+import { generateWithOpenRouter } from './openrouter'
 
 export interface EscalationResult {
   decision: 'auto_continue' | 'needs_human_review'
@@ -16,8 +16,6 @@ export async function decideEscalation(input: {
   unresolvedConflicts: number
   caseId: string
 }): Promise<EscalationResult> {
-  const model = getFlashModel()
-
   const prompt = `SYSTEM
 Eres un agente de escalamiento para automatización supervisada.
 Tu función es decidir si un caso puede continuar automáticamente o si debe ser revisado por un humano.
@@ -41,7 +39,7 @@ Reglas:
 - Si hay conflictos no resueltos → revisar
 - Si no hay alertas críticas y la confianza supera 0.90 → continuar
 
-Output:
+Output (JSON):
 {
   "decision": "auto_continue | needs_human_review",
   "priority": "low | medium | high",
@@ -49,5 +47,6 @@ Output:
   "next_step": "..."
 }`
 
-  return await generateJSON(model, prompt) as EscalationResult
+  const response = await generateWithOpenRouter(prompt, true)
+  return JSON.parse(response.content) as EscalationResult
 }
