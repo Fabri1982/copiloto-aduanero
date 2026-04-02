@@ -1,4 +1,4 @@
-import { getFlashLiteModel, generateJSON } from './gemini'
+import { generateWithOpenRouter } from './openrouter'
 
 export type CommunicationType = 'missing_documents' | 'explain_provision' | 'request_payment_proof' | 'general_update'
 
@@ -21,8 +21,6 @@ export interface CommunicationContext {
 }
 
 export async function generateCommunication(context: CommunicationContext): Promise<CommunicationResult> {
-  const model = getFlashLiteModel()
-
   let specificInstructions = ''
   
   switch (context.type) {
@@ -101,5 +99,6 @@ Salida esperada (JSON):
   "cta_text": "Texto para el botón o llamada a la acción"
 }`
 
-  return await generateJSON(model, prompt) as CommunicationResult
+  const response = await generateWithOpenRouter(prompt, true)
+  return JSON.parse(response.content) as CommunicationResult
 }

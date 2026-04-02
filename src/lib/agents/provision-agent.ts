@@ -1,4 +1,4 @@
-import { getFlashLiteModel, generateJSON } from './gemini'
+import { generateWithOpenRouter } from './openrouter'
 
 export interface ProvisionItem {
   label: string
@@ -42,8 +42,6 @@ export interface CaseData {
 }
 
 export async function generateProvisionDraft(caseData: CaseData): Promise<ProvisionResult> {
-  const model = getFlashLiteModel()
-
   const prompt = `SYSTEM
 Eres un agente de provisión aduanera experto en comercio internacional.
 Tu tarea es generar un borrador de provisión de gastos basado en los datos del expediente.
@@ -60,7 +58,7 @@ Conceptos típicos a considerar:
 
 Reglas:
 1. Calcula derechos basándote en los valores CIF y tasas arancelarias
-2. El IVA generalmente es 21% en España (ajusta según el contexto)
+2. El IVA generalmente es 21% en España (o 19% en Chile, ajusta según el contexto)
 3. Usa estimaciones razonables para conceptos no especificados
 4. Indica claramente qué conceptos son estimados vs calculados
 5. Devuelve siempre la moneda del expediente
@@ -83,7 +81,7 @@ Salida esperada (JSON):
 {
   "items": [
     { "label": "Derechos aduaneros", "amount": 0.00, "description": "X% sobre valor CIF" },
-    { "label": "IVA importación", "amount": 0.00, "description": "21% sobre (CIF + derechos)" },
+    { "label": "IVA importación", "amount": 0.00, "description": "X% sobre (CIF + derechos)" },
     { "label": "Comisión agencia", "amount": 0.00 },
     { "label": "Almacenaje", "amount": 0.00 },
     { "label": "Transporte", "amount": 0.00 },
@@ -96,5 +94,6 @@ Salida esperada (JSON):
   "confidence": 0.0
 }`
 
-  return await generateJSON(model, prompt) as ProvisionResult
+  const response = await generateWithOpenRouter(prompt, true)
+  return JSON.parse(response.content) as ProvisionResult
 }

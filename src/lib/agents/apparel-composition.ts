@@ -1,4 +1,4 @@
-import { getFlashModel, generateJSON } from './gemini'
+import { generateWithOpenRouter } from './openrouter'
 
 export interface ApparelResult {
   category_normalized: string
@@ -15,8 +15,6 @@ export async function normalizeApparel(input: {
   composition?: string
   category?: string
 }): Promise<ApparelResult> {
-  const model = getFlashModel()
-
   const prompt = `SYSTEM
 Eres un especialista en normalización de vestuario, calzado y accesorios para uso aduanero en Chile.
 Debes traducir, simplificar y normalizar atributos comerciales para generar una salida clara, breve y consistente.
@@ -30,7 +28,7 @@ Descripción: ${input.description}
 Composición: ${input.composition || 'No disponible'}
 Categoría: ${input.category || 'No especificada'}
 
-Devuelve:
+Devuelve (JSON):
 {
   "category_normalized": "",
   "target_user": "",
@@ -41,6 +39,6 @@ Devuelve:
   "confidence": 0.0
 }`
 
-  const result = await generateJSON(model, prompt) as ApparelResult
-  return result
+  const response = await generateWithOpenRouter(prompt, true)
+  return JSON.parse(response.content) as ApparelResult
 }
