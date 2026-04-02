@@ -40,6 +40,7 @@ export function ProcessingStatus({ caseId, documents, agencyId }: ProcessingStat
   const [extractions, setExtractions] = useState<Record<string, DocumentExtraction>>({})
   const [loading, setLoading] = useState(true)
   const [retrying, setRetrying] = useState<Record<string, boolean>>({})
+  const [manualRefresh, setManualRefresh] = useState(0)
 
   const fetchExtractions = useCallback(async () => {
     if (documents.length === 0) {
@@ -47,6 +48,7 @@ export function ProcessingStatus({ caseId, documents, agencyId }: ProcessingStat
       return
     }
 
+    console.log('[ProcessingStatus] Fetching extractions...')
     const supabase = createClient()
     const { data, error } = await supabase
       .from("document_extractions")
@@ -62,6 +64,7 @@ export function ProcessingStatus({ caseId, documents, agencyId }: ProcessingStat
       return
     }
 
+    console.log('[ProcessingStatus] Extractions fetched:', data)
     const extractionMap: Record<string, DocumentExtraction> = {}
     data?.forEach((ext) => {
       extractionMap[ext.document_id] = ext
@@ -72,21 +75,32 @@ export function ProcessingStatus({ caseId, documents, agencyId }: ProcessingStat
 
   useEffect(() => {
     fetchExtractions()
-  }, [fetchExtractions])
+  }, [fetchExtractions, manualRefresh])
 
-  // Auto-refresh while any document is processing
+  // Auto-refresh while any document is processing or pending
   useEffect(() => {
     const hasProcessing = Object.values(extractions).some(
-      (ext) => ext.status === "processing"
+      (ext) => ext.status === "processing" || ext.status === "pending"
     )
 
     if (!hasProcessing) return
 
     const interval = setInterval(() => {
+      console.log('[ProcessingStatus] Auto-refreshing extractions...')
       fetchExtractions()
-    }, 5000)
+    }, 3000)
 
-    return () => clearInterval(interval)
+    // Refresh when window regains focus
+    const handleFocus = () => {
+      console.log('[ProcessingStatus] Window focused, refreshing...')
+      fetchExtractions()
+    }
+    window.addEventListener('focus', handleFocus)
+
+    return () => {
+      clearInterval(interval)
+      window.removeEventListener('focus', handleFocus)
+    }
   }, [extractions, fetchExtractions])
 
   const handleRetry = async (document: Document) => {
@@ -164,6 +178,10 @@ export function ProcessingStatus({ caseId, documents, agencyId }: ProcessingStat
     }
   }
 
+  const handleManualRefresh = () => {
+    setManualRefresh(prev => prev + 1)
+  }
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-6">
@@ -178,6 +196,18 @@ export function ProcessingStatus({ caseId, documents, agencyId }: ProcessingStat
 
   return (
     <div className="space-y-3">
+      {/* Manual refresh button */}
+      <div className="flex justify-end">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={handleManualRefresh}
+          className="h-8 gap-2"
+        >
+          <RefreshCw className="h-3.5 w-3.5" />
+          Actualizar estado
+        </Button>
+      </div>
       {documents.map((doc) => {
         const extraction = extractions[doc.id]
         const status: ProcessingState = extraction?.status || "pending"

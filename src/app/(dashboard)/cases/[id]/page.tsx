@@ -22,6 +22,9 @@ interface CaseDetailPageProps {
   params: Promise<{ id: string }>
 }
 
+// Revalidate every 5 seconds to pick up document processing changes
+export const revalidate = 5
+
 export default async function CaseDetailPage({ params }: CaseDetailPageProps) {
   const { profile } = await getUserProfile()
   const supabase = await createClient()

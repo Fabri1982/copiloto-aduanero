@@ -67,8 +67,33 @@ export function DualView({ caseId, documents }: DualViewProps) {
 
     if (documents.length > 0) {
       fetchExtractions()
+      
+      // Auto-refresh while any document is processing or pending
+      const hasProcessing = documents.some(doc => {
+        const status = extractions[doc.id]?.status
+        return status === 'processing' || status === 'pending'
+      })
+      
+      if (hasProcessing) {
+        const interval = setInterval(() => {
+          console.log('[DualView] Auto-refreshing extractions...')
+          fetchExtractions()
+        }, 3000)
+        
+        // Refresh when window regains focus
+        const handleFocus = () => {
+          console.log('[DualView] Window focused, refreshing...')
+          fetchExtractions()
+        }
+        window.addEventListener('focus', handleFocus)
+        
+        return () => {
+          clearInterval(interval)
+          window.removeEventListener('focus', handleFocus)
+        }
+      }
     }
-  }, [documents])
+  }, [documents, extractions])
 
   // Get signed URL when document selection changes
   useEffect(() => {
