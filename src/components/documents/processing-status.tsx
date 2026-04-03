@@ -166,9 +166,9 @@ export function ProcessingStatus({ caseId, documents, agencyId }: ProcessingStat
   const getStatusLabel = (status: ProcessingState) => {
     switch (status) {
       case "pending":
-        return "Pendiente"
+        return "En cola"
       case "processing":
-        return "Procesando"
+        return "Procesando con IA..."
       case "completed":
         return "Completado"
       case "failed":

@@ -184,10 +184,10 @@ export function DocumentUpload({ caseId, agencyId, userId }: DocumentUploadProps
           .eq("file_path", filePath)
           .single()
 
-        // Trigger document processing via API
+        // Trigger document processing via direct API (synchronous)
         if (createdDoc) {
           try {
-            const response = await fetch("/api/documents/process", {
+            const response = await fetch("/api/documents/process-direct", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
@@ -200,20 +200,17 @@ export function DocumentUpload({ caseId, agencyId, userId }: DocumentUploadProps
               }),
             })
             
+            const result = await response.json()
+            
             if (!response.ok) {
-              const errorData = await response.json().catch(() => ({}))
-              console.error("[DocumentUpload] Processing API error:", {
-                status: response.status,
-                statusText: response.statusText,
-                error: errorData,
-              })
+              console.error("[DocumentUpload] Processing error:", result)
+              // Still mark as success since the file was uploaded
+              // User can retry processing later
             } else {
-              const result = await response.json()
-              console.log("[DocumentUpload] Processing started:", result)
+              console.log("[DocumentUpload] Processing completed:", result)
             }
           } catch (processErr) {
-            // Don't fail the upload if processing fails - it can be retried
-            console.error("[DocumentUpload] Error triggering document processing:", processErr)
+            console.error("[DocumentUpload] Error during document processing:", processErr)
           }
         }
 
