@@ -140,29 +140,20 @@ export function DocumentUpload({ caseId, agencyId, userId }: DocumentUploadProps
         const fileName = `${timestamp}_${fileWithType.file.name}`
         const filePath = `${agencyId}/${caseId}/${fileName}`
 
-        // Upload to Supabase Storage using fetch directly (more reliable)
-        const { data: sessionData } = await supabase.auth.getSession()
-        const sessionToken = sessionData?.session?.access_token
-        
-        if (!sessionToken) {
-          throw new Error('No active session')
-        }
+        // Upload to server endpoint (uses service role key, no auth issues)
+        const uploadFormData = new FormData()
+        uploadFormData.append('file', fileWithType.file)
+        uploadFormData.append('filePath', filePath)
 
-        const uploadUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/case-documents/${filePath}`
-        const uploadResponse = await fetch(uploadUrl, {
+        const uploadResponse = await fetch('/api/upload', {
           method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${sessionToken}`,
-            'apikey': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-            'Content-Type': fileWithType.file.type || 'application/octet-stream',
-            'x-upsert': 'false',
-          },
-          body: fileWithType.file,
+          body: uploadFormData,
         })
 
+        const uploadResult = await uploadResponse.json()
+
         if (!uploadResponse.ok) {
-          const errorBody = await uploadResponse.text()
-          throw new Error(`Upload failed (${uploadResponse.status}): ${errorBody}`)
+          throw new Error(`Upload failed: ${uploadResult.error || uploadResult.details || 'Unknown error'}`)
         }
 
         // Create document record
