@@ -5,11 +5,13 @@ import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import {
   Loader2,
-  CheckCircle,
+  CheckCircle2,
   XCircle,
   Clock,
   FileText,
   RefreshCw,
+  Sparkles,
+  AlertCircle,
 } from "lucide-react"
 
 type ProcessingState = "pending" | "processing" | "completed" | "failed"
@@ -40,19 +42,12 @@ export function ProcessingStatus({ caseId, documents, agencyId }: ProcessingStat
   const [extractions, setExtractions] = useState<Record<string, DocumentExtraction>>({})
   const [loading, setLoading] = useState(true)
   const [retrying, setRetrying] = useState<Record<string, boolean>>({})
-  const [manualRefresh, setManualRefresh] = useState(0)
+  const [justCompleted, setJustCompleted] = useState<string[]>([])
 
-  const fetchExtractions = useCallback(async (forceRefresh = false) => {
+  const fetchExtractions = useCallback(async () => {
     if (documents.length === 0) {
       setLoading(false)
       return
-    }
-
-    if (forceRefresh) {
-      console.log('[ProcessingStatus] Manual refresh triggered...')
-      setLoading(true) // Show loading indicator on manual refresh
-    } else {
-      console.log('[ProcessingStatus] Fetching extractions...')
     }
     
     const supabase = createClient()
@@ -70,28 +65,28 @@ export function ProcessingStatus({ caseId, documents, agencyId }: ProcessingStat
       return
     }
 
-    console.log('[ProcessingStatus] Extractions fetched:', data)
     const extractionMap: Record<string, DocumentExtraction> = {}
     data?.forEach((ext) => {
+      const prevStatus = extractions[ext.document_id]?.status
       extractionMap[ext.document_id] = ext
+      
+      // Detect newly completed documents for animation
+      if (prevStatus === "processing" && ext.status === "completed") {
+        setJustCompleted(prev => [...prev, ext.document_id])
+        setTimeout(() => {
+          setJustCompleted(prev => prev.filter(id => id !== ext.document_id))
+        }, 3000)
+      }
     })
     setExtractions(extractionMap)
     setLoading(false)
-  }, [documents])
+  }, [documents, extractions])
 
-  // Initial load and manual refresh
   useEffect(() => {
     fetchExtractions()
-  }, []) // Only on mount
+  }, [])
 
-  // Manual refresh trigger
-  useEffect(() => {
-    if (manualRefresh > 0) {
-      fetchExtractions(true)
-    }
-  }, [manualRefresh, fetchExtractions])
-
-  // Supabase Realtime subscription for automatic updates
+  // Supabase Realtime subscription
   useEffect(() => {
     if (documents.length === 0) return
 
@@ -107,7 +102,6 @@ export function ProcessingStatus({ caseId, documents, agencyId }: ProcessingStat
           filter: `document_id=in.(${documents.map(d => d.id).join(',')})`,
         },
         () => {
-          console.log('[ProcessingStatus] Realtime change detected, refreshing...')
           fetchExtractions()
         }
       )
@@ -118,7 +112,7 @@ export function ProcessingStatus({ caseId, documents, agencyId }: ProcessingStat
     }
   }, [documents, fetchExtractions])
 
-  // Auto-refresh while any document is processing, pending, or missing from extractions
+  // Auto-refresh while processing
   useEffect(() => {
     const hasProcessing = documents.some((doc) => {
       const ext = extractions[doc.id]
@@ -127,29 +121,15 @@ export function ProcessingStatus({ caseId, documents, agencyId }: ProcessingStat
 
     if (!hasProcessing) return
 
-    const interval = setInterval(() => {
-      console.log('[ProcessingStatus] Auto-refreshing extractions...')
-      fetchExtractions()
-    }, 3000)
-
-    // Refresh when window regains focus
-    const handleFocus = () => {
-      console.log('[ProcessingStatus] Window focused, refreshing...')
-      fetchExtractions()
-    }
-    window.addEventListener('focus', handleFocus)
-
-    return () => {
-      clearInterval(interval)
-      window.removeEventListener('focus', handleFocus)
-    }
+    const interval = setInterval(fetchExtractions, 3000)
+    return () => clearInterval(interval)
   }, [extractions, fetchExtractions])
 
   const handleRetry = async (document: Document) => {
     setRetrying((prev) => ({ ...prev, [document.id]: true }))
 
     try {
-      const response = await fetch("/api/documents/process", {
+      const response = await fetch("/api/documents/process-direct", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -157,7 +137,7 @@ export function ProcessingStatus({ caseId, documents, agencyId }: ProcessingStat
           caseId: caseId,
           filePath: document.file_path,
           fileName: document.file_name,
-          mimeType: "application/pdf", // Default, could be improved
+          mimeType: "application/pdf",
           agencyId: agencyId,
         }),
       })
@@ -166,7 +146,6 @@ export function ProcessingStatus({ caseId, documents, agencyId }: ProcessingStat
         throw new Error("Failed to retry processing")
       }
 
-      // Refresh after retry
       await fetchExtractions()
     } catch (err) {
       console.error("Error retrying processing:", err)
@@ -175,14 +154,30 @@ export function ProcessingStatus({ caseId, documents, agencyId }: ProcessingStat
     }
   }
 
-  const getStatusIcon = (status: ProcessingState) => {
+  // Calculate summary stats
+  const totalDocs = documents.length
+  const completedCount = documents.filter(d => extractions[d.id]?.status === "completed").length
+  const processingCount = documents.filter(d => {
+    const ext = extractions[d.id]
+    return !ext || ext.status === "processing" || ext.status === "pending"
+  }).length
+  const failedCount = documents.filter(d => extractions[d.id]?.status === "failed").length
+  const allCompleted = completedCount === totalDocs && totalDocs > 0
+
+  const getStatusIcon = (status: ProcessingState, docId: string) => {
+    const isJustCompleted = justCompleted.includes(docId)
+    
     switch (status) {
       case "pending":
         return <Clock className="h-4 w-4 text-[var(--text-muted)]" />
       case "processing":
         return <Loader2 className="h-4 w-4 animate-spin text-[var(--primary)]" />
       case "completed":
-        return <CheckCircle className="h-4 w-4 text-[var(--success)]" />
+        return isJustCompleted ? (
+          <CheckCircle2 className="h-5 w-5 text-[var(--success)] animate-bounce" />
+        ) : (
+          <CheckCircle2 className="h-4 w-4 text-[var(--success)]" />
+        )
       case "failed":
         return <XCircle className="h-4 w-4 text-[var(--error)]" />
       default:
@@ -205,25 +200,6 @@ export function ProcessingStatus({ caseId, documents, agencyId }: ProcessingStat
     }
   }
 
-  const getStatusClass = (status: ProcessingState) => {
-    switch (status) {
-      case "pending":
-        return "bg-[var(--text-muted)]/10 text-[var(--text-muted)]"
-      case "processing":
-        return "bg-[var(--primary)]/10 text-[var(--primary)]"
-      case "completed":
-        return "bg-[var(--success)]/10 text-[var(--success)]"
-      case "failed":
-        return "bg-[var(--error)]/10 text-[var(--error)]"
-      default:
-        return ""
-    }
-  }
-
-  const handleManualRefresh = () => {
-    setManualRefresh(prev => prev + 1)
-  }
-
   if (loading) {
     return (
       <div className="flex items-center justify-center py-6">
@@ -238,46 +214,68 @@ export function ProcessingStatus({ caseId, documents, agencyId }: ProcessingStat
 
   return (
     <div className="space-y-3">
-      {/* Manual refresh button */}
-      <div className="flex justify-end gap-2">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => console.log('[Debug] Current extractions:', extractions)}
-          className="h-8 text-xs"
-        >
-          Debug
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={handleManualRefresh}
-          className="h-8 gap-2"
-        >
-          <RefreshCw className="h-3.5 w-3.5" />
-          Actualizar estado
-        </Button>
-      </div>
+      {/* Summary banner */}
+      {allCompleted ? (
+        <div className="flex items-center gap-3 p-3 rounded-lg bg-[var(--success)]/10 border border-[var(--success)]/20">
+          <Sparkles className="h-5 w-5 text-[var(--success)] shrink-0" />
+          <div className="flex-1">
+            <p className="text-sm font-medium text-[var(--success)]">
+              ¡Documento procesado exitosamente!
+            </p>
+            <p className="text-xs text-[var(--success)]/80">
+              Los datos extraídos están disponibles en el panel derecho
+            </p>
+          </div>
+        </div>
+      ) : processingCount > 0 ? (
+        <div className="flex items-center gap-3 p-3 rounded-lg bg-[var(--primary)]/10 border border-[var(--primary)]/20">
+          <Loader2 className="h-5 w-5 animate-spin text-[var(--primary)] shrink-0" />
+          <div className="flex-1">
+            <p className="text-sm font-medium text-[var(--primary)]">
+              Procesando documento{processingCount > 1 ? 's' : ''} con IA...
+            </p>
+            <p className="text-xs text-[var(--primary)]/80">
+              {completedCount > 0 && `${completedCount} completado${completedCount > 1 ? 's' : ''} · `}
+              No cierres esta página
+            </p>
+          </div>
+        </div>
+      ) : failedCount > 0 ? (
+        <div className="flex items-center gap-3 p-3 rounded-lg bg-[var(--error)]/10 border border-[var(--error)]/20">
+          <AlertCircle className="h-5 w-5 text-[var(--error)] shrink-0" />
+          <div className="flex-1">
+            <p className="text-sm font-medium text-[var(--error)]">
+              Error al procesar {failedCount} documento{failedCount > 1 ? 's' : ''}
+            </p>
+            <p className="text-xs text-[var(--error)]/80">
+              Puedes reintentar desde la lista
+            </p>
+          </div>
+        </div>
+      ) : null}
+
+      {/* Document list */}
       {documents.map((doc) => {
         const extraction = extractions[doc.id]
-        // Treat "pending" as "processing" since Inngest may have created the record but not updated yet
         const rawStatus: ProcessingState = extraction?.status || "pending"
         const status: ProcessingState = rawStatus === "pending" ? "processing" : rawStatus
-        
-        console.log(`[Document ${doc.file_name}] Status:`, { 
-          raw: rawStatus, 
-          display: status,
-          extractionId: extraction?.id,
-          updatedAt: extraction?.updated_at 
-        })
+        const isJustCompleted = justCompleted.includes(doc.id)
 
         return (
           <div
             key={doc.id}
-            className="flex items-center gap-3 p-3 rounded-lg bg-[var(--surface)] border border-[var(--border)]"
+            className={`flex items-center gap-3 p-3 rounded-lg border transition-all duration-300 ${
+              isJustCompleted
+                ? "bg-[var(--success)]/5 border-[var(--success)]/30 ring-2 ring-[var(--success)]/20"
+                : "bg-[var(--surface)] border-[var(--border)]"
+            }`}
           >
-            <div className="w-8 h-8 rounded-lg bg-[var(--surface-2)] flex items-center justify-center shrink-0">
-              <FileText className="h-4 w-4 text-[var(--text-muted)]" />
+            <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
+              status === "completed" ? "bg-[var(--success)]/20" :
+              status === "failed" ? "bg-[var(--error)]/20" :
+              "bg-[var(--surface-2)]"
+            }`}>
+              {getStatusIcon(status, doc.id)}
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-[var(--text)] truncate">
@@ -291,11 +289,13 @@ export function ProcessingStatus({ caseId, documents, agencyId }: ProcessingStat
             </div>
             <div className="flex items-center gap-2">
               <span
-                className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${getStatusClass(
-                  status
-                )}`}
+                className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${
+                  status === "processing" ? "bg-[var(--primary)]/10 text-[var(--primary)]" :
+                  status === "completed" ? "bg-[var(--success)]/10 text-[var(--success)]" :
+                  status === "failed" ? "bg-[var(--error)]/10 text-[var(--error)]" :
+                  "bg-[var(--text-muted)]/10 text-[var(--text-muted)]"
+                }`}
               >
-                {getStatusIcon(status)}
                 {getStatusLabel(status)}
               </span>
               {status === "failed" && (
