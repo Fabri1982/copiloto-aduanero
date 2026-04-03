@@ -80,14 +80,33 @@ export const processDocument = inngest.createFunction(
       return data
     })
 
-    // Step 2: Download file from storage
+    // Step 2: Download file from storage using direct fetch (more reliable in serverless)
     const fileBuffer = await step.run('download-file', async () => {
-      const { data, error } = await supabase.storage
-        .from('case-documents')
-        .download(filePath)
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+      const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+      if (!supabaseUrl || !serviceKey) {
+        throw new Error('Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY')
+      }
+      const encodedPath = filePath.split('/').map(encodeURIComponent).join('/')
+      const url = `${supabaseUrl}/storage/v1/object/auth/${encodedPath}`
       
-      if (error) throw new Error(`Failed to download: ${error.message}`)
-      const buffer = Buffer.from(await data.arrayBuffer())
+      console.log('[process-document] Downloading file from:', url)
+      
+      const headers: Record<string, string> = {
+        'Authorization': `Bearer ${serviceKey}`,
+        'apikey': serviceKey,
+      }
+      
+      const response = await fetch(url, { headers })
+      
+      if (!response.ok) {
+        const errorText = await response.text()
+        throw new Error(`Failed to download file (${response.status}): ${errorText}`)
+      }
+      
+      const arrayBuffer = await response.arrayBuffer()
+      const buffer = Buffer.from(arrayBuffer)
+      console.log(`[process-document] Downloaded ${buffer.length} bytes`)
       return buffer.toString('base64')
     })
 
