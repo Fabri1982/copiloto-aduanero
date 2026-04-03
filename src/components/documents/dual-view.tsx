@@ -95,6 +95,34 @@ export function DualView({ caseId, documents }: DualViewProps) {
     }
   }, [documents, extractions])
 
+  // Supabase Realtime subscription for automatic updates
+  useEffect(() => {
+    if (documents.length === 0) return
+
+    const supabase = createClient()
+    const channel = supabase
+      .channel('dualview-extractions-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'document_extractions',
+          filter: `document_id=in.(${documents.map(d => d.id).join(',')})`,
+        },
+        () => {
+          console.log('[DualView] Realtime change detected, refreshing...')
+          // Trigger re-fetch by updating extractions state
+          setExtractions(prev => ({ ...prev }))
+        }
+      )
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(channel)
+    }
+  }, [documents])
+
   // Get signed URL when document selection changes
   useEffect(() => {
     const getSignedUrl = async () => {

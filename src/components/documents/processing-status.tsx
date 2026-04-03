@@ -91,6 +91,33 @@ export function ProcessingStatus({ caseId, documents, agencyId }: ProcessingStat
     }
   }, [manualRefresh, fetchExtractions])
 
+  // Supabase Realtime subscription for automatic updates
+  useEffect(() => {
+    if (documents.length === 0) return
+
+    const supabase = createClient()
+    const channel = supabase
+      .channel('document-extractions-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'document_extractions',
+          filter: `document_id=in.(${documents.map(d => d.id).join(',')})`,
+        },
+        () => {
+          console.log('[ProcessingStatus] Realtime change detected, refreshing...')
+          fetchExtractions()
+        }
+      )
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(channel)
+    }
+  }, [documents, fetchExtractions])
+
   // Auto-refresh while any document is processing, pending, or missing from extractions
   useEffect(() => {
     const hasProcessing = documents.some((doc) => {

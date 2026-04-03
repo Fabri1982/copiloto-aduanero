@@ -87,6 +87,32 @@ export function ExtractedFields({ caseId, selectedDocumentId }: ExtractedFieldsP
     fetchData()
   }, [caseId, selectedDocumentId])
 
+  // Supabase Realtime subscription for extracted fields
+  useEffect(() => {
+    const supabase = createClient()
+    const channel = supabase
+      .channel('extracted-fields-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'extracted_fields',
+          filter: `case_id=eq.${caseId}`,
+        },
+        () => {
+          console.log('[ExtractedFields] Realtime change detected, refreshing...')
+          // Trigger re-fetch
+          setFields([])
+        }
+      )
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(channel)
+    }
+  }, [caseId])
+
   // Group fields by document
   const groupedFields = fields.reduce((acc, field) => {
     const docId = field.document_id || "unknown"
