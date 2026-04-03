@@ -166,8 +166,13 @@ export const processDocument = inngest.createFunction(
 
     // Step 5: Save results
     await step.run('save-extraction-results', async () => {
+      console.log('[process-document] Saving extraction results...')
+      console.log('[process-document] OCR raw_text length:', ocrResult.rawText?.length || 0)
+      console.log('[process-document] Extraction fields:', extractionResult.fields?.length || 0)
+      console.log('[process-document] Extraction items:', extractionResult.items?.length || 0)
+      
       // Update extraction record
-      await supabase
+      const { error: updateError } = await supabase
         .from('document_extractions')
         .update({
           status: 'completed',
@@ -175,6 +180,12 @@ export const processDocument = inngest.createFunction(
           extraction_json: extractionResult as unknown as Record<string, unknown>,
         })
         .eq('id', extraction.id)
+
+      if (updateError) {
+        console.error('[process-document] Failed to update extraction:', updateError)
+        throw new Error(`Failed to update extraction: ${updateError.message}`)
+      }
+      console.log('[process-document] Extraction record updated successfully')
 
       // Update document type if classified (Normalize to allowed enum values)
       if (extractionResult.document_type !== 'unknown') {
@@ -184,10 +195,13 @@ export const processDocument = inngest.createFunction(
         if (normalizedType === 'invoice') normalizedType = 'commercial_invoice'
         
         if (validTypes.includes(normalizedType)) {
-          await supabase
+          const { error: docTypeError } = await supabase
             .from('case_documents')
             .update({ document_type: normalizedType })
             .eq('id', documentId)
+          if (docTypeError) {
+            console.error('[process-document] Failed to update document type:', docTypeError)
+          }
         }
       }
 
@@ -215,7 +229,12 @@ export const processDocument = inngest.createFunction(
           confidence: f.confidence,
           evidence_text: f.evidence,
         }))
-        await supabase.from('extracted_fields').insert(fieldsToInsert)
+        const { error: fieldsError } = await supabase.from('extracted_fields').insert(fieldsToInsert)
+        if (fieldsError) {
+          console.error('[process-document] Failed to insert fields:', fieldsError)
+        } else {
+          console.log(`[process-document] Inserted ${fieldsToInsert.length} extracted fields`)
+        }
       }
 
       // Save items
@@ -229,7 +248,12 @@ export const processDocument = inngest.createFunction(
           source_document_id: documentId,
           confidence: item.confidence,
         }))
-        await supabase.from('case_items').insert(itemsToInsert)
+        const { error: itemsError } = await supabase.from('case_items').insert(itemsToInsert)
+        if (itemsError) {
+          console.error('[process-document] Failed to insert items:', itemsError)
+        } else {
+          console.log(`[process-document] Inserted ${itemsToInsert.length} items`)
+        }
       }
 
       // Create audit event
@@ -253,6 +277,8 @@ export const processDocument = inngest.createFunction(
         .from('operation_cases')
         .update({ status: 'processing' })
         .eq('id', caseId)
+      
+      console.log('[process-document] All results saved successfully')
     })
 
     // Step 6: Run tariff classification for items
