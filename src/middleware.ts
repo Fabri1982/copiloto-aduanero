@@ -12,9 +12,10 @@ export const config = {
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
-     * - public files
+     * - api/ (API routes handle their own auth)
      * - Supabase Storage (don't intercept file uploads/downloads)
+     * - public files
      */
-    '/((?!_next/static|_next/image|favicon.ico|api/inngest|storage/v1|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/((?!_next/static|_next/image|favicon.ico|api/|storage/v1|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 }

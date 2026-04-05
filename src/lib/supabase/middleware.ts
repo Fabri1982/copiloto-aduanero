@@ -37,6 +37,12 @@ export async function updateSession(request: NextRequest) {
   const isClientPortal = request.nextUrl.pathname.startsWith('/client-portal')
   const isClientProtectedRoute = isClientPortal && !isClientLoginPage
   const isPublicPage = request.nextUrl.pathname === '/' || isAuthPage || isClientLoginPage
+  const isApiRoute = request.nextUrl.pathname.startsWith('/api/')
+
+  // Skip auth checks for API routes (they handle their own auth)
+  if (isApiRoute) {
+    return supabaseResponse
+  }
 
   // Redirect unauthenticated users trying to access protected routes
   if (!user && !isPublicPage) {
