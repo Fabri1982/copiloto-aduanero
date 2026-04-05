@@ -105,7 +105,7 @@ export function AgencySettings({ isAdmin }: AgencySettingsProps) {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="h-8 w-8 animate-spin text-[var(--primary)]" />
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     )
   }
@@ -113,13 +113,13 @@ export function AgencySettings({ isAdmin }: AgencySettingsProps) {
   return (
     <div className="space-y-6">
       {/* Agency Info */}
-      <Card className="bg-[var(--surface)] border-[var(--border)] rounded-xl">
+      <Card className="bg-card border-border rounded-xl">
         <CardHeader>
-          <CardTitle className="text-[var(--text)]">Información de la Agencia</CardTitle>
+          <CardTitle className="text-foreground">Información de la Agencia</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid gap-2">
-            <Label htmlFor="agencyName" className="text-[var(--text)]">
+            <Label htmlFor="agencyName" className="text-foreground">
               Nombre de la Agencia
             </Label>
             <Input
@@ -127,11 +127,11 @@ export function AgencySettings({ isAdmin }: AgencySettingsProps) {
               value={settings.name}
               onChange={(e) => setSettings({ ...settings, name: e.target.value })}
               disabled={!isAdmin}
-              className="bg-[var(--bg)] border-[var(--border)]"
+              className="bg-background border-border"
             />
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="currency" className="text-[var(--text)]">
+            <Label htmlFor="currency" className="text-foreground">
               Moneda por Defecto
             </Label>
             <Select
@@ -139,7 +139,7 @@ export function AgencySettings({ isAdmin }: AgencySettingsProps) {
               onValueChange={(value) => setSettings({ ...settings, defaultCurrency: value || "CLP" })}
               disabled={!isAdmin}
             >
-              <SelectTrigger className="bg-[var(--bg)] border-[var(--border)]">
+              <SelectTrigger className="bg-background border-border">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -150,18 +150,18 @@ export function AgencySettings({ isAdmin }: AgencySettingsProps) {
             </Select>
           </div>
           <div className="grid gap-2">
-            <Label className="text-[var(--text)]">Logo</Label>
+            <Label className="text-foreground">Logo</Label>
             <div className="flex items-center gap-4">
               {settings.logo ? (
-                <div className="w-16 h-16 rounded-lg bg-[var(--surface-2)] flex items-center justify-center overflow-hidden">
+                <div className="w-16 h-16 rounded-lg bg-sidebar-accent flex items-center justify-center overflow-hidden">
                   <img src={settings.logo} alt="Logo" className="w-full h-full object-contain" />
                 </div>
               ) : (
-                <div className="w-16 h-16 rounded-lg bg-[var(--surface-2)] flex items-center justify-center">
-                  <Upload className="h-6 w-6 text-[var(--text-muted)]" />
+                <div className="w-16 h-16 rounded-lg bg-sidebar-accent flex items-center justify-center">
+                  <Upload className="h-6 w-6 text-muted-foreground" />
                 </div>
               )}
-              <Button variant="outline" disabled={!isAdmin} className="border-[var(--border)]">
+              <Button variant="outline" disabled={!isAdmin} className="border-border">
                 <Upload className="h-4 w-4 mr-2" />
                 Subir Logo
               </Button>
@@ -171,9 +171,9 @@ export function AgencySettings({ isAdmin }: AgencySettingsProps) {
       </Card>
 
       {/* Billing Concepts */}
-      <Card className="bg-[var(--surface)] border-[var(--border)] rounded-xl">
+      <Card className="bg-card border-border rounded-xl">
         <CardHeader>
-          <CardTitle className="text-[var(--text)]">Conceptos de Cobro Predefinidos</CardTitle>
+          <CardTitle className="text-foreground">Conceptos de Cobro Predefinidos</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           {isAdmin && (
@@ -182,14 +182,14 @@ export function AgencySettings({ isAdmin }: AgencySettingsProps) {
                 placeholder="Nombre del concepto"
                 value={newConcept.label}
                 onChange={(e) => setNewConcept({ ...newConcept, label: e.target.value })}
-                className="flex-1 bg-[var(--bg)] border-[var(--border)]"
+                className="flex-1 bg-background border-border"
               />
               <Input
                 placeholder="Monto"
                 type="number"
                 value={newConcept.defaultAmount}
                 onChange={(e) => setNewConcept({ ...newConcept, defaultAmount: e.target.value })}
-                className="w-32 bg-[var(--bg)] border-[var(--border)]"
+                className="w-32 bg-background border-border"
               />
               <Button onClick={addBillingConcept} disabled={!newConcept.label || !newConcept.defaultAmount}>
                 <Plus className="h-4 w-4" />
@@ -198,18 +198,18 @@ export function AgencySettings({ isAdmin }: AgencySettingsProps) {
           )}
           <div className="space-y-2">
             {settings.billingConcepts.length === 0 ? (
-              <p className="text-sm text-[var(--text-muted)] py-4 text-center">
+              <p className="text-sm text-muted-foreground py-4 text-center">
                 No hay conceptos de cobro configurados
               </p>
             ) : (
               settings.billingConcepts.map((concept) => (
                 <div
                   key={concept.id}
-                  className="flex items-center justify-between p-3 rounded-lg bg-[var(--bg)] border border-[var(--border)]"
+                  className="flex items-center justify-between p-3 rounded-lg bg-background border border-border"
                 >
                   <div className="flex items-center gap-3">
-                    <span className="text-[var(--text)]">{concept.label}</span>
-                    <Badge variant="secondary" className="bg-[var(--surface-2)]">
+                    <span className="text-foreground">{concept.label}</span>
+                    <Badge variant="secondary" className="bg-sidebar-accent">
                       {settings.defaultCurrency} {concept.defaultAmount.toLocaleString()}
                     </Badge>
                   </div>
@@ -218,7 +218,7 @@ export function AgencySettings({ isAdmin }: AgencySettingsProps) {
                       variant="ghost"
                       size="icon-sm"
                       onClick={() => removeBillingConcept(concept.id)}
-                      className="h-8 w-8 text-[var(--text-muted)] hover:text-[var(--error)]"
+                      className="h-8 w-8 text-muted-foreground hover:text-destructive"
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>

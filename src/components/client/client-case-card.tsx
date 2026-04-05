@@ -18,22 +18,22 @@ interface ClientCaseCardProps {
 const statusConfig: Record<ClientCaseStatus, { label: string; color: string; icon: React.ReactNode }> = {
   en_proceso: {
     label: "En proceso",
-    color: "bg-[var(--warning-soft)] text-[var(--warning)] border-[var(--warning)]/20",
+    color: "bg-amber-600/10 text-amber-600 border-amber-600/20",
     icon: <Clock className="w-4 h-4" />,
   },
   provision_disponible: {
     label: "Provisión disponible",
-    color: "bg-[var(--primary-soft)] text-[var(--primary)] border-[var(--primary)]/20",
+    color: "bg-primary/10 text-primary border-primary/20",
     icon: <Package className="w-4 h-4" />,
   },
   pago_pendiente: {
     label: "Pago pendiente",
-    color: "bg-[var(--error-soft)] text-[var(--error)] border-[var(--error)]/20",
+    color: "bg-destructive/10 text-destructive border-destructive/20",
     icon: <AlertCircle className="w-4 h-4" />,
   },
   completado: {
     label: "Completado",
-    color: "bg-[var(--success-soft)] text-[var(--success)] border-[var(--success)]/20",
+    color: "bg-emerald-600/10 text-emerald-600 border-emerald-600/20",
     icon: <CheckCircle className="w-4 h-4" />,
   },
 }
@@ -43,18 +43,18 @@ export function ClientCaseCard({ id, reference, status, date, description }: Cli
 
   return (
     <Link href={`/client-portal/cases/${id}`}>
-      <Card className="group bg-[var(--surface)] border-[var(--border)] hover:border-[var(--primary)]/30 hover:shadow-md transition-all cursor-pointer">
+      <Card className="group bg-card border-border hover:border-primary/30 hover:shadow-md transition-all cursor-pointer">
         <CardContent className="p-4 sm:p-5">
           <div className="flex items-start justify-between gap-4">
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-2">
-                <span className="text-sm font-medium text-[var(--text)]">
+                <span className="text-sm font-medium text-foreground">
                   {reference}
                 </span>
               </div>
               
               {description && (
-                <p className="text-sm text-[var(--text-muted)] mb-3 line-clamp-1">
+                <p className="text-sm text-muted-foreground mb-3 line-clamp-1">
                   {description}
                 </p>
               )}
@@ -69,7 +69,7 @@ export function ClientCaseCard({ id, reference, status, date, description }: Cli
                     {config.label}
                   </span>
                 </Badge>
-                <span className="text-xs text-[var(--text-faint)]">
+                <span className="text-xs text-muted-foreground">
                   {new Date(date).toLocaleDateString("es-CL", {
                     day: "numeric",
                     month: "short",
@@ -79,8 +79,8 @@ export function ClientCaseCard({ id, reference, status, date, description }: Cli
               </div>
             </div>
             
-            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-[var(--surface-2)] group-hover:bg-[var(--primary-soft)] transition-colors">
-              <ArrowRight className="w-4 h-4 text-[var(--text-muted)] group-hover:text-[var(--primary)] transition-colors" />
+            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-sidebar-accent group-hover:bg-primary/10 transition-colors">
+              <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
             </div>
           </div>
         </CardContent>

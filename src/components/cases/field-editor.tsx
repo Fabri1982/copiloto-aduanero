@@ -131,7 +131,7 @@ export function FieldEditor({
         <Input
           value={editValue}
           onChange={(e) => setEditValue(e.target.value)}
-          className="h-8 text-sm bg-[var(--bg)] border-[var(--border)]"
+          className="h-8 text-sm bg-background border-border"
           autoFocus
           onKeyDown={(e) => {
             if (e.key === "Enter") handleSave()
@@ -141,7 +141,7 @@ export function FieldEditor({
         <Button
           size="icon"
           variant="ghost"
-          className="h-8 w-8 text-[var(--success)]"
+          className="h-8 w-8 text-emerald-600"
           onClick={handleSave}
           disabled={isSaving}
         >
@@ -154,7 +154,7 @@ export function FieldEditor({
         <Button
           size="icon"
           variant="ghost"
-          className="h-8 w-8 text-[var(--error)]"
+          className="h-8 w-8 text-destructive"
           onClick={handleCancel}
           disabled={isSaving}
         >
@@ -166,13 +166,13 @@ export function FieldEditor({
 
   return (
     <div className="group flex items-center gap-2">
-      <span className="text-sm font-medium text-[var(--text)] truncate">
+      <span className="text-sm font-medium text-foreground truncate">
         {currentValue || "—"}
       </span>
       {wasEdited && (
         <Badge
           variant="secondary"
-          className="text-[10px] px-1.5 py-0 h-4 bg-[var(--primary-soft)] text-[var(--primary)]"
+          className="text-[10px] px-1.5 py-0 h-4 bg-primary/10 text-primary"
         >
           editado
         </Badge>
@@ -180,7 +180,7 @@ export function FieldEditor({
       <Button
         size="icon"
         variant="ghost"
-        className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity text-[var(--text-muted)] hover:text-[var(--primary)]"
+        className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-primary"
         onClick={() => setIsEditing(true)}
       >
         <Pencil className="h-3 w-3" />

@@ -42,14 +42,14 @@ export function ProvisionSummary({ provision }: ProvisionSummaryProps) {
   const caseData = provision.operation_cases
 
   return (
-    <Card className="bg-[var(--surface)] border-[var(--border)] rounded-xl">
+    <Card className="bg-card border-border rounded-xl">
       <CardHeader className="pb-4">
         <div className="flex items-start justify-between">
           <div>
-            <CardTitle className="text-lg font-semibold text-[var(--text)]">
+            <CardTitle className="text-lg font-semibold text-foreground">
               Resumen de la provisión
             </CardTitle>
-            <p className="text-sm text-[var(--text-muted)] mt-1">
+            <p className="text-sm text-muted-foreground mt-1">
               ID: {provision.id.slice(0, 8)}...
             </p>
           </div>
@@ -61,16 +61,16 @@ export function ProvisionSummary({ provision }: ProvisionSummaryProps) {
         {caseData && (
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-sm">
-              <FileText className="h-4 w-4 text-[var(--text-muted)]" />
-              <span className="text-[var(--text-muted)]">Expediente:</span>
-              <span className="font-medium text-[var(--text)]">
+              <FileText className="h-4 w-4 text-muted-foreground" />
+              <span className="text-muted-foreground">Expediente:</span>
+              <span className="font-medium text-foreground">
                 {caseData.reference_code || "Sin referencia"}
               </span>
             </div>
             <div className="flex items-center gap-2 text-sm">
-              <User className="h-4 w-4 text-[var(--text-muted)]" />
-              <span className="text-[var(--text-muted)]">Cliente:</span>
-              <span className="font-medium text-[var(--text)]">
+              <User className="h-4 w-4 text-muted-foreground" />
+              <span className="text-muted-foreground">Cliente:</span>
+              <span className="font-medium text-foreground">
                 {caseData.client_name}
               </span>
             </div>
@@ -80,17 +80,17 @@ export function ProvisionSummary({ provision }: ProvisionSummaryProps) {
         {/* Dates */}
         <div className="space-y-2">
           <div className="flex items-center gap-2 text-sm">
-            <Calendar className="h-4 w-4 text-[var(--text-muted)]" />
-            <span className="text-[var(--text-muted)]">Creada:</span>
-            <span className="text-[var(--text)]">
+            <Calendar className="h-4 w-4 text-muted-foreground" />
+            <span className="text-muted-foreground">Creada:</span>
+            <span className="text-foreground">
               {formatDate(provision.created_at)}
             </span>
           </div>
           {provision.sent_at && (
             <div className="flex items-center gap-2 text-sm">
-              <Calendar className="h-4 w-4 text-[var(--text-muted)]" />
-              <span className="text-[var(--text-muted)]">Enviada:</span>
-              <span className="text-[var(--text)]">
+              <Calendar className="h-4 w-4 text-muted-foreground" />
+              <span className="text-muted-foreground">Enviada:</span>
+              <span className="text-foreground">
                 {formatDate(provision.sent_at)}
               </span>
             </div>
@@ -98,20 +98,20 @@ export function ProvisionSummary({ provision }: ProvisionSummaryProps) {
         </div>
 
         {/* Amount */}
-        <div className="pt-4 border-t border-[var(--border)]">
+        <div className="pt-4 border-t border-border">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <DollarSign className="h-5 w-5 text-[var(--primary)]" />
-              <span className="text-[var(--text-muted)]">Total</span>
+              <DollarSign className="h-5 w-5 text-primary" />
+              <span className="text-muted-foreground">Total</span>
             </div>
-            <span className="text-2xl font-bold text-[var(--primary)]">
+            <span className="text-2xl font-bold text-primary">
               {formatCurrency(provision.total)}
             </span>
           </div>
           {provision.subtotal && provision.subtotal !== provision.total && (
             <div className="flex items-center justify-between mt-1">
-              <span className="text-sm text-[var(--text-muted)]">Subtotal</span>
-              <span className="text-sm text-[var(--text)]">
+              <span className="text-sm text-muted-foreground">Subtotal</span>
+              <span className="text-sm text-foreground">
                 {formatCurrency(provision.subtotal)}
               </span>
             </div>
@@ -120,9 +120,9 @@ export function ProvisionSummary({ provision }: ProvisionSummaryProps) {
 
         {/* Notes */}
         {provision.notes && (
-          <div className="pt-4 border-t border-[var(--border)]">
-            <span className="text-sm text-[var(--text-muted)]">Notas:</span>
-            <p className="text-sm text-[var(--text)] mt-1 whitespace-pre-wrap">
+          <div className="pt-4 border-t border-border">
+            <span className="text-sm text-muted-foreground">Notas:</span>
+            <p className="text-sm text-foreground mt-1 whitespace-pre-wrap">
               {provision.notes}
             </p>
           </div>

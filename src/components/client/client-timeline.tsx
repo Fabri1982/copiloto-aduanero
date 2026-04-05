@@ -16,7 +16,7 @@ export function ClientTimeline({ steps }: ClientTimelineProps) {
   return (
     <div className="relative">
       {/* Línea de progreso */}
-      <div className="absolute left-4 top-2 bottom-2 w-0.5 bg-[var(--border)]" />
+      <div className="absolute left-4 top-2 bottom-2 w-0.5 bg-border" />
       
       <div className="space-y-6">
         {steps.map((step, index) => (
@@ -25,10 +25,10 @@ export function ClientTimeline({ steps }: ClientTimelineProps) {
             <div className={`
               relative z-10 w-8 h-8 rounded-full flex items-center justify-center
               ${step.completed 
-                ? "bg-[var(--success)] text-[var(--text-inverse)]" 
+                ? "bg-emerald-600 text-primary-foreground" 
                 : step.current 
-                  ? "bg-[var(--primary)] text-[var(--text-inverse)] ring-4 ring-[var(--primary-soft)]"
-                  : "bg-[var(--surface-2)] text-[var(--text-faint)] border border-[var(--border)]"
+                  ? "bg-primary text-primary-foreground ring-4 ring-[var(--primary-soft)]"
+                  : "bg-sidebar-accent text-muted-foreground border border-border"
               }
             `}>
               {step.completed ? (
@@ -45,14 +45,14 @@ export function ClientTimeline({ steps }: ClientTimelineProps) {
               <p className={`
                 text-sm font-medium
                 ${step.completed || step.current 
-                  ? "text-[var(--text)]" 
-                  : "text-[var(--text-muted)]"
+                  ? "text-foreground" 
+                  : "text-muted-foreground"
                 }
               `}>
                 {step.label}
               </p>
               {step.current && (
-                <p className="text-xs text-[var(--text-muted)] mt-0.5">
+                <p className="text-xs text-muted-foreground mt-0.5">
                   En este paso
                 </p>
               )}

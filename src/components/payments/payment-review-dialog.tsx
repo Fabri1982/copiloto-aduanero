@@ -72,12 +72,12 @@ export function PaymentReviewDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px] bg-[var(--surface)] border-[var(--border)]">
+      <DialogContent className="sm:max-w-[425px] bg-card border-border">
         <DialogHeader>
-          <DialogTitle className="text-[var(--text)]">
+          <DialogTitle className="text-foreground">
             Revisar comprobante de pago
           </DialogTitle>
-          <DialogDescription className="text-[var(--text-muted)]">
+          <DialogDescription className="text-muted-foreground">
             {receiptName}
           </DialogDescription>
         </DialogHeader>
@@ -85,25 +85,25 @@ export function PaymentReviewDialog({
         <div className="space-y-4 py-4">
           {action === "reject" ? (
             <div className="space-y-2">
-              <Label htmlFor="reason" className="text-[var(--text)]">
-                Motivo del rechazo <span className="text-[var(--error)]">*</span>
+              <Label htmlFor="reason" className="text-foreground">
+                Motivo del rechazo <span className="text-destructive">*</span>
               </Label>
               <Textarea
                 id="reason"
                 placeholder="Indica el motivo del rechazo..."
                 value={rejectionReason}
                 onChange={(e) => setRejectionReason(e.target.value)}
-                className="bg-[var(--bg)] border-[var(--border)] min-h-[100px]"
+                className="bg-background border-border min-h-[100px]"
               />
             </div>
           ) : (
-            <p className="text-sm text-[var(--text-muted)]">
+            <p className="text-sm text-muted-foreground">
               Selecciona la acción a realizar con este comprobante de pago.
             </p>
           )}
 
           {error && (
-            <div className="text-sm text-[var(--error)] bg-[var(--error)]/10 px-3 py-2 rounded-lg">
+            <div className="text-sm text-destructive bg-destructive/10 px-3 py-2 rounded-lg">
               {error}
             </div>
           )}
@@ -157,7 +157,7 @@ export function PaymentReviewDialog({
                 type="button"
                 onClick={() => handleAction("validate")}
                 disabled={loading}
-                className="bg-[var(--success)] hover:bg-[var(--success)]/90"
+                className="bg-emerald-600 hover:bg-emerald-600/90"
               >
                 {loading ? (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />

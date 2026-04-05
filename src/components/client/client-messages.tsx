@@ -45,9 +45,9 @@ export function ClientMessages({ messages, onSendMessage }: ClientMessagesProps)
   }
 
   return (
-    <Card className="bg-[var(--surface)] border-[var(--border)]">
+    <Card className="bg-card border-border">
       <CardHeader className="pb-3">
-        <CardTitle className="text-base font-medium text-[var(--text)]">
+        <CardTitle className="text-base font-medium text-foreground">
           Mensajes
         </CardTitle>
       </CardHeader>
@@ -56,10 +56,10 @@ export function ClientMessages({ messages, onSendMessage }: ClientMessagesProps)
         <div className="space-y-3 max-h-80 overflow-y-auto pr-1">
           {messages.length === 0 ? (
             <div className="text-center py-8">
-              <p className="text-sm text-[var(--text-muted)]">
+              <p className="text-sm text-muted-foreground">
                 No hay mensajes aún
               </p>
-              <p className="text-xs text-[var(--text-faint)] mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 Envía un mensaje para comunicarte con tu agencia
               </p>
             </div>
@@ -76,8 +76,8 @@ export function ClientMessages({ messages, onSendMessage }: ClientMessagesProps)
                 <div className={`
                   w-8 h-8 rounded-full flex items-center justify-center shrink-0
                   ${message.sender === "client" 
-                    ? "bg-[var(--primary)] text-[var(--text-inverse)]" 
-                    : "bg-[var(--surface-3)] text-[var(--text-muted)]"
+                    ? "bg-primary text-primary-foreground" 
+                    : "bg-[var(--surface-3)] text-muted-foreground"
                   }
                 `}>
                   {message.sender === "client" ? (
@@ -91,8 +91,8 @@ export function ClientMessages({ messages, onSendMessage }: ClientMessagesProps)
                 <div className={`
                   max-w-[75%] rounded-2xl px-4 py-2.5
                   ${message.sender === "client"
-                    ? "bg-[var(--primary)] text-[var(--text-inverse)] rounded-br-md"
-                    : "bg-[var(--surface-2)] text-[var(--text)] rounded-bl-md"
+                    ? "bg-primary text-primary-foreground rounded-br-md"
+                    : "bg-sidebar-accent text-foreground rounded-bl-md"
                   }
                 `}>
                   <p className="text-xs font-medium mb-1 opacity-80">
@@ -101,7 +101,7 @@ export function ClientMessages({ messages, onSendMessage }: ClientMessagesProps)
                   <p className="text-sm whitespace-pre-wrap">{message.content}</p>
                   <p className={`
                     text-[10px] mt-1.5
-                    ${message.sender === "client" ? "text-white/60" : "text-[var(--text-faint)]"}
+                    ${message.sender === "client" ? "text-white/60" : "text-muted-foreground"}
                   `}>
                     {formatTime(message.timestamp)}
                   </p>
@@ -112,13 +112,13 @@ export function ClientMessages({ messages, onSendMessage }: ClientMessagesProps)
         </div>
 
         {/* Input de mensaje */}
-        <div className="pt-3 border-t border-[var(--border)]">
+        <div className="pt-3 border-t border-border">
           <div className="flex gap-2">
             <Textarea
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
               placeholder="Escribe tu mensaje..."
-              className="min-h-[80px] bg-[var(--bg)] border-[var(--border)] resize-none text-sm"
+              className="min-h-[80px] bg-background border-border resize-none text-sm"
               onKeyDown={(e) => {
                 if (e.key === "Enter" && e.metaKey) {
                   handleSend()
@@ -127,12 +127,12 @@ export function ClientMessages({ messages, onSendMessage }: ClientMessagesProps)
             />
           </div>
           <div className="flex justify-between items-center mt-2">
-            <p className="text-xs text-[var(--text-faint)]">
+            <p className="text-xs text-muted-foreground">
               Cmd + Enter para enviar
             </p>
             <Button 
               size="sm"
-              className="gap-1.5 bg-[var(--primary)] text-[var(--text-inverse)]"
+              className="gap-1.5 bg-primary text-primary-foreground"
               onClick={handleSend}
               disabled={sending || !newMessage.trim()}
             >

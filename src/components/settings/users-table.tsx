@@ -110,7 +110,7 @@ export function UsersTable({ isAdmin }: UsersTableProps) {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="h-8 w-8 animate-spin text-[var(--primary)]" />
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     )
   }
@@ -118,31 +118,31 @@ export function UsersTable({ isAdmin }: UsersTableProps) {
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <h3 className="text-lg font-medium text-[var(--text)]">
+        <h3 className="text-lg font-medium text-foreground">
           Usuarios de la Agencia
         </h3>
         {isAdmin && <InviteUserDialog onUserInvited={fetchUsers} />}
       </div>
 
-      <div className="rounded-xl border border-[var(--border)] bg-[var(--surface)]">
+      <div className="rounded-xl border border-border bg-card">
         <Table>
           <TableHeader>
-            <TableRow className="border-[var(--border)] hover:bg-transparent">
-              <TableHead className="text-[var(--text-muted)] font-medium">Usuario</TableHead>
-              <TableHead className="text-[var(--text-muted)] font-medium">Rol</TableHead>
-              <TableHead className="text-[var(--text-muted)] font-medium">Estado</TableHead>
-              <TableHead className="text-[var(--text-muted)] font-medium w-[60px]">
+            <TableRow className="border-border hover:bg-transparent">
+              <TableHead className="text-muted-foreground font-medium">Usuario</TableHead>
+              <TableHead className="text-muted-foreground font-medium">Rol</TableHead>
+              <TableHead className="text-muted-foreground font-medium">Estado</TableHead>
+              <TableHead className="text-muted-foreground font-medium w-[60px]">
                 <span className="sr-only">Acciones</span>
               </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {users.map((user) => (
-              <TableRow key={user.id} className="border-[var(--border)] hover:bg-[var(--surface-2)]">
+              <TableRow key={user.id} className="border-border hover:bg-sidebar-accent">
                 <TableCell>
                   <div className="flex flex-col">
-                    <span className="font-medium text-[var(--text)]">{user.name}</span>
-                    <span className="text-sm text-[var(--text-muted)]">{user.email}</span>
+                    <span className="font-medium text-foreground">{user.name}</span>
+                    <span className="text-sm text-muted-foreground">{user.email}</span>
                   </div>
                 </TableCell>
                 <TableCell>
@@ -152,7 +152,7 @@ export function UsersTable({ isAdmin }: UsersTableProps) {
                       onValueChange={(value) => handleRoleChange(user.id, value)}
                       disabled={updating === user.id}
                     >
-                      <SelectTrigger className="w-[160px] bg-[var(--bg)] border-[var(--border)]">
+                      <SelectTrigger className="w-[160px] bg-background border-border">
                         <div className="flex items-center gap-2">
                           {roleIcons[user.role]}
                           <span>{roleLabels[user.role]}</span>
@@ -186,7 +186,7 @@ export function UsersTable({ isAdmin }: UsersTableProps) {
                       </SelectContent>
                     </Select>
                   ) : (
-                    <Badge variant="secondary" className="bg-[var(--surface-2)]">
+                    <Badge variant="secondary" className="bg-sidebar-accent">
                       <div className="flex items-center gap-1">
                         {roleIcons[user.role]}
                         {roleLabels[user.role]}
@@ -230,7 +230,7 @@ export function UsersTable({ isAdmin }: UsersTableProps) {
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem
                           onClick={() => handleDeactivate(user.id)}
-                          className="text-[var(--error)]"
+                          className="text-destructive"
                         >
                           <UserX className="h-4 w-4 mr-2" />
                           Desactivar usuario

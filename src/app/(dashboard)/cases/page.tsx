@@ -49,10 +49,10 @@ export default async function CasesPage({ searchParams }: CasesPageProps) {
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-[var(--text)]">
+          <h1 className="text-2xl font-semibold text-foreground">
             Expedientes
           </h1>
-          <p className="mt-1 text-sm text-[var(--text-muted)]">
+          <p className="mt-1 text-sm text-muted-foreground">
             Gestión de expedientes aduaneros
           </p>
         </div>
@@ -61,30 +61,30 @@ export default async function CasesPage({ searchParams }: CasesPageProps) {
 
       {/* Search */}
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--text-muted)]" />
+        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <form action="/cases" method="GET">
           <Input
             name="search"
             placeholder="Buscar por cliente o referencia..."
             defaultValue={searchQuery}
-            className="pl-10 bg-[var(--surface)] border-[var(--border)]"
+            className="pl-10 bg-card border-border"
           />
         </form>
       </div>
 
       {/* Cases Table with Selection */}
-      <div className="rounded-xl border border-[var(--border)] bg-[var(--surface)]">
+      <div className="rounded-xl border border-border bg-card">
         {cases && cases.length > 0 ? (
           <CasesTable cases={cases} searchQuery={searchQuery} />
         ) : (
           <div className="flex flex-col items-center justify-center py-16 px-4">
-            <div className="w-16 h-16 rounded-full bg-[var(--surface-2)] flex items-center justify-center mb-4">
-              <FileText className="h-8 w-8 text-[var(--text-muted)]" />
+            <div className="w-16 h-16 rounded-full bg-sidebar-accent flex items-center justify-center mb-4">
+              <FileText className="h-8 w-8 text-muted-foreground" />
             </div>
-            <h3 className="text-base font-medium text-[var(--text)] mb-1">
+            <h3 className="text-base font-medium text-foreground mb-1">
               No hay expedientes
             </h3>
-            <p className="text-sm text-[var(--text-muted)] text-center max-w-sm">
+            <p className="text-sm text-muted-foreground text-center max-w-sm">
               {searchQuery
                 ? "No se encontraron expedientes que coincidan con tu búsqueda."
                 : "Comienza creando tu primer expediente haciendo clic en el botón 'Nuevo expediente'."}

@@ -126,8 +126,8 @@ export function ExtractedFields({ caseId, selectedDocumentId }: ExtractedFieldsP
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center h-full py-12">
-        <Loader2 className="h-6 w-6 animate-spin text-[var(--primary)]" />
-        <p className="mt-3 text-sm text-[var(--text-muted)]">Cargando datos extraídos...</p>
+        <Loader2 className="h-6 w-6 animate-spin text-primary" />
+        <p className="mt-3 text-sm text-muted-foreground">Cargando datos extraídos...</p>
       </div>
     )
   }
@@ -135,10 +135,10 @@ export function ExtractedFields({ caseId, selectedDocumentId }: ExtractedFieldsP
   if (fields.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center h-full py-12 px-4">
-        <div className="w-12 h-12 rounded-full bg-[var(--surface-2)] flex items-center justify-center mb-3">
-          <FileText className="h-6 w-6 text-[var(--text-muted)]" />
+        <div className="w-12 h-12 rounded-full bg-sidebar-accent flex items-center justify-center mb-3">
+          <FileText className="h-6 w-6 text-muted-foreground" />
         </div>
-        <p className="text-sm text-[var(--text-muted)] text-center">
+        <p className="text-sm text-muted-foreground text-center">
           Los datos se extraerán automáticamente al procesar los documentos.
         </p>
       </div>
@@ -153,7 +153,7 @@ export function ExtractedFields({ caseId, selectedDocumentId }: ExtractedFieldsP
           return (
             <div key={docId} className="mb-6 last:mb-0">
               {document && (
-                <h4 className="text-xs font-medium text-[var(--text-muted)] uppercase tracking-wide mb-3">
+                <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-3">
                   {document.file_name}
                 </h4>
               )}
@@ -161,11 +161,11 @@ export function ExtractedFields({ caseId, selectedDocumentId }: ExtractedFieldsP
                 {docFields.map((field) => (
                   <div
                     key={field.id}
-                    className="p-3 rounded-lg bg-[var(--surface)] border border-[var(--border)] hover:border-[var(--primary)] transition-colors"
+                    className="p-3 rounded-lg bg-card border border-border hover:border-primary transition-colors"
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs text-[var(--text-muted)] mb-1">
+                        <p className="text-xs text-muted-foreground mb-1">
                           {field.field_label}
                         </p>
                         <FieldEditor
@@ -188,9 +188,9 @@ export function ExtractedFields({ caseId, selectedDocumentId }: ExtractedFieldsP
                       <ConfidenceIndicator value={field.confidence} showLabel={false} />
                     </div>
                     {field.evidence_text && (
-                      <div className="mt-2 pt-2 border-t border-[var(--border)]">
+                      <div className="mt-2 pt-2 border-t border-border">
                         <Tooltip>
-                          <TooltipTrigger render={<span className="text-xs text-[var(--text-muted)] truncate cursor-help block">
+                          <TooltipTrigger render={<span className="text-xs text-muted-foreground truncate cursor-help block">
                             <span className="font-medium">Evidencia:</span> {field.evidence_text}
                           </span>} />
                           <TooltipContent side="bottom" className="max-w-sm">
@@ -200,7 +200,7 @@ export function ExtractedFields({ caseId, selectedDocumentId }: ExtractedFieldsP
                       </div>
                     )}
                     {field.page_number && (
-                      <p className="text-xs text-[var(--text-muted)] mt-1">
+                      <p className="text-xs text-muted-foreground mt-1">
                         Página {field.page_number}
                       </p>
                     )}

@@ -15,9 +15,9 @@ interface ConfidenceIndicatorProps {
 export function ConfidenceIndicator({ value, showLabel = true }: ConfidenceIndicatorProps) {
   // Determine color based on confidence value
   const getColor = () => {
-    if (value >= 0.9) return "var(--success)"
-    if (value >= 0.75) return "var(--warning)"
-    return "var(--error)"
+    if (value >= 0.9) return "text-emerald-600"
+    if (value >= 0.75) return "text-amber-600"
+    return "text-destructive"
   }
 
   const getLabel = () => {
@@ -40,7 +40,7 @@ export function ConfidenceIndicator({ value, showLabel = true }: ConfidenceIndic
               style={{ backgroundColor: color }}
             />
             {showLabel && (
-              <span className="text-sm text-[var(--text-muted)]">
+              <span className="text-sm text-muted-foreground">
                 {percentage}%
               </span>
             )}

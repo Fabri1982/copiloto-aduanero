@@ -228,16 +228,16 @@ function getActorBadge(actorType: string) {
 
 function DiffView({ before, after, label }: { before: string; after: string; label?: string }) {
   return (
-    <div className="mt-3 p-3 rounded-lg bg-[var(--surface-2)] border border-[var(--border)]">
-      {label && <p className="text-xs font-medium text-[var(--text-muted)] mb-2">{label}</p>}
+    <div className="mt-3 p-3 rounded-lg bg-sidebar-accent border border-border">
+      {label && <p className="text-xs font-medium text-muted-foreground mb-2">{label}</p>}
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <p className="text-xs text-[var(--text-faint)] mb-1">Antes</p>
-          <p className="text-sm text-[var(--text-muted)] line-through decoration-red-400">{before || "-"}</p>
+          <p className="text-xs text-muted-foreground mb-1">Antes</p>
+          <p className="text-sm text-muted-foreground line-through decoration-red-400">{before || "-"}</p>
         </div>
         <div>
-          <p className="text-xs text-[var(--text-faint)] mb-1">Después</p>
-          <p className="text-sm text-[var(--text)]">{after || "-"}</p>
+          <p className="text-xs text-muted-foreground mb-1">Después</p>
+          <p className="text-sm text-foreground">{after || "-"}</p>
         </div>
       </div>
     </div>
@@ -269,17 +269,17 @@ function TimelineEvent({ event, review, isExpanded, onToggle }: TimelineEventPro
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-sm font-medium text-[var(--text)]">
+              <span className="text-sm font-medium text-foreground">
                 {config.label}
               </span>
-              <span className="text-xs text-[var(--text-muted)]" suppressHydrationWarning>
+              <span className="text-xs text-muted-foreground" suppressHydrationWarning>
                 {formatRelativeTime(event.created_at)}
               </span>
             </div>
             <div className="flex items-center gap-2 mt-1">
               {getActorBadge(event.actor_type)}
               {event.actor_type === "user" && typeof event.event_payload_json.actor_name === "string" && (
-                <span className="text-xs text-[var(--text-muted)]">
+                <span className="text-xs text-muted-foreground">
                   por {event.event_payload_json.actor_name}
                 </span>
               )}
@@ -325,8 +325,8 @@ function TimelineEvent({ event, review, isExpanded, onToggle }: TimelineEventPro
             {/* Event payload */}
             {Object.keys(event.event_payload_json).length > 0 &&
               event.event_name !== "field_edited" && (
-                <div className="p-3 rounded-lg bg-[var(--surface-2)] border border-[var(--border)]">
-                  <p className="text-xs font-medium text-[var(--text-muted)] mb-2">Detalles</p>
+                <div className="p-3 rounded-lg bg-sidebar-accent border border-border">
+                  <p className="text-xs font-medium text-muted-foreground mb-2">Detalles</p>
                   <div className="space-y-1">
                     {Object.entries(event.event_payload_json).map(([key, value]) => {
                       // Skip internal fields
@@ -335,8 +335,8 @@ function TimelineEvent({ event, review, isExpanded, onToggle }: TimelineEventPro
                       }
                       return (
                         <div key={key} className="text-xs">
-                          <span className="font-medium text-[var(--text-muted)]">{key}:</span>{" "}
-                          <span className="text-[var(--text)]">{String(value)}</span>
+                          <span className="font-medium text-muted-foreground">{key}:</span>{" "}
+                          <span className="text-foreground">{String(value)}</span>
                         </div>
                       )
                     })}
@@ -394,13 +394,13 @@ export function CaseTimeline({ events, reviews = [] }: CaseTimelineProps) {
   if (events.length === 0) {
     return (
       <div className="text-center py-12 px-4">
-        <div className="w-16 h-16 rounded-full bg-[var(--surface-2)] flex items-center justify-center mx-auto mb-4">
-          <Clock className="h-8 w-8 text-[var(--text-muted)]" />
+        <div className="w-16 h-16 rounded-full bg-sidebar-accent flex items-center justify-center mx-auto mb-4">
+          <Clock className="h-8 w-8 text-muted-foreground" />
         </div>
-        <h3 className="text-base font-medium text-[var(--text)] mb-1">
+        <h3 className="text-base font-medium text-foreground mb-1">
           Sin actividad
         </h3>
-        <p className="text-sm text-[var(--text-muted)]">
+        <p className="text-sm text-muted-foreground">
           No hay eventos registrados para este expediente.
         </p>
       </div>
@@ -410,13 +410,13 @@ export function CaseTimeline({ events, reviews = [] }: CaseTimelineProps) {
   return (
     <div className="space-y-4">
       {/* Filters */}
-      <div className="flex flex-wrap gap-2 p-3 rounded-lg bg-[var(--surface-2)] border border-[var(--border)]">
+      <div className="flex flex-wrap gap-2 p-3 rounded-lg bg-sidebar-accent border border-border">
         <div className="flex items-center gap-2">
-          <Filter className="h-4 w-4 text-[var(--text-muted)]" />
-          <span className="text-sm text-[var(--text-muted)]">Filtrar por:</span>
+          <Filter className="h-4 w-4 text-muted-foreground" />
+          <span className="text-sm text-muted-foreground">Filtrar por:</span>
         </div>
         <Select value={eventTypeFilter} onValueChange={(v) => setEventTypeFilter(v as EventTypeFilter)}>
-          <SelectTrigger className="h-8 w-[140px] bg-[var(--surface)] border-[var(--border)] text-xs">
+          <SelectTrigger className="h-8 w-[140px] bg-card border-border text-xs">
             <SelectValue placeholder="Tipo de evento" />
           </SelectTrigger>
           <SelectContent>
@@ -430,7 +430,7 @@ export function CaseTimeline({ events, reviews = [] }: CaseTimelineProps) {
           </SelectContent>
         </Select>
         <Select value={actorFilter} onValueChange={(v) => setActorFilter(v as ActorFilter)}>
-          <SelectTrigger className="h-8 w-[130px] bg-[var(--surface)] border-[var(--border)] text-xs">
+          <SelectTrigger className="h-8 w-[130px] bg-card border-border text-xs">
             <SelectValue placeholder="Actor" />
           </SelectTrigger>
           <SelectContent>
@@ -456,7 +456,7 @@ export function CaseTimeline({ events, reviews = [] }: CaseTimelineProps) {
       </div>
 
       {/* Stats */}
-      <div className="flex flex-wrap gap-2 text-xs text-[var(--text-muted)]">
+      <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
         <Badge variant="outline" className="gap-1">
           <Bot className="h-3 w-3" />
           {events.filter((e) => e.actor_type === "agent").length} acciones IA
@@ -474,12 +474,12 @@ export function CaseTimeline({ events, reviews = [] }: CaseTimelineProps) {
       {/* Timeline */}
       <div className="relative">
         {/* Vertical line */}
-        <div className="absolute left-4 top-2 bottom-2 w-px bg-[var(--border)]" />
+        <div className="absolute left-4 top-2 bottom-2 w-px bg-border" />
 
         <div className="space-y-6">
           {filteredEvents.length === 0 ? (
             <div className="text-center py-8">
-              <p className="text-sm text-[var(--text-muted)]">
+              <p className="text-sm text-muted-foreground">
                 No hay eventos que coincidan con los filtros seleccionados
               </p>
             </div>

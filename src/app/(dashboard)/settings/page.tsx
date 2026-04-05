@@ -47,10 +47,10 @@ export default function SettingsPage() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-semibold text-[var(--text)]">
+        <h1 className="text-2xl font-semibold text-foreground">
           Configuración
         </h1>
-        <p className="mt-1 text-sm text-[var(--text-muted)]">
+        <p className="mt-1 text-sm text-muted-foreground">
           Gestiona la configuración de tu agencia y preferencias del sistema
         </p>
       </div>
@@ -69,15 +69,15 @@ export default function SettingsPage() {
                   onClick={() => setActive(section.id)}
                   className={`w-full flex items-start gap-3 px-4 py-3 rounded-xl text-left transition-all ${
                     isActive
-                      ? "bg-[var(--surface)] border border-[var(--border)] shadow-sm"
-                      : "hover:bg-[var(--surface)] border border-transparent"
+                      ? "bg-card border border-border shadow-sm"
+                      : "hover:bg-card border border-transparent"
                   }`}
                 >
                   <div
                     className={`mt-0.5 flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center ${
                       isActive
-                        ? "bg-[var(--primary)] text-white"
-                        : "bg-[var(--surface-2)] text-[var(--text-muted)]"
+                        ? "bg-primary text-white"
+                        : "bg-sidebar-accent text-muted-foreground"
                     }`}
                   >
                     <Icon className="h-4 w-4" />
@@ -85,12 +85,12 @@ export default function SettingsPage() {
                   <div className="min-w-0">
                     <p
                       className={`text-sm font-medium ${
-                        isActive ? "text-[var(--text)]" : "text-[var(--text-muted)]"
+                        isActive ? "text-foreground" : "text-muted-foreground"
                       }`}
                     >
                       {section.label}
                     </p>
-                    <p className="text-xs text-[var(--text-faint)] mt-0.5 truncate">
+                    <p className="text-xs text-muted-foreground mt-0.5 truncate">
                       {section.description}
                     </p>
                   </div>

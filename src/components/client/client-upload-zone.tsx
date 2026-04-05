@@ -97,12 +97,12 @@ export function ClientUploadZone({
 
   if (uploaded) {
     return (
-      <div className="p-6 rounded-xl bg-[var(--success-soft)] border border-[var(--success)]/20 text-center">
-        <CheckCircle className="w-10 h-10 mx-auto mb-3 text-[var(--success)]" />
-        <p className="text-sm font-medium text-[var(--text)]">
+      <div className="p-6 rounded-xl bg-emerald-600/10 border border-emerald-600/20 text-center">
+        <CheckCircle className="w-10 h-10 mx-auto mb-3 text-emerald-600" />
+        <p className="text-sm font-medium text-foreground">
           ¡Archivo subido exitosamente!
         </p>
-        <p className="text-xs text-[var(--text-muted)] mt-1">
+        <p className="text-xs text-muted-foreground mt-1">
           {file?.name}
         </p>
         <Button 
@@ -128,8 +128,8 @@ export function ClientUploadZone({
             relative p-6 rounded-xl border-2 border-dashed text-center cursor-pointer
             transition-all duration-200
             ${isDragging 
-              ? "border-[var(--primary)] bg-[var(--primary-soft)]" 
-              : "border-[var(--border)] bg-[var(--surface-2)] hover:border-[var(--primary)]/50"
+              ? "border-primary bg-primary/10" 
+              : "border-border bg-sidebar-accent hover:border-primary/50"
             }
           `}
         >
@@ -141,44 +141,44 @@ export function ClientUploadZone({
           />
           <Upload className={`
             w-8 h-8 mx-auto mb-3 transition-colors
-            ${isDragging ? "text-[var(--primary)]" : "text-[var(--text-muted)]"}
+            ${isDragging ? "text-primary" : "text-muted-foreground"}
           `} />
-          <p className="text-sm font-medium text-[var(--text)] mb-1">
+          <p className="text-sm font-medium text-foreground mb-1">
             {label}
           </p>
           {description && (
-            <p className="text-xs text-[var(--text-muted)]">
+            <p className="text-xs text-muted-foreground">
               {description}
             </p>
           )}
-          <p className="text-xs text-[var(--text-faint)] mt-2">
+          <p className="text-xs text-muted-foreground mt-2">
             Arrastra un archivo o haz clic para seleccionar
           </p>
         </div>
       ) : (
-        <div className="p-4 rounded-xl bg-[var(--surface-2)] border border-[var(--border)]">
+        <div className="p-4 rounded-xl bg-sidebar-accent border border-border">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-[var(--primary-soft)] flex items-center justify-center">
-              <File className="w-5 h-5 text-[var(--primary)]" />
+            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+              <File className="w-5 h-5 text-primary" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-[var(--text)] truncate">
+              <p className="text-sm font-medium text-foreground truncate">
                 {file.name}
               </p>
-              <p className="text-xs text-[var(--text-muted)]">
+              <p className="text-xs text-muted-foreground">
                 {(file.size / 1024 / 1024).toFixed(2)} MB
               </p>
             </div>
             <button
               onClick={clearFile}
-              className="p-1.5 rounded-lg hover:bg-[var(--surface-3)] text-[var(--text-muted)]"
+              className="p-1.5 rounded-lg hover:bg-[var(--surface-3)] text-muted-foreground"
             >
               <X className="w-4 h-4" />
             </button>
           </div>
           
           <Button 
-            className="w-full mt-3 bg-[var(--primary)] text-[var(--text-inverse)]"
+            className="w-full mt-3 bg-primary text-primary-foreground"
             onClick={handleUpload}
             disabled={uploading}
           >
@@ -188,7 +188,7 @@ export function ClientUploadZone({
       )}
       
       {error && (
-        <p className="text-xs text-[var(--error)] text-center">
+        <p className="text-xs text-destructive text-center">
           {error}
         </p>
       )}

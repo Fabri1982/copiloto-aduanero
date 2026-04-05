@@ -30,11 +30,11 @@ export function AmountMatchIndicator({
   if (isMatch) {
     return (
       <div className="flex items-center gap-2">
-        <CheckCircle className="h-4 w-4 text-[var(--success)]" />
-        <span className="text-sm font-medium text-[var(--success)]">
+        <CheckCircle className="h-4 w-4 text-emerald-600" />
+        <span className="text-sm font-medium text-emerald-600">
           {formatCurrency(detectedAmount)}
         </span>
-        <span className="text-xs text-[var(--text-faint)]">
+        <span className="text-xs text-muted-foreground">
           Coincide
         </span>
       </div>
@@ -44,11 +44,11 @@ export function AmountMatchIndicator({
   if (isClose) {
     return (
       <div className="flex items-center gap-2">
-        <AlertCircle className="h-4 w-4 text-[var(--warning)]" />
-        <span className="text-sm font-medium text-[var(--warning)]">
+        <AlertCircle className="h-4 w-4 text-amber-600" />
+        <span className="text-sm font-medium text-amber-600">
           {formatCurrency(detectedAmount)}
         </span>
-        <span className="text-xs text-[var(--text-muted)]">
+        <span className="text-xs text-muted-foreground">
           Diferencia: {formatCurrency(diff)}
         </span>
       </div>
@@ -57,11 +57,11 @@ export function AmountMatchIndicator({
 
   return (
     <div className="flex items-center gap-2">
-      <XCircle className="h-4 w-4 text-[var(--error)]" />
-      <span className="text-sm font-medium text-[var(--error)]">
+      <XCircle className="h-4 w-4 text-destructive" />
+      <span className="text-sm font-medium text-destructive">
         {formatCurrency(detectedAmount)}
       </span>
-      <span className="text-xs text-[var(--text-muted)]">
+      <span className="text-xs text-muted-foreground">
         Esperado: {formatCurrency(provisionAmount)}
       </span>
     </div>

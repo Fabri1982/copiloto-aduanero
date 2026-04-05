@@ -169,17 +169,17 @@ export function ProcessingStatus({ caseId, documents, agencyId }: ProcessingStat
     
     switch (status) {
       case "pending":
-        return <Clock className="h-4 w-4 text-[var(--text-muted)]" />
+        return <Clock className="h-4 w-4 text-muted-foreground" />
       case "processing":
-        return <Loader2 className="h-4 w-4 animate-spin text-[var(--primary)]" />
+        return <Loader2 className="h-4 w-4 animate-spin text-primary" />
       case "completed":
         return isJustCompleted ? (
-          <CheckCircle2 className="h-5 w-5 text-[var(--success)] animate-bounce" />
+          <CheckCircle2 className="h-5 w-5 text-emerald-600 animate-bounce" />
         ) : (
-          <CheckCircle2 className="h-4 w-4 text-[var(--success)]" />
+          <CheckCircle2 className="h-4 w-4 text-emerald-600" />
         )
       case "failed":
-        return <XCircle className="h-4 w-4 text-[var(--error)]" />
+        return <XCircle className="h-4 w-4 text-destructive" />
       default:
         return null
     }
@@ -203,7 +203,7 @@ export function ProcessingStatus({ caseId, documents, agencyId }: ProcessingStat
   if (loading) {
     return (
       <div className="flex items-center justify-center py-6">
-        <Loader2 className="h-5 w-5 animate-spin text-[var(--primary)]" />
+        <Loader2 className="h-5 w-5 animate-spin text-primary" />
       </div>
     )
   }

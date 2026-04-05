@@ -15,50 +15,50 @@ const statusConfig: Record<
   closed: {
     label: "Cerrado",
     variant: "default",
-    className: "bg-[var(--success)] text-[var(--text-inverse)]",
+    className: "bg-emerald-600 text-primary-foreground",
   },
   ready_for_provision: {
     label: "Listo para provisión",
     variant: "default",
-    className: "bg-[var(--success)] text-[var(--text-inverse)]",
+    className: "bg-emerald-600 text-primary-foreground",
   },
   // Yellow (warning)
   processing: {
     label: "En procesamiento",
     variant: "default",
-    className: "bg-[var(--warning)] text-[var(--text-inverse)]",
+    className: "bg-amber-600 text-primary-foreground",
   },
   needs_review: {
     label: "Necesita revisión",
     variant: "default",
-    className: "bg-[var(--warning)] text-[var(--text-inverse)]",
+    className: "bg-amber-600 text-primary-foreground",
   },
   payment_under_validation: {
     label: "Pago en validación",
     variant: "default",
-    className: "bg-[var(--warning)] text-[var(--text-inverse)]",
+    className: "bg-amber-600 text-primary-foreground",
   },
   // Red (error/attention)
   draft: {
     label: "Borrador",
     variant: "destructive",
-    className: "bg-[var(--error)] text-[var(--text-inverse)]",
+    className: "bg-destructive text-primary-foreground",
   },
   // Neutral
   documents_uploaded: {
     label: "Documentos cargados",
     variant: "secondary",
-    className: "bg-[var(--surface-2)] text-[var(--text-muted)]",
+    className: "bg-sidebar-accent text-muted-foreground",
   },
   provision_sent: {
     label: "Provisión enviada",
     variant: "secondary",
-    className: "bg-[var(--surface-2)] text-[var(--text-muted)]",
+    className: "bg-sidebar-accent text-muted-foreground",
   },
   payment_uploaded: {
     label: "Pago cargado",
     variant: "secondary",
-    className: "bg-[var(--surface-2)] text-[var(--text-muted)]",
+    className: "bg-sidebar-accent text-muted-foreground",
   },
 }
 
@@ -66,7 +66,7 @@ export function CaseStatusBadge({ status }: CaseStatusBadgeProps) {
   const config = statusConfig[status] || {
     label: status,
     variant: "secondary",
-    className: "bg-[var(--surface-2)] text-[var(--text-muted)]",
+    className: "bg-sidebar-accent text-muted-foreground",
   }
 
   return (

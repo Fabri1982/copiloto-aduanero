@@ -14,17 +14,17 @@ const statusConfig: Record<
   pending: {
     label: "Pendiente",
     variant: "default",
-    className: "bg-[var(--warning)] text-[var(--text-inverse)]",
+    className: "bg-amber-600 text-primary-foreground",
   },
   validated: {
     label: "Validado",
     variant: "default",
-    className: "bg-[var(--success)] text-[var(--text-inverse)]",
+    className: "bg-emerald-600 text-primary-foreground",
   },
   rejected: {
     label: "Rechazado",
     variant: "destructive",
-    className: "bg-[var(--error)] text-[var(--text-inverse)]",
+    className: "bg-destructive text-primary-foreground",
   },
 }
 
@@ -32,7 +32,7 @@ export function PaymentStatusBadge({ status }: PaymentStatusBadgeProps) {
   const config = statusConfig[status] || {
     label: status,
     variant: "secondary",
-    className: "bg-[var(--surface-2)] text-[var(--text-muted)]",
+    className: "bg-sidebar-accent text-muted-foreground",
   }
 
   return (

@@ -150,7 +150,7 @@ export function FieldEditor({
           variant="ghost"
           onClick={handleSave}
           disabled={isSaving}
-          className="h-8 w-8 text-[var(--success)]"
+          className="h-8 w-8 text-emerald-600"
         >
           <Check className="h-4 w-4" />
         </Button>
@@ -159,7 +159,7 @@ export function FieldEditor({
           variant="ghost"
           onClick={handleCancel}
           disabled={isSaving}
-          className="h-8 w-8 text-[var(--error)]"
+          className="h-8 w-8 text-destructive"
         >
           <X className="h-4 w-4" />
         </Button>
@@ -171,8 +171,8 @@ export function FieldEditor({
     <TooltipProvider>
       <div className="group flex items-center gap-2">
         <span
-          className={`text-sm font-medium truncate cursor-pointer hover:text-[var(--primary)] transition-colors ${
-            hasBeenEdited ? "text-[var(--primary)]" : "text-[var(--text)]"
+          className={`text-sm font-medium truncate cursor-pointer hover:text-primary transition-colors ${
+            hasBeenEdited ? "text-primary" : "text-foreground"
           }`}
           onClick={handleStartEdit}
         >
@@ -189,7 +189,7 @@ export function FieldEditor({
                   onClick={handleStartEdit}
                   className="h-6 w-6"
                 >
-                  <Pencil className="h-3 w-3 text-[var(--text-muted)]" />
+                  <Pencil className="h-3 w-3 text-muted-foreground" />
                 </Button>
               }
             />
@@ -208,7 +208,7 @@ export function FieldEditor({
                     onClick={() => setShowHistory(!showHistory)}
                     className="h-6 w-6"
                   >
-                    <History className="h-3 w-3 text-[var(--primary)]" />
+                    <History className="h-3 w-3 text-primary" />
                   </Button>
                 }
               />
@@ -222,7 +222,7 @@ export function FieldEditor({
         {hasBeenEdited && (
           <Tooltip>
             <TooltipTrigger
-              render={<span className="flex h-1.5 w-1.5 rounded-full bg-[var(--primary)]" />}
+              render={<span className="flex h-1.5 w-1.5 rounded-full bg-primary" />}
             />
             <TooltipContent>
               <p className="text-xs">Campo editado manualmente</p>
@@ -233,17 +233,17 @@ export function FieldEditor({
 
       {/* History Panel */}
       {showHistory && reviews.length > 0 && (
-        <div className="mt-2 p-3 rounded-lg bg-[var(--surface)] border border-[var(--border)] text-xs">
-          <p className="font-medium text-[var(--text)] mb-2">Historial de cambios</p>
+        <div className="mt-2 p-3 rounded-lg bg-card border border-border text-xs">
+          <p className="font-medium text-foreground mb-2">Historial de cambios</p>
           <div className="space-y-2">
             {reviews.map((review, idx) => (
               <div key={review.id} className="flex items-center gap-2">
-                <span className="text-[var(--text-muted)] line-through">
+                <span className="text-muted-foreground line-through">
                   {review.original_value || "—"}
                 </span>
-                <span className="text-[var(--text-muted)]">→</span>
-                <span className="text-[var(--success)]">{review.new_value}</span>
-                <span className="text-[var(--text-muted)]/60 ml-auto">
+                <span className="text-muted-foreground">→</span>
+                <span className="text-emerald-600">{review.new_value}</span>
+                <span className="text-muted-foreground/60 ml-auto">
                   {new Date(review.reviewed_at).toLocaleDateString("es-ES")}
                 </span>
               </div>

@@ -104,9 +104,9 @@ export function CasesTable({ cases, searchQuery }: CasesTableProps) {
     <>
       {/* Selection Toolbar */}
       {isSelectionMode && (
-        <div className="flex items-center justify-between p-4 mb-4 bg-[var(--surface-2)] rounded-xl border border-[var(--border)]">
+        <div className="flex items-center justify-between p-4 mb-4 bg-sidebar-accent rounded-xl border border-border">
           <div className="flex items-center gap-3">
-            <span className="text-sm font-medium text-[var(--text)]">
+            <span className="text-sm font-medium text-foreground">
               {selectedCases.size} expediente(s) seleccionado(s)
             </span>
           </div>
@@ -137,7 +137,7 @@ export function CasesTable({ cases, searchQuery }: CasesTableProps) {
 
       <Table>
         <TableHeader>
-          <TableRow className="border-[var(--border)] hover:bg-transparent">
+          <TableRow className="border-border hover:bg-transparent">
             <TableHead className="w-[50px]">
               <Checkbox
                 checked={cases.length > 0 && selectedCases.size === cases.length}
@@ -145,22 +145,22 @@ export function CasesTable({ cases, searchQuery }: CasesTableProps) {
                 aria-label="Seleccionar todos"
               />
             </TableHead>
-            <TableHead className="text-[var(--text-muted)] font-medium">
+            <TableHead className="text-muted-foreground font-medium">
               Referencia
             </TableHead>
-            <TableHead className="text-[var(--text-muted)] font-medium">
+            <TableHead className="text-muted-foreground font-medium">
               Cliente
             </TableHead>
-            <TableHead className="text-[var(--text-muted)] font-medium">
+            <TableHead className="text-muted-foreground font-medium">
               Estado
             </TableHead>
-            <TableHead className="text-[var(--text-muted)] font-medium">
+            <TableHead className="text-muted-foreground font-medium">
               Prioridad
             </TableHead>
-            <TableHead className="text-[var(--text-muted)] font-medium">
+            <TableHead className="text-muted-foreground font-medium">
               Fecha
             </TableHead>
-            <TableHead className="text-[var(--text-muted)] font-medium w-[60px]">
+            <TableHead className="text-muted-foreground font-medium w-[60px]">
               <span className="sr-only">Acciones</span>
             </TableHead>
           </TableRow>
@@ -169,10 +169,10 @@ export function CasesTable({ cases, searchQuery }: CasesTableProps) {
           {cases.map((caseItem: OperationCase) => (
             <TableRow
               key={caseItem.id}
-              className={`border-[var(--border)] transition-colors ${
+              className={`border-border transition-colors ${
                 selectedCases.has(caseItem.id)
-                  ? "bg-[var(--primary)]/10"
-                  : "hover:bg-[var(--surface-2)]"
+                  ? "bg-primary/10"
+                  : "hover:bg-sidebar-accent"
               }`}
             >
               <TableCell>
@@ -185,7 +185,7 @@ export function CasesTable({ cases, searchQuery }: CasesTableProps) {
               <TableCell>
                 <a
                   href={`/cases/${caseItem.id}`}
-                  className="font-medium text-[var(--text)] hover:text-[var(--primary)] transition-colors"
+                  className="font-medium text-foreground hover:text-primary transition-colors"
                   onClick={(e) => {
                     if (isSelectionMode) {
                       e.preventDefault()
@@ -196,7 +196,7 @@ export function CasesTable({ cases, searchQuery }: CasesTableProps) {
                   {caseItem.reference_code || "Sin referencia"}
                 </a>
               </TableCell>
-              <TableCell className="text-[var(--text)]">
+              <TableCell className="text-foreground">
                 {caseItem.client_name}
               </TableCell>
               <TableCell>
@@ -205,7 +205,7 @@ export function CasesTable({ cases, searchQuery }: CasesTableProps) {
               <TableCell>
                 <PriorityBadge priority={caseItem.priority} />
               </TableCell>
-              <TableCell className="text-[var(--text-muted)]">
+              <TableCell className="text-muted-foreground">
                 {formatDate(caseItem.created_at)}
               </TableCell>
               <TableCell>
@@ -249,7 +249,7 @@ export function CasesTable({ cases, searchQuery }: CasesTableProps) {
                     <DropdownMenuItem
                       render={
                         <button
-                          className="flex items-center gap-2 text-[var(--error)]"
+                          className="flex items-center gap-2 text-destructive"
                           onClick={() => {
                             setSelectedCases(new Set([caseItem.id]))
                             setIsSelectionMode(true)
@@ -287,7 +287,7 @@ export function CasesTable({ cases, searchQuery }: CasesTableProps) {
             <AlertDialogAction
               onClick={handleDeleteSelected}
               disabled={isDeleting}
-              className="bg-[var(--error)] hover:bg-[var(--error)]/90"
+              className="bg-destructive hover:bg-destructive/90"
             >
               {isDeleting ? "Eliminando..." : "Sí, eliminar"}
             </AlertDialogAction>

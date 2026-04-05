@@ -262,11 +262,11 @@ export function DocumentUpload({ caseId, agencyId, userId }: DocumentUploadProps
   const getStatusIcon = (status: UploadStatus["status"]) => {
     switch (status) {
       case "uploading":
-        return <Loader2 className="h-4 w-4 animate-spin text-[var(--primary)]" />
+        return <Loader2 className="h-4 w-4 animate-spin text-primary" />
       case "success":
-        return <CheckCircle className="h-4 w-4 text-[var(--success)]" />
+        return <CheckCircle className="h-4 w-4 text-emerald-600" />
       case "error":
-        return <AlertCircle className="h-4 w-4 text-[var(--error)]" />
+        return <AlertCircle className="h-4 w-4 text-destructive" />
       default:
         return null
     }
@@ -283,8 +283,8 @@ export function DocumentUpload({ caseId, agencyId, userId }: DocumentUploadProps
           relative border-2 border-dashed rounded-xl p-8 text-center transition-colors
           ${
             isDragging
-              ? "border-[var(--primary)] bg-[var(--primary-soft)]"
-              : "border-[var(--border)] bg-[var(--surface)] hover:border-[var(--primary)]"
+              ? "border-primary bg-primary/10"
+              : "border-border bg-card hover:border-primary"
           }
         `}
       >
@@ -296,13 +296,13 @@ export function DocumentUpload({ caseId, agencyId, userId }: DocumentUploadProps
           className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
         />
         <div className="flex flex-col items-center gap-2">
-          <div className="w-12 h-12 rounded-full bg-[var(--surface-2)] flex items-center justify-center">
-            <Upload className="h-6 w-6 text-[var(--text-muted)]" />
+          <div className="w-12 h-12 rounded-full bg-sidebar-accent flex items-center justify-center">
+            <Upload className="h-6 w-6 text-muted-foreground" />
           </div>
-          <p className="text-sm font-medium text-[var(--text)]">
+          <p className="text-sm font-medium text-foreground">
             Arrastra archivos aquí o haz clic para seleccionar
           </p>
-          <p className="text-xs text-[var(--text-muted)]">
+          <p className="text-xs text-muted-foreground">
             PDF, PNG, JPG (máx. 10MB)
           </p>
         </div>
@@ -318,14 +318,14 @@ export function DocumentUpload({ caseId, agencyId, userId }: DocumentUploadProps
             return (
               <div
                 key={fileWithType.id}
-                className="flex items-center gap-3 p-3 rounded-lg bg-[var(--surface-2)] border border-[var(--border)]"
+                className="flex items-center gap-3 p-3 rounded-lg bg-sidebar-accent border border-border"
               >
-                <FileUp className="h-5 w-5 text-[var(--text-muted)] shrink-0" />
+                <FileUp className="h-5 w-5 text-muted-foreground shrink-0" />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-[var(--text)] truncate">
+                  <p className="text-sm font-medium text-foreground truncate">
                     {fileWithType.file.name}
                   </p>
-                  <p className="text-xs text-[var(--text-muted)]">
+                  <p className="text-xs text-muted-foreground">
                     {formatFileSize(fileWithType.file.size)}
                   </p>
                 </div>
@@ -336,7 +336,7 @@ export function DocumentUpload({ caseId, agencyId, userId }: DocumentUploadProps
                   }
                   disabled={status?.status === "uploading"}
                 >
-                  <SelectTrigger className="w-[180px] h-8 text-xs bg-[var(--surface)] border-[var(--border)]">
+                  <SelectTrigger className="w-[180px] h-8 text-xs bg-card border-border">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>

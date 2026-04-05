@@ -63,33 +63,33 @@ export default function ClientLoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-[var(--bg)] p-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-background p-4">
       {/* Logo y branding */}
       <div className="mb-8 text-center">
-        <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-[var(--primary)] flex items-center justify-center shadow-lg">
-          <Package className="w-8 h-8 text-[var(--text-inverse)]" />
+        <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-primary flex items-center justify-center shadow-lg">
+          <Package className="w-8 h-8 text-primary-foreground" />
         </div>
-        <h1 className="text-2xl font-semibold text-[var(--text)] mb-1">
+        <h1 className="text-2xl font-semibold text-foreground mb-1">
           Portal de Clientes
         </h1>
-        <p className="text-[var(--text-muted)]">
+        <p className="text-muted-foreground">
           Accede a tus operaciones y documentos
         </p>
       </div>
 
-      <Card className="w-full max-w-sm bg-[var(--surface)] border-[var(--border)] shadow-xl">
+      <Card className="w-full max-w-sm bg-card border-border shadow-xl">
         <CardHeader className="space-y-1 pb-4">
-          <CardTitle className="text-lg text-[var(--text)] text-center">
+          <CardTitle className="text-lg text-foreground text-center">
             Iniciar sesión
           </CardTitle>
-          <CardDescription className="text-center text-[var(--text-muted)] text-sm">
+          <CardDescription className="text-center text-muted-foreground text-sm">
             Ingresa tus credenciales para continuar
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-[var(--text)] text-sm">
+              <Label htmlFor="email" className="text-foreground text-sm">
                 Correo electrónico
               </Label>
               <Input
@@ -99,11 +99,11 @@ export default function ClientLoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="bg-[var(--bg)] border-[var(--border)] h-11"
+                className="bg-background border-border h-11"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-[var(--text)] text-sm">
+              <Label htmlFor="password" className="text-foreground text-sm">
                 Contraseña
               </Label>
               <Input
@@ -113,19 +113,19 @@ export default function ClientLoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="bg-[var(--bg)] border-[var(--border)] h-11"
+                className="bg-background border-border h-11"
               />
             </div>
             
             {error && (
-              <div className="p-3 rounded-lg bg-[var(--error-soft)] text-[var(--error)] text-sm">
+              <div className="p-3 rounded-lg bg-destructive/10 text-destructive text-sm">
                 {error}
               </div>
             )}
             
             <Button
               type="submit"
-              className="w-full bg-[var(--primary)] text-[var(--text-inverse)] hover:bg-[var(--primary-hover)] h-11 text-base font-medium"
+              className="w-full bg-primary text-primary-foreground hover:bg-primary/90 h-11 text-base font-medium"
               disabled={loading}
             >
               {loading ? "Ingresando..." : "Ingresar"}
@@ -133,9 +133,9 @@ export default function ClientLoginPage() {
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-xs text-[var(--text-muted)]">
+            <p className="text-xs text-muted-foreground">
               ¿Problemas para acceder?{" "}
-              <a href="#" className="text-[var(--primary)] hover:underline">
+              <a href="#" className="text-primary hover:underline">
                 Contacta a tu agencia
               </a>
             </p>
@@ -143,7 +143,7 @@ export default function ClientLoginPage() {
         </CardContent>
       </Card>
 
-      <p className="mt-8 text-xs text-[var(--text-faint)]">
+      <p className="mt-8 text-xs text-muted-foreground">
         © {CURRENT_YEAR} Copiloto Aduanero
       </p>
     </div>

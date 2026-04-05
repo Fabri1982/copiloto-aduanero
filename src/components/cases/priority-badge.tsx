@@ -9,15 +9,15 @@ interface PriorityBadgeProps {
 const priorityConfig = {
   low: {
     label: "Baja",
-    className: "bg-[var(--surface-2)] text-[var(--text-muted)]",
+    className: "bg-sidebar-accent text-muted-foreground",
   },
   medium: {
     label: "Media",
-    className: "bg-[var(--warning-soft)] text-[var(--warning)]",
+    className: "bg-amber-600/10 text-amber-600",
   },
   high: {
     label: "Alta",
-    className: "bg-[var(--error-soft)] text-[var(--error)]",
+    className: "bg-destructive/10 text-destructive",
   },
 }
 

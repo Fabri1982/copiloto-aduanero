@@ -142,71 +142,71 @@ export default async function ExceptionsPage({
   ).length
 
   const getSeverityColor = (c: CaseWithAlerts) => {
-    if (c.high_alerts > 0) return "var(--error)"
-    if (c.medium_alerts > 0) return "var(--warning)"
-    return "var(--success)"
+    if (c.high_alerts > 0) return "hsl(var(--destructive))"
+    if (c.medium_alerts > 0) return "hsl(text-amber-600)"
+    return "hsl(text-emerald-600)"
   }
 
   const getSeverityIcon = (c: CaseWithAlerts) => {
-    if (c.high_alerts > 0) return <AlertTriangle className="h-4 w-4 text-[var(--error)]" />
-    if (c.medium_alerts > 0) return <AlertCircle className="h-4 w-4 text-[var(--warning)]" />
-    return <Info className="h-4 w-4 text-[var(--success)]" />
+    if (c.high_alerts > 0) return <AlertTriangle className="h-4 w-4 text-destructive" />
+    if (c.medium_alerts > 0) return <AlertCircle className="h-4 w-4 text-warning" />
+    return <Info className="h-4 w-4 text-emerald-600" />
   }
 
   return (
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-semibold text-[var(--text)]">
+        <h1 className="text-2xl font-semibold text-foreground">
           Bandeja de Excepciones
         </h1>
-        <p className="mt-1 text-sm text-[var(--text-muted)]">
+        <p className="mt-1 text-sm text-muted-foreground">
           Gestión de expedientes que requieren revisión
         </p>
       </div>
 
       {/* Stats Bar */}
       <div className="flex flex-wrap gap-4">
-        <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[var(--surface)] border border-[var(--border)]">
-          <div className="w-2 h-2 rounded-full bg-[var(--error)]" />
-          <span className="text-sm text-[var(--text-muted)]">
-            <span className="font-semibold text-[var(--text)]">{criticalCount}</span>{" "}
+        <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-card border border-border">
+          <div className="w-2 h-2 rounded-full bg-destructive" />
+          <span className="text-sm text-muted-foreground">
+            <span className="font-semibold text-foreground">{criticalCount}</span>{" "}
             críticas
           </span>
         </div>
-        <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[var(--surface)] border border-[var(--border)]">
-          <div className="w-2 h-2 rounded-full bg-[var(--warning)]" />
-          <span className="text-sm text-[var(--text-muted)]">
-            <span className="font-semibold text-[var(--text)]">{withObservationsCount}</span>{" "}
+        <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-card border border-border">
+          <div className="w-2 h-2 rounded-full bg-warning" />
+          <span className="text-sm text-muted-foreground">
+            <span className="font-semibold text-foreground">{withObservationsCount}</span>{" "}
             con observaciones
           </span>
         </div>
-        <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[var(--surface)] border border-[var(--border)]">
-          <div className="w-2 h-2 rounded-full bg-[var(--success)]" />
-          <span className="text-sm text-[var(--text-muted)]">
-            <span className="font-semibold text-[var(--text)]">{withoutObservationsCount}</span>{" "}
+        <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-card border border-border">
+          <div className="w-2 h-2 rounded-full bg-emerald-600" />
+          <span className="text-sm text-muted-foreground">
+            <span className="font-semibold text-foreground">{withoutObservationsCount}</span>{" "}
             sin observaciones
           </span>
         </div>
       </div>
 
       {/* Filters */}
-      <Card className="bg-[var(--surface)] border-[var(--border)]">
+      <Card className="bg-card border-border">
         <CardContent className="p-4">
           <form className="flex flex-col sm:flex-row gap-4">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--text-muted)]" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 name="search"
                 placeholder="Buscar por referencia o cliente..."
                 defaultValue={searchQuery}
-                className="pl-9 bg-[var(--bg)] border-[var(--border)]"
+                className="pl-9 bg-background border-border"
               />
             </div>
             <div className="flex gap-4">
               <Select name="severity" defaultValue={severityFilter}>
-                <SelectTrigger className="w-[180px] bg-[var(--bg)] border-[var(--border)]">
-                  <Filter className="h-4 w-4 mr-2 text-[var(--text-muted)]" />
+                <SelectTrigger className="w-[180px] bg-background border-border">
+                  <Filter className="h-4 w-4 mr-2 text-muted-foreground" />
                   <SelectValue placeholder="Severidad" />
                 </SelectTrigger>
                 <SelectContent>
@@ -217,7 +217,7 @@ export default async function ExceptionsPage({
                 </SelectContent>
               </Select>
               <Select name="sort" defaultValue={sortBy}>
-                <SelectTrigger className="w-[160px] bg-[var(--bg)] border-[var(--border)]">
+                <SelectTrigger className="w-[160px] bg-background border-border">
                   <SelectValue placeholder="Ordenar por" />
                 </SelectTrigger>
                 <SelectContent>
@@ -234,15 +234,15 @@ export default async function ExceptionsPage({
       {/* Cases List */}
       <div className="space-y-3">
         {processedCases.length === 0 ? (
-          <Card className="bg-[var(--surface)] border-[var(--border)]">
+          <Card className="bg-card border-border">
             <CardContent className="py-12 text-center">
-              <div className="w-16 h-16 rounded-full bg-[var(--surface-2)] flex items-center justify-center mx-auto mb-4">
-                <Info className="h-8 w-8 text-[var(--text-muted)]" />
+              <div className="w-16 h-16 rounded-full bg-sidebar-accent flex items-center justify-center mx-auto mb-4">
+                <Info className="h-8 w-8 text-muted-foreground" />
               </div>
-              <h3 className="text-base font-medium text-[var(--text)] mb-1">
+              <h3 className="text-base font-medium text-foreground mb-1">
                 No hay expedientes pendientes de revisión
               </h3>
-              <p className="text-sm text-[var(--text-muted)] max-w-sm mx-auto">
+              <p className="text-sm text-muted-foreground max-w-sm mx-auto">
                 Todos los expedientes han sido revisados. La bandeja se actualizará cuando haya nuevas excepciones.
               </p>
             </CardContent>
@@ -251,7 +251,7 @@ export default async function ExceptionsPage({
           processedCases.map((c) => (
             <Link key={c.id} href={`/cases/${c.id}`}>
               <Card
-                className="bg-[var(--surface)] border-[var(--border)] hover:bg-[var(--surface-2)] transition-colors cursor-pointer group"
+                className="bg-card border-border hover:bg-sidebar-accent transition-colors cursor-pointer group"
                 style={{
                   borderLeftWidth: "4px",
                   borderLeftColor: getSeverityColor(c),
@@ -265,21 +265,21 @@ export default async function ExceptionsPage({
                     {/* Main Content */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-3 flex-wrap">
-                        <h3 className="font-medium text-[var(--text)]">
+                        <h3 className="font-medium text-foreground">
                           {c.reference_code || "Sin referencia"}
                         </h3>
                         <PriorityBadge priority={c.priority} />
                       </div>
-                      <p className="text-sm text-[var(--text-muted)] mt-1">
+                      <p className="text-sm text-muted-foreground mt-1">
                         {c.client_name}
                       </p>
                       {c.first_alert_message && (
-                        <p className="text-sm text-[var(--text)] mt-2 line-clamp-2">
+                        <p className="text-sm text-foreground mt-2 line-clamp-2">
                           {c.first_alert_message}
                         </p>
                       )}
                       {c.alert_count > 1 && !c.first_alert_message && (
-                        <p className="text-sm text-[var(--text-muted)] mt-2">
+                        <p className="text-sm text-muted-foreground mt-2">
                           {c.alert_count} alertas pendientes
                         </p>
                       )}
@@ -287,13 +287,13 @@ export default async function ExceptionsPage({
 
                     {/* Meta Info */}
                     <div className="flex flex-col items-end gap-2">
-                      <span className="text-xs text-[var(--text-faint)]">
+                      <span className="text-xs text-muted-foreground">
                         {new Date(c.created_at).toLocaleDateString("es-ES", {
                           day: "2-digit",
                           month: "short",
                         })}
                       </span>
-                      <div className="flex items-center gap-1 text-xs text-[var(--text-muted)]">
+                      <div className="flex items-center gap-1 text-xs text-muted-foreground">
                         <span>Ver expediente</span>
                         <ArrowRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
                       </div>

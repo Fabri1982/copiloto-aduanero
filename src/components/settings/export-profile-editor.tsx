@@ -116,43 +116,43 @@ export function ExportProfileEditor({ profile, onSave, onCancel }: ExportProfile
         Volver a la lista
       </Button>
 
-      <Card className="bg-[var(--surface)] border-[var(--border)] rounded-xl">
+      <Card className="bg-card border-border rounded-xl">
         <CardHeader>
-          <CardTitle className="text-[var(--text)]">
+          <CardTitle className="text-foreground">
             {profile ? "Editar Perfil de Exportación" : "Nuevo Perfil de Exportación"}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="grid gap-2">
-              <Label htmlFor="name" className="text-[var(--text)]">
-                Nombre del Perfil <span className="text-[var(--error)]">*</span>
+              <Label htmlFor="name" className="text-foreground">
+                Nombre del Perfil <span className="text-destructive">*</span>
               </Label>
               <Input
                 id="name"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 placeholder="Ej: Exportación SAP"
-                className="bg-[var(--bg)] border-[var(--border)]"
+                className="bg-background border-border"
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="target_system" className="text-[var(--text)]">
-                Sistema Destino <span className="text-[var(--error)]">*</span>
+              <Label htmlFor="target_system" className="text-foreground">
+                Sistema Destino <span className="text-destructive">*</span>
               </Label>
               <Input
                 id="target_system"
                 value={formData.target_system}
                 onChange={(e) => setFormData({ ...formData, target_system: e.target.value })}
                 placeholder="Ej: SAP, Oracle, etc."
-                className="bg-[var(--bg)] border-[var(--border)]"
+                className="bg-background border-border"
               />
             </div>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="grid gap-2">
-              <Label htmlFor="format" className="text-[var(--text)]">
+              <Label htmlFor="format" className="text-foreground">
                 Formato de Exportación
               </Label>
               <Select
@@ -161,7 +161,7 @@ export function ExportProfileEditor({ profile, onSave, onCancel }: ExportProfile
                   setFormData({ ...formData, format: value as ExportProfile["format"] })
                 }
               >
-                <SelectTrigger className="bg-[var(--bg)] border-[var(--border)]">
+                <SelectTrigger className="bg-background border-border">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -179,7 +179,7 @@ export function ExportProfileEditor({ profile, onSave, onCancel }: ExportProfile
                   setFormData({ ...formData, is_active: checked })
                 }
               />
-              <Label className="text-[var(--text)] cursor-pointer">
+              <Label className="text-foreground cursor-pointer">
                 Perfil activo
               </Label>
             </div>
@@ -187,13 +187,13 @@ export function ExportProfileEditor({ profile, onSave, onCancel }: ExportProfile
 
           {/* Field Mapping */}
           <div className="space-y-4">
-            <Label className="text-[var(--text)]">Mapeo de Campos</Label>
+            <Label className="text-foreground">Mapeo de Campos</Label>
             <div className="flex gap-2">
               <Select
                 value={newMapping.source}
                 onValueChange={(value) => setNewMapping({ ...newMapping, source: value || "" })}
               >
-                <SelectTrigger className="flex-1 bg-[var(--bg)] border-[var(--border)]">
+                <SelectTrigger className="flex-1 bg-background border-border">
                   <SelectValue placeholder="Campo origen" />
                 </SelectTrigger>
                 <SelectContent>
@@ -208,7 +208,7 @@ export function ExportProfileEditor({ profile, onSave, onCancel }: ExportProfile
                 placeholder="Nombre en destino"
                 value={newMapping.target}
                 onChange={(e) => setNewMapping({ ...newMapping, target: e.target.value })}
-                className="flex-1 bg-[var(--bg)] border-[var(--border)]"
+                className="flex-1 bg-background border-border"
               />
               <Button
                 onClick={addMapping}
@@ -221,7 +221,7 @@ export function ExportProfileEditor({ profile, onSave, onCancel }: ExportProfile
 
             <div className="space-y-2">
               {Object.entries(formData.field_mapping).length === 0 ? (
-                <p className="text-sm text-[var(--text-muted)] py-4 text-center">
+                <p className="text-sm text-muted-foreground py-4 text-center">
                   No hay campos mapeados. Agrega al menos uno.
                 </p>
               ) : (
@@ -230,18 +230,18 @@ export function ExportProfileEditor({ profile, onSave, onCancel }: ExportProfile
                   return (
                     <div
                       key={source}
-                      className="flex items-center justify-between p-3 rounded-lg bg-[var(--bg)] border border-[var(--border)]"
+                      className="flex items-center justify-between p-3 rounded-lg bg-background border border-border"
                     >
                       <div className="flex items-center gap-4">
-                        <span className="text-[var(--text)]">{fieldLabel}</span>
-                        <span className="text-[var(--text-muted)]">→</span>
-                        <span className="font-medium text-[var(--text)]">{target}</span>
+                        <span className="text-foreground">{fieldLabel}</span>
+                        <span className="text-muted-foreground">→</span>
+                        <span className="font-medium text-foreground">{target}</span>
                       </div>
                       <Button
                         variant="ghost"
                         size="icon-sm"
                         onClick={() => removeMapping(source)}
-                        className="h-8 w-8 text-[var(--text-muted)] hover:text-[var(--error)]"
+                        className="h-8 w-8 text-muted-foreground hover:text-destructive"
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
@@ -254,7 +254,7 @@ export function ExportProfileEditor({ profile, onSave, onCancel }: ExportProfile
 
           {/* JSON Editor (Advanced) */}
           <div className="grid gap-2">
-            <Label htmlFor="jsonEditor" className="text-[var(--text)]">
+            <Label htmlFor="jsonEditor" className="text-foreground">
               Editor JSON (Avanzado)
             </Label>
             <Textarea
@@ -269,12 +269,12 @@ export function ExportProfileEditor({ profile, onSave, onCancel }: ExportProfile
                   // Invalid JSON, ignore
                 }
               }}
-              className="font-mono text-sm bg-[var(--bg)] border-[var(--border)] min-h-[150px]"
+              className="font-mono text-sm bg-background border-border min-h-[150px]"
             />
           </div>
 
           {error && (
-            <div className="text-sm text-[var(--error)] bg-[var(--error)]/10 px-3 py-2 rounded-lg">
+            <div className="text-sm text-destructive bg-destructive/10 px-3 py-2 rounded-lg">
               {error}
             </div>
           )}

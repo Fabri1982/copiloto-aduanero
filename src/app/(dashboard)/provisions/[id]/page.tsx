@@ -190,7 +190,7 @@ export default function ProvisionDetailPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-16">
-        <Loader2 className="h-8 w-8 animate-spin text-[var(--primary)]" />
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     )
   }
@@ -200,16 +200,16 @@ export default function ProvisionDetailPage() {
       <div className="space-y-6">
         <Link
           href="/provisions"
-          className="inline-flex items-center gap-2 text-sm text-[var(--text-muted)] hover:text-[var(--text)] transition-colors"
+          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
           Volver a provisiones
         </Link>
         <div className="text-center py-16">
-          <div className="w-16 h-16 rounded-full bg-[var(--surface-2)] flex items-center justify-center mx-auto mb-4">
-            <FileText className="h-8 w-8 text-[var(--text-muted)]" />
+          <div className="w-16 h-16 rounded-full bg-sidebar-accent flex items-center justify-center mx-auto mb-4">
+            <FileText className="h-8 w-8 text-muted-foreground" />
           </div>
-          <h3 className="text-base font-medium text-[var(--text)] mb-1">
+          <h3 className="text-base font-medium text-foreground mb-1">
             {error || "Provisión no encontrada"}
           </h3>
         </div>
@@ -227,7 +227,7 @@ export default function ProvisionDetailPage() {
       {/* Back Link */}
       <Link
         href="/provisions"
-        className="inline-flex items-center gap-2 text-sm text-[var(--text-muted)] hover:text-[var(--text)] transition-colors"
+        className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
       >
         <ArrowLeft className="h-4 w-4" />
         Volver a provisiones
@@ -237,12 +237,12 @@ export default function ProvisionDetailPage() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <div className="flex items-center gap-3 flex-wrap">
-            <h1 className="text-2xl font-semibold text-[var(--text)]">
+            <h1 className="text-2xl font-semibold text-foreground">
               {provision.operation_cases?.reference_code || "Sin referencia"}
             </h1>
             <ProvisionStatusBadge status={provision.status} />
           </div>
-          <p className="mt-1 text-lg text-[var(--text-muted)]">
+          <p className="mt-1 text-lg text-muted-foreground">
             {provision.operation_cases?.client_name}
           </p>
         </div>
@@ -306,7 +306,7 @@ export default function ProvisionDetailPage() {
                 <Button
                   onClick={handleMarkAsPaid}
                   disabled={markingPaid}
-                  className="bg-[var(--success)] hover:bg-[var(--success)]/90"
+                  className="bg-emerald-600 hover:bg-emerald-600/90"
                 >
                   {markingPaid ? (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -323,7 +323,7 @@ export default function ProvisionDetailPage() {
 
       {/* Error */}
       {error && (
-        <div className="text-sm text-[var(--error)] bg-[var(--error)]/10 px-4 py-3 rounded-lg">
+        <div className="text-sm text-destructive bg-destructive/10 px-4 py-3 rounded-lg">
           {error}
         </div>
       )}
@@ -333,9 +333,9 @@ export default function ProvisionDetailPage() {
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-6">
           {/* Items */}
-          <Card className="bg-[var(--surface)] border-[var(--border)] rounded-xl">
+          <Card className="bg-card border-border rounded-xl">
             <CardHeader>
-              <CardTitle className="text-base font-medium text-[var(--text)]">
+              <CardTitle className="text-base font-medium text-foreground">
                 Desglose de conceptos
               </CardTitle>
             </CardHeader>
@@ -363,9 +363,9 @@ export default function ProvisionDetailPage() {
           </Card>
 
           {/* Notes */}
-          <Card className="bg-[var(--surface)] border-[var(--border)] rounded-xl">
+          <Card className="bg-card border-border rounded-xl">
             <CardHeader>
-              <CardTitle className="text-base font-medium text-[var(--text)]">
+              <CardTitle className="text-base font-medium text-foreground">
                 Notas
               </CardTitle>
             </CardHeader>
@@ -375,10 +375,10 @@ export default function ProvisionDetailPage() {
                   value={editNotes}
                   onChange={(e) => setEditNotes(e.target.value)}
                   placeholder="Notas adicionales..."
-                  className="bg-[var(--bg)] border-[var(--border)] min-h-[100px]"
+                  className="bg-background border-border min-h-[100px]"
                 />
               ) : (
-                <p className="text-[var(--text)] whitespace-pre-wrap">
+                <p className="text-foreground whitespace-pre-wrap">
                   {provision.notes || "Sin notas"}
                 </p>
               )}
@@ -391,9 +391,9 @@ export default function ProvisionDetailPage() {
           <ProvisionSummary provision={provision} />
 
           {/* Actions Card */}
-          <Card className="bg-[var(--surface)] border-[var(--border)] rounded-xl">
+          <Card className="bg-card border-border rounded-xl">
             <CardHeader>
-              <CardTitle className="text-base font-medium text-[var(--text)]">
+              <CardTitle className="text-base font-medium text-foreground">
                 Acciones
               </CardTitle>
             </CardHeader>

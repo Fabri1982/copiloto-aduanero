@@ -19,33 +19,33 @@ function getClientStatusInfo(status: string) {
     case "needs_review":
       return {
         label: "En proceso",
-        color: "bg-[var(--warning-soft)] text-[var(--warning)] border-[var(--warning)]/20",
+        color: "bg-amber-600/10 text-amber-600 border-amber-600/20",
         icon: <Clock className="w-4 h-4" />,
       }
     case "ready_for_provision":
     case "provision_sent":
       return {
         label: "Provisión disponible",
-        color: "bg-[var(--primary-soft)] text-[var(--primary)] border-[var(--primary)]/20",
+        color: "bg-primary/10 text-primary border-primary/20",
         icon: <Package className="w-4 h-4" />,
       }
     case "payment_uploaded":
     case "payment_under_validation":
       return {
         label: "Pago pendiente",
-        color: "bg-[var(--error-soft)] text-[var(--error)] border-[var(--error)]/20",
+        color: "bg-destructive/10 text-destructive border-destructive/20",
         icon: <AlertCircle className="w-4 h-4" />,
       }
     case "closed":
       return {
         label: "Completado",
-        color: "bg-[var(--success-soft)] text-[var(--success)] border-[var(--success)]/20",
+        color: "bg-emerald-600/10 text-emerald-600 border-emerald-600/20",
         icon: <CheckCircle className="w-4 h-4" />,
       }
     default:
       return {
         label: "En proceso",
-        color: "bg-[var(--warning-soft)] text-[var(--warning)] border-[var(--warning)]/20",
+        color: "bg-amber-600/10 text-amber-600 border-amber-600/20",
         icon: <Clock className="w-4 h-4" />,
       }
   }
@@ -147,7 +147,7 @@ export default async function ClientCaseDetailPage({ params }: PageProps) {
       {/* Header con navegación */}
       <div className="mb-6">
         <Link href="/client-portal/dashboard">
-          <Button variant="ghost" size="sm" className="gap-1.5 text-[var(--text-muted)] -ml-2">
+          <Button variant="ghost" size="sm" className="gap-1.5 text-muted-foreground -ml-2">
             <ArrowLeft className="w-4 h-4" />
             Volver al dashboard
           </Button>
@@ -158,10 +158,10 @@ export default async function ClientCaseDetailPage({ params }: PageProps) {
       <div className="mb-8">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-semibold text-[var(--text)] mb-2">
+            <h1 className="text-2xl sm:text-3xl font-semibold text-foreground mb-2">
               {caseDetail.reference_code || `Operación #${caseDetail.id.slice(0, 8)}`}
             </h1>
-            <p className="text-[var(--text-muted)]">
+            <p className="text-muted-foreground">
               {caseDetail.client_name}
             </p>
           </div>
@@ -176,7 +176,7 @@ export default async function ClientCaseDetailPage({ params }: PageProps) {
           </Badge>
         </div>
         
-        <p className="text-sm text-[var(--text-faint)]">
+        <p className="text-sm text-muted-foreground">
           Creada el {new Date(caseDetail.created_at).toLocaleDateString("es-CL", {
             day: "numeric",
             month: "long",
@@ -189,9 +189,9 @@ export default async function ClientCaseDetailPage({ params }: PageProps) {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Columna izquierda - Timeline y estado */}
         <div className="lg:col-span-1 space-y-6">
-          <Card className="bg-[var(--surface)] border-[var(--border)]">
+          <Card className="bg-card border-border">
             <CardHeader className="pb-3">
-              <CardTitle className="text-base font-medium text-[var(--text)]">
+              <CardTitle className="text-base font-medium text-foreground">
                 Estado de la operación
               </CardTitle>
             </CardHeader>
@@ -201,9 +201,9 @@ export default async function ClientCaseDetailPage({ params }: PageProps) {
           </Card>
 
           {/* Documentos */}
-          <Card className="bg-[var(--surface)] border-[var(--border)]">
+          <Card className="bg-card border-border">
             <CardHeader className="pb-3">
-              <CardTitle className="text-base font-medium text-[var(--text)]">
+              <CardTitle className="text-base font-medium text-foreground">
                 Documentos
               </CardTitle>
             </CardHeader>
@@ -213,17 +213,17 @@ export default async function ClientCaseDetailPage({ params }: PageProps) {
                   {documents.map((doc) => (
                     <div 
                       key={doc.id}
-                      className="flex items-center gap-3 p-2 rounded-lg bg-[var(--surface-2)]"
+                      className="flex items-center gap-3 p-2 rounded-lg bg-sidebar-accent"
                     >
-                      <FileText className="w-4 h-4 text-[var(--text-muted)]" />
-                      <span className="text-sm text-[var(--text)] truncate flex-1">
+                      <FileText className="w-4 h-4 text-muted-foreground" />
+                      <span className="text-sm text-foreground truncate flex-1">
                         {doc.file_name}
                       </span>
                     </div>
                   ))}
                 </div>
               ) : (
-                <p className="text-sm text-[var(--text-muted)] text-center py-4">
+                <p className="text-sm text-muted-foreground text-center py-4">
                   No hay documentos disponibles
                 </p>
               )}
@@ -244,9 +244,9 @@ export default async function ClientCaseDetailPage({ params }: PageProps) {
 
           {/* Subir documento faltante */}
           {needsDocumentUpload && (
-            <Card className="bg-[var(--surface)] border-[var(--border)]">
+            <Card className="bg-card border-border">
               <CardHeader className="pb-3">
-                <CardTitle className="text-base font-medium text-[var(--text)]">
+                <CardTitle className="text-base font-medium text-foreground">
                   Subir documento
                 </CardTitle>
               </CardHeader>
@@ -268,9 +268,9 @@ export default async function ClientCaseDetailPage({ params }: PageProps) {
 
           {/* Subir comprobante de pago */}
           {needsPaymentUpload && (
-            <Card className="bg-[var(--surface)] border-[var(--border)]">
+            <Card className="bg-card border-border">
               <CardHeader className="pb-3">
-                <CardTitle className="text-base font-medium text-[var(--text)]">
+                <CardTitle className="text-base font-medium text-foreground">
                   Subir comprobante de pago
                 </CardTitle>
               </CardHeader>
@@ -316,9 +316,9 @@ export default async function ClientCaseDetailPage({ params }: PageProps) {
           />
 
           {/* Historial básico */}
-          <Card className="bg-[var(--surface)] border-[var(--border)]">
+          <Card className="bg-card border-border">
             <CardHeader className="pb-3">
-              <CardTitle className="text-base font-medium text-[var(--text)]">
+              <CardTitle className="text-base font-medium text-foreground">
                 Historial
               </CardTitle>
             </CardHeader>
@@ -327,13 +327,13 @@ export default async function ClientCaseDetailPage({ params }: PageProps) {
                 {auditEvents && auditEvents.length > 0 ? (
                   auditEvents.map((event) => (
                     <div key={event.id} className="flex gap-3 text-sm">
-                      <span className="text-[var(--text-faint)] whitespace-nowrap">
+                      <span className="text-muted-foreground whitespace-nowrap">
                         {new Date(event.created_at).toLocaleDateString("es-CL", {
                           day: "numeric",
                           month: "short",
                         })}
                       </span>
-                      <span className="text-[var(--text-muted)]">
+                      <span className="text-muted-foreground">
                         {event.event_name}
                       </span>
                     </div>
@@ -341,25 +341,25 @@ export default async function ClientCaseDetailPage({ params }: PageProps) {
                 ) : (
                   <div className="space-y-3">
                     <div className="flex gap-3 text-sm">
-                      <span className="text-[var(--text-faint)] whitespace-nowrap">
+                      <span className="text-muted-foreground whitespace-nowrap">
                         {new Date(caseDetail.created_at).toLocaleDateString("es-CL", {
                           day: "numeric",
                           month: "short",
                         })}
                       </span>
-                      <span className="text-[var(--text-muted)]">
+                      <span className="text-muted-foreground">
                         Operación creada
                       </span>
                     </div>
                     {caseDetail.status !== "draft" && (
                       <div className="flex gap-3 text-sm">
-                        <span className="text-[var(--text-faint)] whitespace-nowrap">
+                        <span className="text-muted-foreground whitespace-nowrap">
                           {new Date(caseDetail.updated_at).toLocaleDateString("es-CL", {
                             day: "numeric",
                             month: "short",
                           })}
                         </span>
-                        <span className="text-[var(--text-muted)]">
+                        <span className="text-muted-foreground">
                           Documentos recibidos
                         </span>
                       </div>

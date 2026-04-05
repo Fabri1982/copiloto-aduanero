@@ -37,25 +37,25 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[var(--bg)] p-4">
-      <Card className="w-full max-w-md bg-[var(--surface)] border-[var(--border)]">
+    <div className="flex min-h-screen items-center justify-center bg-background p-4">
+      <Card className="w-full max-w-md bg-card border-border">
         <CardHeader className="text-center space-y-2">
           <div className="mx-auto mb-4">
-            <h1 className="text-2xl font-semibold tracking-tight text-[var(--text)]">
+            <h1 className="text-2xl font-semibold tracking-tight text-foreground">
               Copiloto Aduanero
             </h1>
           </div>
-          <CardTitle className="text-xl text-[var(--text)]">
+          <CardTitle className="text-xl text-foreground">
             Iniciar sesión
           </CardTitle>
-          <CardDescription className="text-[var(--text-muted)]">
+          <CardDescription className="text-muted-foreground">
             Ingresa tus credenciales para acceder al sistema
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-[var(--text)]">
+              <Label htmlFor="email" className="text-foreground">
                 Correo electrónico
               </Label>
               <Input
@@ -65,11 +65,11 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="bg-[var(--surface-2)] border-[var(--border)]"
+                className="bg-sidebar-accent border-border"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-[var(--text)]">
+              <Label htmlFor="password" className="text-foreground">
                 Contraseña
               </Label>
               <Input
@@ -78,15 +78,15 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="bg-[var(--surface-2)] border-[var(--border)]"
+                className="bg-sidebar-accent border-border"
               />
             </div>
             {error && (
-              <p className="text-sm text-[var(--error)]">{error}</p>
+              <p className="text-sm text-destructive">{error}</p>
             )}
             <Button
               type="submit"
-              className="w-full bg-[var(--primary)] text-[var(--text-inverse)] hover:bg-[var(--primary-hover)]"
+              className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
               disabled={loading}
             >
               {loading ? "Ingresando..." : "Iniciar sesión"}

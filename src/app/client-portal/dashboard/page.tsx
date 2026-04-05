@@ -83,67 +83,67 @@ export default async function ClientDashboardPage() {
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
       {/* Header de bienvenida */}
       <div className="mb-8">
-        <h1 className="text-2xl sm:text-3xl font-semibold text-[var(--text)] mb-2">
+        <h1 className="text-2xl sm:text-3xl font-semibold text-foreground mb-2">
           Hola, {profile.name.split(" ")[0]}
         </h1>
-        <p className="text-[var(--text-muted)]">
+        <p className="text-muted-foreground">
           Aquí puedes ver el estado de tus operaciones y documentos
         </p>
       </div>
 
       {/* Resumen de estados */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-8">
-        <div className="p-4 rounded-xl bg-[var(--surface)] border border-[var(--border)]">
+        <div className="p-4 rounded-xl bg-card border border-border">
           <div className="flex items-center gap-2 mb-1">
-            <div className="w-2 h-2 rounded-full bg-[var(--warning)]" />
-            <span className="text-xs text-[var(--text-muted)]">En proceso</span>
+            <div className="w-2 h-2 rounded-full bg-amber-600" />
+            <span className="text-xs text-muted-foreground">En proceso</span>
           </div>
-          <p className="text-2xl font-semibold text-[var(--text)]">{counts.en_proceso}</p>
+          <p className="text-2xl font-semibold text-foreground">{counts.en_proceso}</p>
         </div>
         
-        <div className="p-4 rounded-xl bg-[var(--surface)] border border-[var(--border)]">
+        <div className="p-4 rounded-xl bg-card border border-border">
           <div className="flex items-center gap-2 mb-1">
-            <div className="w-2 h-2 rounded-full bg-[var(--primary)]" />
-            <span className="text-xs text-[var(--text-muted)]">Provisión</span>
+            <div className="w-2 h-2 rounded-full bg-primary" />
+            <span className="text-xs text-muted-foreground">Provisión</span>
           </div>
-          <p className="text-2xl font-semibold text-[var(--text)]">{counts.provision_disponible}</p>
+          <p className="text-2xl font-semibold text-foreground">{counts.provision_disponible}</p>
         </div>
         
-        <div className="p-4 rounded-xl bg-[var(--surface)] border border-[var(--border)]">
+        <div className="p-4 rounded-xl bg-card border border-border">
           <div className="flex items-center gap-2 mb-1">
-            <div className="w-2 h-2 rounded-full bg-[var(--error)]" />
-            <span className="text-xs text-[var(--text-muted)]">Pago pendiente</span>
+            <div className="w-2 h-2 rounded-full bg-destructive" />
+            <span className="text-xs text-muted-foreground">Pago pendiente</span>
           </div>
-          <p className="text-2xl font-semibold text-[var(--text)]">{counts.pago_pendiente}</p>
+          <p className="text-2xl font-semibold text-foreground">{counts.pago_pendiente}</p>
         </div>
         
-        <div className="p-4 rounded-xl bg-[var(--surface)] border border-[var(--border)]">
+        <div className="p-4 rounded-xl bg-card border border-border">
           <div className="flex items-center gap-2 mb-1">
-            <div className="w-2 h-2 rounded-full bg-[var(--success)]" />
-            <span className="text-xs text-[var(--text-muted)]">Completados</span>
+            <div className="w-2 h-2 rounded-full bg-emerald-600" />
+            <span className="text-xs text-muted-foreground">Completados</span>
           </div>
-          <p className="text-2xl font-semibold text-[var(--text)]">{counts.completado}</p>
+          <p className="text-2xl font-semibold text-foreground">{counts.completado}</p>
         </div>
       </div>
 
       {/* Lista de operaciones */}
       <div>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-medium text-[var(--text)]">
+          <h2 className="text-lg font-medium text-foreground">
             Tus operaciones
           </h2>
-          <span className="text-sm text-[var(--text-muted)]">
+          <span className="text-sm text-muted-foreground">
             {clientCases.length} {clientCases.length === 1 ? "operación" : "operaciones"}
           </span>
         </div>
 
         {clientCases.length === 0 ? (
-          <div className="text-center py-12 rounded-xl bg-[var(--surface)] border border-[var(--border)] border-dashed">
-            <Package className="w-12 h-12 mx-auto mb-4 text-[var(--text-faint)]" />
-            <h3 className="text-base font-medium text-[var(--text)] mb-1">
+          <div className="text-center py-12 rounded-xl bg-card border border-border border-dashed">
+            <Package className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+            <h3 className="text-base font-medium text-foreground mb-1">
               No tienes operaciones activas
             </h3>
-            <p className="text-sm text-[var(--text-muted)] max-w-sm mx-auto">
+            <p className="text-sm text-muted-foreground max-w-sm mx-auto">
               Cuando tu agencia registre una operación para ti, aparecerá aquí.
             </p>
           </div>
@@ -164,14 +164,14 @@ export default async function ClientDashboardPage() {
       </div>
 
       {/* Alerta informativa */}
-      <div className="mt-8 p-4 rounded-xl bg-[var(--primary-soft)] border border-[var(--primary)]/20">
+      <div className="mt-8 p-4 rounded-xl bg-primary/10 border border-primary/20">
         <div className="flex gap-3">
-          <AlertCircle className="w-5 h-5 text-[var(--primary)] shrink-0 mt-0.5" />
+          <AlertCircle className="w-5 h-5 text-primary shrink-0 mt-0.5" />
           <div>
-            <p className="text-sm font-medium text-[var(--text)] mb-1">
+            <p className="text-sm font-medium text-foreground mb-1">
               ¿Necesitas ayuda?
             </p>
-            <p className="text-sm text-[var(--text-muted)]">
+            <p className="text-sm text-muted-foreground">
               Si tienes alguna duda sobre tus operaciones o necesitas asistencia, 
               puedes enviar un mensaje directamente desde el detalle de cada operación.
             </p>

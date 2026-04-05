@@ -112,18 +112,18 @@ export function ConflictsPanel({ caseId }: ConflictsPanelProps) {
     switch (severity) {
       case "high":
         return {
-          badgeClass: "bg-[var(--error-soft)] text-[var(--error)] border-[var(--error)]",
+          badgeClass: "bg-destructive/10 text-destructive border-destructive",
           label: "Alta",
         }
       case "medium":
         return {
-          badgeClass: "bg-[var(--warning-soft)] text-[var(--warning)] border-[var(--warning)]",
+          badgeClass: "bg-amber-600/10 text-amber-600 border-amber-600",
           label: "Media",
         }
       case "low":
       default:
         return {
-          badgeClass: "bg-[var(--surface-2)] text-[var(--text-muted)] border-[var(--border)]",
+          badgeClass: "bg-sidebar-accent text-muted-foreground border-border",
           label: "Baja",
         }
     }
@@ -133,18 +133,18 @@ export function ConflictsPanel({ caseId }: ConflictsPanelProps) {
     switch (status) {
       case "resolved":
         return {
-          badgeClass: "bg-[var(--success-soft)] text-[var(--success)] border-[var(--success)]",
+          badgeClass: "bg-emerald-600/10 text-emerald-600 border-emerald-600",
           label: "Resuelto",
         }
       case "dismissed":
         return {
-          badgeClass: "bg-[var(--surface-2)] text-[var(--text-muted)] border-[var(--border)]",
+          badgeClass: "bg-sidebar-accent text-muted-foreground border-border",
           label: "Descartado",
         }
       case "open":
       default:
         return {
-          badgeClass: "bg-[var(--warning-soft)] text-[var(--warning)] border-[var(--warning)]",
+          badgeClass: "bg-amber-600/10 text-amber-600 border-amber-600",
           label: "Abierto",
         }
     }
@@ -152,10 +152,10 @@ export function ConflictsPanel({ caseId }: ConflictsPanelProps) {
 
   if (loading) {
     return (
-      <Card className="bg-[var(--surface)] border-[var(--border)]">
+      <Card className="bg-card border-border">
         <CardContent className="py-12 text-center">
-          <Loader2 className="h-6 w-6 animate-spin mx-auto text-[var(--primary)]" />
-          <p className="mt-3 text-sm text-[var(--text-muted)]">Cargando conflictos...</p>
+          <Loader2 className="h-6 w-6 animate-spin mx-auto text-primary" />
+          <p className="mt-3 text-sm text-muted-foreground">Cargando conflictos...</p>
         </CardContent>
       </Card>
     )
@@ -163,15 +163,15 @@ export function ConflictsPanel({ caseId }: ConflictsPanelProps) {
 
   if (conflicts.length === 0) {
     return (
-      <Card className="bg-[var(--surface)] border-[var(--border)]">
+      <Card className="bg-card border-border">
         <CardContent className="py-12 text-center">
-          <div className="w-16 h-16 rounded-full bg-[var(--surface-2)] flex items-center justify-center mx-auto mb-4">
-            <CheckCircle className="h-8 w-8 text-[var(--success)]" />
+          <div className="w-16 h-16 rounded-full bg-sidebar-accent flex items-center justify-center mx-auto mb-4">
+            <CheckCircle className="h-8 w-8 text-emerald-600" />
           </div>
-          <h3 className="text-base font-medium text-[var(--text)] mb-1">
+          <h3 className="text-base font-medium text-foreground mb-1">
             No hay conflictos entre documentos
           </h3>
-          <p className="text-sm text-[var(--text-muted)] max-w-sm mx-auto">
+          <p className="text-sm text-muted-foreground max-w-sm mx-auto">
             No se encontraron discrepancias entre los valores extraídos de diferentes documentos.
           </p>
         </CardContent>
@@ -187,16 +187,16 @@ export function ConflictsPanel({ caseId }: ConflictsPanelProps) {
       {/* Summary */}
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-[var(--warning)]" />
-          <span className="text-sm text-[var(--text-muted)]">
-            <span className="font-semibold text-[var(--text)]">{openConflicts.length}</span>{" "}
+          <div className="w-2 h-2 rounded-full bg-amber-600" />
+          <span className="text-sm text-muted-foreground">
+            <span className="font-semibold text-foreground">{openConflicts.length}</span>{" "}
             abiertos
           </span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-[var(--success)]" />
-          <span className="text-sm text-[var(--text-muted)]">
-            <span className="font-semibold text-[var(--text)]">{closedConflicts.length}</span>{" "}
+          <div className="w-2 h-2 rounded-full bg-emerald-600" />
+          <span className="text-sm text-muted-foreground">
+            <span className="font-semibold text-foreground">{closedConflicts.length}</span>{" "}
             cerrados
           </span>
         </div>
@@ -205,7 +205,7 @@ export function ConflictsPanel({ caseId }: ConflictsPanelProps) {
       {/* Open Conflicts */}
       {openConflicts.length > 0 && (
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-[var(--text)]">Conflictos abiertos</h4>
+          <h4 className="text-sm font-medium text-foreground">Conflictos abiertos</h4>
           {openConflicts.map((conflict) => {
             const severityConfig = getSeverityConfig(conflict.severity)
             const leftDoc = documents[conflict.left_document_id]
@@ -214,45 +214,45 @@ export function ConflictsPanel({ caseId }: ConflictsPanelProps) {
             return (
               <Card
                 key={conflict.id}
-                className="bg-[var(--bg)] border-[var(--border)]"
+                className="bg-background border-border"
               >
                 <CardContent className="p-4">
                   <div className="flex items-start justify-between gap-4 mb-4">
                     <div className="flex items-center gap-2">
-                      <AlertTriangle className="h-4 w-4 text-[var(--warning)]" />
-                      <span className="font-medium text-[var(--text)]">
+                      <AlertTriangle className="h-4 w-4 text-amber-600" />
+                      <span className="font-medium text-foreground">
                         {conflict.field_name}
                       </span>
                       <Badge variant="outline" className={`text-xs ${severityConfig.badgeClass}`}>
                         {severityConfig.label}
                       </Badge>
                     </div>
-                    <Badge variant="outline" className="text-xs bg-[var(--warning-soft)] text-[var(--warning)] border-[var(--warning)]">
+                    <Badge variant="outline" className="text-xs bg-amber-600/10 text-amber-600 border-amber-600">
                       Abierto
                     </Badge>
                   </div>
 
                   {/* Side by side comparison */}
                   <div className="grid grid-cols-2 gap-4 mb-4">
-                    <div className="p-3 rounded-lg bg-[var(--surface)] border border-[var(--border)]">
+                    <div className="p-3 rounded-lg bg-card border border-border">
                       <div className="flex items-center gap-2 mb-2">
-                        <FileText className="h-3 w-3 text-[var(--text-muted)]" />
-                        <span className="text-xs text-[var(--text-muted)] truncate">
+                        <FileText className="h-3 w-3 text-muted-foreground" />
+                        <span className="text-xs text-muted-foreground truncate">
                           {leftDoc?.file_name || "Documento"}
                         </span>
                       </div>
-                      <p className="text-sm font-medium text-[var(--text)]">
+                      <p className="text-sm font-medium text-foreground">
                         {conflict.left_value || "—"}
                       </p>
                     </div>
-                    <div className="p-3 rounded-lg bg-[var(--surface)] border border-[var(--border)]">
+                    <div className="p-3 rounded-lg bg-card border border-border">
                       <div className="flex items-center gap-2 mb-2">
-                        <FileText className="h-3 w-3 text-[var(--text-muted)]" />
-                        <span className="text-xs text-[var(--text-muted)] truncate">
+                        <FileText className="h-3 w-3 text-muted-foreground" />
+                        <span className="text-xs text-muted-foreground truncate">
                           {rightDoc?.file_name || "Documento"}
                         </span>
                       </div>
-                      <p className="text-sm font-medium text-[var(--text)]">
+                      <p className="text-sm font-medium text-foreground">
                         {conflict.right_value || "—"}
                       </p>
                     </div>
@@ -300,7 +300,7 @@ export function ConflictsPanel({ caseId }: ConflictsPanelProps) {
       {/* Closed Conflicts */}
       {closedConflicts.length > 0 && (
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-[var(--text-muted)]">Conflictos cerrados</h4>
+          <h4 className="text-sm font-medium text-muted-foreground">Conflictos cerrados</h4>
           {closedConflicts.map((conflict) => {
             const severityConfig = getSeverityConfig(conflict.severity)
             const statusConfig = getStatusConfig(conflict.status)
@@ -310,12 +310,12 @@ export function ConflictsPanel({ caseId }: ConflictsPanelProps) {
             return (
               <Card
                 key={conflict.id}
-                className="bg-[var(--bg)] border-[var(--border)] opacity-75"
+                className="bg-background border-border opacity-75"
               >
                 <CardContent className="p-4">
                   <div className="flex items-start justify-between gap-4 mb-3">
                     <div className="flex items-center gap-2">
-                      <span className="font-medium text-[var(--text)]">
+                      <span className="font-medium text-foreground">
                         {conflict.field_name}
                       </span>
                       <Badge variant="outline" className={`text-xs ${severityConfig.badgeClass}`}>
@@ -328,26 +328,26 @@ export function ConflictsPanel({ caseId }: ConflictsPanelProps) {
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="p-2 rounded bg-[var(--surface)] border border-[var(--border)]">
-                      <span className="text-xs text-[var(--text-muted)] block truncate mb-1">
+                    <div className="p-2 rounded bg-card border border-border">
+                      <span className="text-xs text-muted-foreground block truncate mb-1">
                         {leftDoc?.file_name || "Documento"}
                       </span>
-                      <p className="text-sm text-[var(--text)]">
+                      <p className="text-sm text-foreground">
                         {conflict.left_value || "—"}
                       </p>
                     </div>
-                    <div className="p-2 rounded bg-[var(--surface)] border border-[var(--border)]">
-                      <span className="text-xs text-[var(--text-muted)] block truncate mb-1">
+                    <div className="p-2 rounded bg-card border border-border">
+                      <span className="text-xs text-muted-foreground block truncate mb-1">
                         {rightDoc?.file_name || "Documento"}
                       </span>
-                      <p className="text-sm text-[var(--text)]">
+                      <p className="text-sm text-foreground">
                         {conflict.right_value || "—"}
                       </p>
                     </div>
                   </div>
 
                   {conflict.resolved_at && (
-                    <p className="text-xs text-[var(--text-faint)] mt-2">
+                    <p className="text-xs text-muted-foreground mt-2">
                       {conflict.status === "resolved" ? "Resuelto" : "Descartado"} el{" "}
                       {new Date(conflict.resolved_at).toLocaleDateString("es-ES")}
                     </p>

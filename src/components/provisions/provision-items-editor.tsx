@@ -69,17 +69,17 @@ export function ProvisionItemsEditor({
         {items.map((item, index) => (
           <div
             key={index}
-            className="flex items-center justify-between py-2 border-b border-[var(--border)] last:border-0"
+            className="flex items-center justify-between py-2 border-b border-border last:border-0"
           >
-            <span className="text-[var(--text)]">{item.label}</span>
-            <span className="font-medium text-[var(--text)]">
+            <span className="text-foreground">{item.label}</span>
+            <span className="font-medium text-foreground">
               {formatCurrency(item.amount)}
             </span>
           </div>
         ))}
-        <div className="flex items-center justify-between pt-3 border-t border-[var(--border)]">
-          <span className="font-semibold text-[var(--text)]">Total</span>
-          <span className="font-semibold text-lg text-[var(--primary)]">
+        <div className="flex items-center justify-between pt-3 border-t border-border">
+          <span className="font-semibold text-foreground">Total</span>
+          <span className="font-semibold text-lg text-primary">
             {formatCurrency(total)}
           </span>
         </div>
@@ -94,15 +94,15 @@ export function ProvisionItemsEditor({
         {items.map((item, index) => (
           <div
             key={index}
-            className="flex items-center gap-2 p-3 rounded-lg bg-[var(--bg)] border border-[var(--border)] group"
+            className="flex items-center gap-2 p-3 rounded-lg bg-background border border-border group"
           >
-            <GripVertical className="h-4 w-4 text-[var(--text-faint)] cursor-grab" />
+            <GripVertical className="h-4 w-4 text-muted-foreground cursor-grab" />
             <div className="flex-1 grid grid-cols-2 gap-2">
               <Input
                 value={item.label}
                 onChange={(e) => handleUpdateItem(index, "label", e.target.value)}
                 placeholder="Concepto"
-                className="bg-[var(--surface)] border-[var(--border)]"
+                className="bg-card border-border"
               />
               <Input
                 type="number"
@@ -110,7 +110,7 @@ export function ProvisionItemsEditor({
                 value={item.amount}
                 onChange={(e) => handleUpdateItem(index, "amount", parseFloat(e.target.value) || 0)}
                 placeholder="Monto"
-                className="bg-[var(--surface)] border-[var(--border)]"
+                className="bg-card border-border"
               />
             </div>
             <Button
@@ -118,7 +118,7 @@ export function ProvisionItemsEditor({
               variant="ghost"
               size="icon-sm"
               onClick={() => handleRemoveItem(index)}
-              className="h-8 w-8 text-[var(--error)] opacity-0 group-hover:opacity-100 transition-opacity"
+              className="h-8 w-8 text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
             >
               <Trash2 className="h-4 w-4" />
             </Button>
@@ -127,15 +127,15 @@ export function ProvisionItemsEditor({
       </div>
 
       {/* Add New Item */}
-      <div className="flex items-end gap-2 p-3 rounded-lg bg-[var(--surface-2)] border border-dashed border-[var(--border)]">
+      <div className="flex items-end gap-2 p-3 rounded-lg bg-sidebar-accent border border-dashed border-border">
         <div className="flex-1 grid grid-cols-2 gap-2">
           <div className="space-y-1">
-            <Label className="text-xs text-[var(--text-muted)]">Concepto</Label>
+            <Label className="text-xs text-muted-foreground">Concepto</Label>
             <Input
               value={newItemLabel}
               onChange={(e) => setNewItemLabel(e.target.value)}
               placeholder="Nuevo concepto"
-              className="bg-[var(--surface)] border-[var(--border)]"
+              className="bg-card border-border"
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   e.preventDefault()
@@ -145,14 +145,14 @@ export function ProvisionItemsEditor({
             />
           </div>
           <div className="space-y-1">
-            <Label className="text-xs text-[var(--text-muted)]">Monto</Label>
+            <Label className="text-xs text-muted-foreground">Monto</Label>
             <Input
               type="number"
               step="0.01"
               value={newItemAmount}
               onChange={(e) => setNewItemAmount(e.target.value)}
               placeholder="0.00"
-              className="bg-[var(--surface)] border-[var(--border)]"
+              className="bg-card border-border"
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   e.preventDefault()
@@ -175,13 +175,13 @@ export function ProvisionItemsEditor({
       </div>
 
       {/* Total */}
-      <div className="flex items-center justify-between pt-3 border-t border-[var(--border)]">
-        <span className="text-sm text-[var(--text-muted)]">
+      <div className="flex items-center justify-between pt-3 border-t border-border">
+        <span className="text-sm text-muted-foreground">
           {items.length} {items.length === 1 ? "concepto" : "conceptos"}
         </span>
         <div className="flex items-center gap-2">
-          <span className="text-sm text-[var(--text-muted)]">Total</span>
-          <span className="font-semibold text-lg text-[var(--primary)]">
+          <span className="text-sm text-muted-foreground">Total</span>
+          <span className="font-semibold text-lg text-primary">
             {formatCurrency(total)}
           </span>
         </div>

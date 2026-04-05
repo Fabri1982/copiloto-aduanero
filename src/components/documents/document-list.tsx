@@ -80,7 +80,7 @@ function DocumentItem({ document }: { document: CaseDocument }) {
   }
 
   return (
-    <div className="flex items-start gap-3 p-4 rounded-lg bg-[var(--surface)] border border-[var(--border)] hover:border-[var(--primary)] transition-colors">
+    <div className="flex items-start gap-3 p-4 rounded-lg bg-card border border-border hover:border-primary transition-colors">
       <div
         className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${documentTypeColors[document.document_type]}`}
       >
@@ -88,17 +88,17 @@ function DocumentItem({ document }: { document: CaseDocument }) {
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap">
-          <p className="text-sm font-medium text-[var(--text)] truncate">
+          <p className="text-sm font-medium text-foreground truncate">
             {document.file_name}
           </p>
           <Badge
             variant="secondary"
-            className="text-xs bg-[var(--surface-2)] text-[var(--text-muted)]"
+            className="text-xs bg-sidebar-accent text-muted-foreground"
           >
             {documentTypeLabels[document.document_type]}
           </Badge>
         </div>
-        <p className="text-xs text-[var(--text-muted)] mt-1">
+        <p className="text-xs text-muted-foreground mt-1">
           Subido el {formatDate(document.created_at)}
         </p>
       </div>
@@ -123,13 +123,13 @@ export function DocumentList({ documents }: DocumentListProps) {
   if (documents.length === 0) {
     return (
       <div className="text-center py-12 px-4">
-        <div className="w-16 h-16 rounded-full bg-[var(--surface-2)] flex items-center justify-center mx-auto mb-4">
-          <File className="h-8 w-8 text-[var(--text-muted)]" />
+        <div className="w-16 h-16 rounded-full bg-sidebar-accent flex items-center justify-center mx-auto mb-4">
+          <File className="h-8 w-8 text-muted-foreground" />
         </div>
-        <h3 className="text-base font-medium text-[var(--text)] mb-1">
+        <h3 className="text-base font-medium text-foreground mb-1">
           No hay documentos
         </h3>
-        <p className="text-sm text-[var(--text-muted)]">
+        <p className="text-sm text-muted-foreground">
           Sube documentos usando la zona de arrastre de arriba.
         </p>
       </div>

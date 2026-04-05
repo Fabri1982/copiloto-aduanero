@@ -99,7 +99,7 @@ export function ExportProfilesList({ isAdmin }: ExportProfilesListProps) {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="h-8 w-8 animate-spin text-[var(--primary)]" />
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     )
   }
@@ -124,7 +124,7 @@ export function ExportProfilesList({ isAdmin }: ExportProfilesListProps) {
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <h3 className="text-lg font-medium text-[var(--text)]">Perfiles de Exportación</h3>
+        <h3 className="text-lg font-medium text-foreground">Perfiles de Exportación</h3>
         {(isAdmin || true) && (
           <Button onClick={() => setIsCreating(true)}>
             Nuevo Perfil
@@ -134,12 +134,12 @@ export function ExportProfilesList({ isAdmin }: ExportProfilesListProps) {
 
       <div className="grid gap-3">
         {profiles.length === 0 ? (
-          <Card className="bg-[var(--surface)] border-[var(--border)]">
+          <Card className="bg-card border-border">
             <CardContent className="py-12 text-center">
-              <p className="text-[var(--text-muted)]">
+              <p className="text-muted-foreground">
                 No hay perfiles de exportación configurados
               </p>
-              <p className="text-sm text-[var(--text-faint)] mt-1">
+              <p className="text-sm text-muted-foreground mt-1">
                 Crea un perfil para exportar datos a sistemas externos
               </p>
             </CardContent>
@@ -148,35 +148,35 @@ export function ExportProfilesList({ isAdmin }: ExportProfilesListProps) {
           profiles.map((profile) => (
             <Card
               key={profile.id}
-              className={`bg-[var(--surface)] border-[var(--border)] transition-opacity ${
+              className={`bg-card border-border transition-opacity ${
                 !profile.is_active ? "opacity-60" : ""
               }`}
             >
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-[var(--surface-2)] flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-lg bg-sidebar-accent flex items-center justify-center">
                       {formatIcons[profile.format]}
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
-                        <h4 className="font-medium text-[var(--text)]">{profile.name}</h4>
-                        <Badge variant="secondary" className="bg-[var(--surface-2)]">
+                        <h4 className="font-medium text-foreground">{profile.name}</h4>
+                        <Badge variant="secondary" className="bg-sidebar-accent">
                           {formatLabels[profile.format]}
                         </Badge>
                         {!profile.is_active && (
-                          <Badge variant="outline" className="text-[var(--text-muted)]">
+                          <Badge variant="outline" className="text-muted-foreground">
                             Inactivo
                           </Badge>
                         )}
                       </div>
-                      <p className="text-sm text-[var(--text-muted)]">
+                      <p className="text-sm text-muted-foreground">
                         {profile.target_system}
                       </p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs text-[var(--text-faint)]">
+                    <span className="text-xs text-muted-foreground">
                       {Object.keys(profile.field_mapping).length} campos mapeados
                     </span>
                     {(isAdmin || true) && (
@@ -209,7 +209,7 @@ export function ExportProfilesList({ isAdmin }: ExportProfilesListProps) {
                           {isAdmin && (
                             <DropdownMenuItem
                               onClick={() => handleDelete(profile.id)}
-                              className="text-[var(--error)]"
+                              className="text-destructive"
                             >
                               <Trash2 className="h-4 w-4 mr-2" />
                               Eliminar

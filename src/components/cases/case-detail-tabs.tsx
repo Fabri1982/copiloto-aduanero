@@ -29,7 +29,7 @@ export function CaseDetailTabs({ alertsCount, tabContents }: CaseDetailTabsProps
   return (
     <div className="space-y-6">
       {/* Tab navigation */}
-      <div className="border-b border-[var(--border)]">
+      <div className="border-b border-border">
         <nav className="flex gap-1 -mb-px overflow-x-auto">
           {tabs.map((tab) => {
             const Icon = tab.icon
@@ -42,14 +42,14 @@ export function CaseDetailTabs({ alertsCount, tabContents }: CaseDetailTabsProps
                 onClick={() => setActive(tab.id)}
                 className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-all whitespace-nowrap ${
                   isActive
-                    ? "border-[var(--primary)] text-[var(--primary)]"
-                    : "border-transparent text-[var(--text-muted)] hover:text-[var(--text)] hover:border-[var(--border)]"
+                    ? "border-primary text-primary"
+                    : "border-transparent text-muted-foreground hover:text-foreground hover:border-border"
                 }`}
               >
                 <Icon className="h-4 w-4" />
                 {tab.label}
                 {badgeCount > 0 && (
-                  <span className="ml-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-[var(--error)] px-1.5 text-xs font-medium text-white">
+                  <span className="ml-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-destructive px-1.5 text-xs font-medium text-white">
                     {badgeCount}
                   </span>
                 )}

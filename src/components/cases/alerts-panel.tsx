@@ -85,15 +85,15 @@ export function AlertsPanel({ caseId }: AlertsPanelProps) {
       case "high":
         return {
           icon: <AlertTriangle className="h-5 w-5" />,
-          badgeClass: "bg-[var(--error-soft)] text-[var(--error)] border-[var(--error)]",
-          borderClass: "border-l-[var(--error)]",
+          badgeClass: "bg-destructive/10 text-destructive border-destructive",
+          borderClass: "border-l-destructive",
           label: "Alta",
         }
       case "medium":
         return {
           icon: <AlertCircle className="h-5 w-5" />,
-          badgeClass: "bg-[var(--warning-soft)] text-[var(--warning)] border-[var(--warning)]",
-          borderClass: "border-l-[var(--warning)]",
+          badgeClass: "bg-amber-600/10 text-amber-600 border-amber-600",
+          borderClass: "border-l-amber-600",
           label: "Media",
         }
       case "low":
@@ -109,10 +109,10 @@ export function AlertsPanel({ caseId }: AlertsPanelProps) {
 
   if (loading) {
     return (
-      <Card className="bg-[var(--surface)] border-[var(--border)]">
+      <Card className="bg-card border-border">
         <CardContent className="py-12 text-center">
-          <Loader2 className="h-6 w-6 animate-spin mx-auto text-[var(--primary)]" />
-          <p className="mt-3 text-sm text-[var(--text-muted)]">Cargando alertas...</p>
+          <Loader2 className="h-6 w-6 animate-spin mx-auto text-primary" />
+          <p className="mt-3 text-sm text-muted-foreground">Cargando alertas...</p>
         </CardContent>
       </Card>
     )
@@ -120,15 +120,15 @@ export function AlertsPanel({ caseId }: AlertsPanelProps) {
 
   if (alerts.length === 0) {
     return (
-      <Card className="bg-[var(--surface)] border-[var(--border)]">
+      <Card className="bg-card border-border">
         <CardContent className="py-12 text-center">
-          <div className="w-16 h-16 rounded-full bg-[var(--surface-2)] flex items-center justify-center mx-auto mb-4">
-            <CheckCircle className="h-8 w-8 text-[var(--success)]" />
+          <div className="w-16 h-16 rounded-full bg-sidebar-accent flex items-center justify-center mx-auto mb-4">
+            <CheckCircle className="h-8 w-8 text-emerald-600" />
           </div>
-          <h3 className="text-base font-medium text-[var(--text)] mb-1">
+          <h3 className="text-base font-medium text-foreground mb-1">
             No hay alertas de validación
           </h3>
-          <p className="text-sm text-[var(--text-muted)] max-w-sm mx-auto">
+          <p className="text-sm text-muted-foreground max-w-sm mx-auto">
             No se encontraron alertas para este expediente. Las alertas se generan automáticamente durante el procesamiento de documentos.
           </p>
         </CardContent>
@@ -141,11 +141,11 @@ export function AlertsPanel({ caseId }: AlertsPanelProps) {
 
     return (
       <Card
-        className={`bg-[var(--bg)] border-[var(--border)] border-l-4 ${config.borderClass}`}
+        className={`bg-background border-border border-l-4 ${config.borderClass}`}
       >
         <CardContent className="p-4">
           <div className="flex items-start gap-3">
-            <div className={`mt-0.5 ${alert.severity === "high" ? "text-[var(--error)]" : alert.severity === "medium" ? "text-[var(--warning)]" : "text-blue-500"}`}>
+            <div className={`mt-0.5 ${alert.severity === "high" ? "text-destructive" : alert.severity === "medium" ? "text-amber-600" : "text-blue-500"}`}>
               {config.icon}
             </div>
             <div className="flex-1 min-w-0">
@@ -154,19 +154,19 @@ export function AlertsPanel({ caseId }: AlertsPanelProps) {
                   {config.label}
                 </Badge>
                 {alert.resolved && (
-                  <Badge variant="outline" className="text-xs bg-[var(--success-soft)] text-[var(--success)] border-[var(--success)]">
+                  <Badge variant="outline" className="text-xs bg-emerald-600/10 text-emerald-600 border-emerald-600">
                     Resuelta
                   </Badge>
                 )}
               </div>
-              <p className="text-sm text-[var(--text)]">{alert.message}</p>
+              <p className="text-sm text-foreground">{alert.message}</p>
               {alert.affected_fields && alert.affected_fields.length > 0 && (
                 <div className="flex flex-wrap gap-1 mt-2">
                   {alert.affected_fields.map((field, idx) => (
                     <Badge
                       key={idx}
                       variant="secondary"
-                      className="text-xs bg-[var(--surface-2)] text-[var(--text-muted)]"
+                      className="text-xs bg-sidebar-accent text-muted-foreground"
                     >
                       {field}
                     </Badge>
@@ -174,12 +174,12 @@ export function AlertsPanel({ caseId }: AlertsPanelProps) {
                 </div>
               )}
               {alert.recommended_action && (
-                <p className="text-xs text-[var(--text-muted)] mt-2">
+                <p className="text-xs text-muted-foreground mt-2">
                   <span className="font-medium">Recomendación:</span> {alert.recommended_action}
                 </p>
               )}
               {alert.resolved && alert.resolved_at && (
-                <p className="text-xs text-[var(--text-faint)] mt-2">
+                <p className="text-xs text-muted-foreground mt-2">
                   Resuelta el {new Date(alert.resolved_at).toLocaleDateString("es-ES")}
                 </p>
               )}
@@ -213,16 +213,16 @@ export function AlertsPanel({ caseId }: AlertsPanelProps) {
       {/* Summary */}
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-[var(--error)]" />
-          <span className="text-sm text-[var(--text-muted)]">
-            <span className="font-semibold text-[var(--text)]">{pendingAlerts.length}</span>{" "}
+          <div className="w-2 h-2 rounded-full bg-destructive" />
+          <span className="text-sm text-muted-foreground">
+            <span className="font-semibold text-foreground">{pendingAlerts.length}</span>{" "}
             pendientes
           </span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-[var(--success)]" />
-          <span className="text-sm text-[var(--text-muted)]">
-            <span className="font-semibold text-[var(--text)]">{resolvedAlerts.length}</span>{" "}
+          <div className="w-2 h-2 rounded-full bg-emerald-600" />
+          <span className="text-sm text-muted-foreground">
+            <span className="font-semibold text-foreground">{resolvedAlerts.length}</span>{" "}
             resueltas
           </span>
         </div>
@@ -231,7 +231,7 @@ export function AlertsPanel({ caseId }: AlertsPanelProps) {
       {/* Pending Alerts */}
       {pendingAlerts.length > 0 && (
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-[var(--text)]">Alertas pendientes</h4>
+          <h4 className="text-sm font-medium text-foreground">Alertas pendientes</h4>
           {pendingAlerts
             .sort((a, b) => {
               const severityOrder = { high: 0, medium: 1, low: 2 }
@@ -246,7 +246,7 @@ export function AlertsPanel({ caseId }: AlertsPanelProps) {
       {/* Resolved Alerts */}
       {resolvedAlerts.length > 0 && (
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-[var(--text-muted)]">Alertas resueltas</h4>
+          <h4 className="text-sm font-medium text-muted-foreground">Alertas resueltas</h4>
           {resolvedAlerts.map((alert) => (
             <AlertCard key={alert.id} alert={alert} showResolve={false} />
           ))}

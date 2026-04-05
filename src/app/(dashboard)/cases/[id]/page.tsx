@@ -77,9 +77,9 @@ export default async function CaseDetailPage({ params }: CaseDetailPageProps) {
   const tabContents = {
     documents: (
       <div className="space-y-6">
-        <Card className="bg-[var(--surface)] border-[var(--border)] rounded-xl">
+        <Card className="bg-card border-border rounded-xl">
           <CardHeader>
-            <CardTitle className="text-base font-medium text-[var(--text)]">
+            <CardTitle className="text-base font-medium text-foreground">
               Subir documentos
             </CardTitle>
           </CardHeader>
@@ -91,9 +91,9 @@ export default async function CaseDetailPage({ params }: CaseDetailPageProps) {
             />
           </CardContent>
         </Card>
-        <Card className="bg-[var(--surface)] border-[var(--border)] rounded-xl">
+        <Card className="bg-card border-border rounded-xl">
           <CardHeader>
-            <CardTitle className="text-base font-medium text-[var(--text)]">
+            <CardTitle className="text-base font-medium text-foreground">
               Estado de procesamiento
             </CardTitle>
           </CardHeader>
@@ -101,9 +101,9 @@ export default async function CaseDetailPage({ params }: CaseDetailPageProps) {
             <ProcessingStatus caseId={caseItem.id} documents={documents || []} agencyId={profile.agency_id} />
           </CardContent>
         </Card>
-        <Card className="bg-[var(--surface)] border-[var(--border)] rounded-xl">
+        <Card className="bg-card border-border rounded-xl">
           <CardHeader>
-            <CardTitle className="text-base font-medium text-[var(--text)]">
+            <CardTitle className="text-base font-medium text-foreground">
               Documentos cargados
             </CardTitle>
           </CardHeader>
@@ -115,9 +115,9 @@ export default async function CaseDetailPage({ params }: CaseDetailPageProps) {
     ),
     data: <DualView caseId={caseItem.id} documents={documents || []} />,
     nomenclature: (
-      <Card className="bg-[var(--surface)] border-[var(--border)] rounded-xl">
+      <Card className="bg-card border-border rounded-xl">
         <CardHeader>
-          <CardTitle className="text-base font-medium text-[var(--text)]">
+          <CardTitle className="text-base font-medium text-foreground">
             Nomenclatura arancelaria
           </CardTitle>
         </CardHeader>
@@ -128,10 +128,10 @@ export default async function CaseDetailPage({ params }: CaseDetailPageProps) {
     ),
     validations: (
       <div className="space-y-6">
-        <Card className="bg-[var(--surface)] border-[var(--border)] rounded-xl">
+        <Card className="bg-card border-border rounded-xl">
           <CardHeader>
-            <CardTitle className="text-base font-medium text-[var(--text)] flex items-center gap-2">
-              <AlertTriangle className="h-4 w-4 text-[var(--warning)]" />
+            <CardTitle className="text-base font-medium text-foreground flex items-center gap-2">
+              <AlertTriangle className="h-4 w-4 text-amber-600" />
               Alertas de validación
             </CardTitle>
           </CardHeader>
@@ -139,10 +139,10 @@ export default async function CaseDetailPage({ params }: CaseDetailPageProps) {
             <AlertsPanel caseId={caseItem.id} />
           </CardContent>
         </Card>
-        <Card className="bg-[var(--surface)] border-[var(--border)] rounded-xl">
+        <Card className="bg-card border-border rounded-xl">
           <CardHeader>
-            <CardTitle className="text-base font-medium text-[var(--text)] flex items-center gap-2">
-              <CheckCircle className="h-4 w-4 text-[var(--primary)]" />
+            <CardTitle className="text-base font-medium text-foreground flex items-center gap-2">
+              <CheckCircle className="h-4 w-4 text-primary" />
               Conflictos entre documentos
             </CardTitle>
           </CardHeader>
@@ -153,9 +153,9 @@ export default async function CaseDetailPage({ params }: CaseDetailPageProps) {
       </div>
     ),
     timeline: (
-      <Card className="bg-[var(--surface)] border-[var(--border)] rounded-xl">
+      <Card className="bg-card border-border rounded-xl">
         <CardHeader>
-          <CardTitle className="text-base font-medium text-[var(--text)]">
+          <CardTitle className="text-base font-medium text-foreground">
             Historial de actividad
           </CardTitle>
         </CardHeader>
@@ -171,7 +171,7 @@ export default async function CaseDetailPage({ params }: CaseDetailPageProps) {
       {/* Back Link */}
       <Link
         href="/cases"
-        className="inline-flex items-center gap-2 text-sm text-[var(--text-muted)] hover:text-[var(--text)] transition-colors"
+        className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
       >
         <ArrowLeft className="h-4 w-4" />
         Volver a expedientes
@@ -181,12 +181,12 @@ export default async function CaseDetailPage({ params }: CaseDetailPageProps) {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <div className="flex items-center gap-3 flex-wrap">
-            <h1 className="text-2xl font-semibold text-[var(--text)]">
+            <h1 className="text-2xl font-semibold text-foreground">
               {caseItem.reference_code || "Sin referencia"}
             </h1>
             <CaseStatusBadge status={caseItem.status} />
           </div>
-          <p className="mt-1 text-lg text-[var(--text-muted)]">
+          <p className="mt-1 text-lg text-muted-foreground">
             {caseItem.client_name}
           </p>
         </div>

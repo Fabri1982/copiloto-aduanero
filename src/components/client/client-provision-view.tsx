@@ -32,10 +32,10 @@ export function ClientProvisionView({
   }
 
   return (
-    <Card className="bg-[var(--surface)] border-[var(--border)]">
+    <Card className="bg-card border-border">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-base font-medium text-[var(--text)]">
+          <CardTitle className="text-base font-medium text-foreground">
             Provisión de gastos
           </CardTitle>
           {pdfUrl && (
@@ -43,7 +43,7 @@ export function ClientProvisionView({
               href={pdfUrl} 
               target="_blank" 
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 h-8 px-3 text-xs font-medium rounded-lg border border-[var(--border)] bg-transparent hover:bg-[var(--surface-2)] text-[var(--text)]"
+              className="inline-flex items-center gap-1.5 h-8 px-3 text-xs font-medium rounded-lg border border-border bg-transparent hover:bg-sidebar-accent text-foreground"
             >
               <FileText className="w-3.5 h-3.5" />
               Ver PDF
@@ -57,10 +57,10 @@ export function ClientProvisionView({
           {items.map((item) => (
             <div 
               key={item.id}
-              className="flex items-center justify-between py-2 border-b border-[var(--border)] last:border-0"
+              className="flex items-center justify-between py-2 border-b border-border last:border-0"
             >
-              <span className="text-sm text-[var(--text)]">{item.description}</span>
-              <span className="text-sm font-medium text-[var(--text)]">
+              <span className="text-sm text-foreground">{item.description}</span>
+              <span className="text-sm font-medium text-foreground">
                 {formatCurrency(item.amount)}
               </span>
             </div>
@@ -68,10 +68,10 @@ export function ClientProvisionView({
         </div>
         
         {/* Total */}
-        <div className="pt-3 border-t border-[var(--border)]">
+        <div className="pt-3 border-t border-border">
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-[var(--text)]">Total a pagar</span>
-            <span className="text-lg font-semibold text-[var(--primary)]">
+            <span className="text-sm font-medium text-foreground">Total a pagar</span>
+            <span className="text-lg font-semibold text-primary">
               {formatCurrency(total)}
             </span>
           </div>
@@ -82,7 +82,7 @@ export function ClientProvisionView({
           <a 
             href={pdfUrl} 
             download
-            className="inline-flex items-center justify-center gap-2 w-full h-9 px-4 text-sm font-medium rounded-lg bg-[var(--surface-2)] hover:bg-[var(--surface-3)] text-[var(--text)] transition-colors"
+            className="inline-flex items-center justify-center gap-2 w-full h-9 px-4 text-sm font-medium rounded-lg bg-sidebar-accent hover:bg-[var(--surface-3)] text-foreground transition-colors"
           >
             <Download className="w-4 h-4" />
             Descargar provisión

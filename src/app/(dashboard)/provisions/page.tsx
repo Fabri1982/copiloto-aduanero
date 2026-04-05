@@ -113,10 +113,10 @@ export default async function ProvisionsPage({ searchParams }: ProvisionsPagePro
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-[var(--text)]">
+          <h1 className="text-2xl font-semibold text-foreground">
             Provisiones
           </h1>
-          <p className="mt-1 text-sm text-[var(--text-muted)]">
+          <p className="mt-1 text-sm text-muted-foreground">
             Gestión de provisiones y garantías aduaneras
           </p>
         </div>
@@ -124,56 +124,56 @@ export default async function ProvisionsPage({ searchParams }: ProvisionsPagePro
 
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <Card className="bg-[var(--surface)] border-[var(--border)]">
+        <Card className="bg-card border-border">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-[var(--surface-2)] flex items-center justify-center">
-                <FileText className="h-5 w-5 text-[var(--text-muted)]" />
+              <div className="w-10 h-10 rounded-lg bg-sidebar-accent flex items-center justify-center">
+                <FileText className="h-5 w-5 text-muted-foreground" />
               </div>
               <div>
-                <p className="text-2xl font-semibold text-[var(--text)]">{filteredProvisions.length}</p>
-                <p className="text-xs text-[var(--text-muted)]">Total provisiones</p>
+                <p className="text-2xl font-semibold text-foreground">{filteredProvisions.length}</p>
+                <p className="text-xs text-muted-foreground">Total provisiones</p>
               </div>
             </div>
           </CardContent>
         </Card>
-        <Card className="bg-[var(--surface)] border-[var(--border)]">
+        <Card className="bg-card border-border">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-[var(--surface-2)] flex items-center justify-center">
-                <DollarSign className="h-5 w-5 text-[var(--success)]" />
+              <div className="w-10 h-10 rounded-lg bg-sidebar-accent flex items-center justify-center">
+                <DollarSign className="h-5 w-5 text-emerald-600" />
               </div>
               <div>
-                <p className="text-2xl font-semibold text-[var(--text)]">
+                <p className="text-2xl font-semibold text-foreground">
                   {formatCurrency(totalAmount, "EUR")}
                 </p>
-                <p className="text-xs text-[var(--text-muted)]">Monto total</p>
+                <p className="text-xs text-muted-foreground">Monto total</p>
               </div>
             </div>
           </CardContent>
         </Card>
-        <Card className="bg-[var(--surface)] border-[var(--border)]">
+        <Card className="bg-card border-border">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-[var(--warning)]/10 flex items-center justify-center">
-                <FileText className="h-5 w-5 text-[var(--warning)]" />
+              <div className="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center">
+                <FileText className="h-5 w-5 text-amber-600" />
               </div>
               <div>
-                <p className="text-2xl font-semibold text-[var(--text)]">{sentCount}</p>
-                <p className="text-xs text-[var(--text-muted)]">Pendientes de pago</p>
+                <p className="text-2xl font-semibold text-foreground">{sentCount}</p>
+                <p className="text-xs text-muted-foreground">Pendientes de pago</p>
               </div>
             </div>
           </CardContent>
         </Card>
-        <Card className="bg-[var(--surface)] border-[var(--border)]">
+        <Card className="bg-card border-border">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-[var(--success)]/10 flex items-center justify-center">
-                <DollarSign className="h-5 w-5 text-[var(--success)]" />
+              <div className="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center">
+                <DollarSign className="h-5 w-5 text-emerald-600" />
               </div>
               <div>
-                <p className="text-2xl font-semibold text-[var(--text)]">{paidCount}</p>
-                <p className="text-xs text-[var(--text-muted)]">Pagadas</p>
+                <p className="text-2xl font-semibold text-foreground">{paidCount}</p>
+                <p className="text-xs text-muted-foreground">Pagadas</p>
               </div>
             </div>
           </CardContent>
@@ -181,22 +181,22 @@ export default async function ProvisionsPage({ searchParams }: ProvisionsPagePro
       </div>
 
       {/* Filters */}
-      <Card className="bg-[var(--surface)] border-[var(--border)]">
+      <Card className="bg-card border-border">
         <CardContent className="p-4">
           <form className="flex flex-col sm:flex-row gap-4">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--text-muted)]" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 name="search"
                 placeholder="Buscar por cliente o referencia..."
                 defaultValue={searchQuery}
-                className="pl-9 bg-[var(--bg)] border-[var(--border)]"
+                className="pl-9 bg-background border-border"
               />
             </div>
             <div className="flex gap-4">
               <Select name="status" defaultValue={statusFilter}>
-                <SelectTrigger className="w-[180px] bg-[var(--bg)] border-[var(--border)]">
-                  <Filter className="h-4 w-4 mr-2 text-[var(--text-muted)]" />
+                <SelectTrigger className="w-[180px] bg-background border-border">
+                  <Filter className="h-4 w-4 mr-2 text-muted-foreground" />
                   <SelectValue placeholder="Estado" />
                 </SelectTrigger>
                 <SelectContent>
@@ -219,27 +219,27 @@ export default async function ProvisionsPage({ searchParams }: ProvisionsPagePro
       </Card>
 
       {/* Provisions Table */}
-      <div className="rounded-xl border border-[var(--border)] bg-[var(--surface)]">
+      <div className="rounded-xl border border-border bg-card">
         {filteredProvisions.length > 0 ? (
           <Table>
             <TableHeader>
-              <TableRow className="border-[var(--border)] hover:bg-transparent">
-                <TableHead className="text-[var(--text-muted)] font-medium">
+              <TableRow className="border-border hover:bg-transparent">
+                <TableHead className="text-muted-foreground font-medium">
                   Referencia
                 </TableHead>
-                <TableHead className="text-[var(--text-muted)] font-medium">
+                <TableHead className="text-muted-foreground font-medium">
                   Cliente
                 </TableHead>
-                <TableHead className="text-[var(--text-muted)] font-medium">
+                <TableHead className="text-muted-foreground font-medium">
                   Monto
                 </TableHead>
-                <TableHead className="text-[var(--text-muted)] font-medium">
+                <TableHead className="text-muted-foreground font-medium">
                   Estado
                 </TableHead>
-                <TableHead className="text-[var(--text-muted)] font-medium">
+                <TableHead className="text-muted-foreground font-medium">
                   Fecha
                 </TableHead>
-                <TableHead className="text-[var(--text-muted)] font-medium w-[60px]">
+                <TableHead className="text-muted-foreground font-medium w-[60px]">
                   <span className="sr-only">Acciones</span>
                 </TableHead>
               </TableRow>
@@ -248,28 +248,28 @@ export default async function ProvisionsPage({ searchParams }: ProvisionsPagePro
               {filteredProvisions.map((provision) => (
                 <TableRow
                   key={provision.id}
-                  className="border-[var(--border)] hover:bg-[var(--surface-2)]"
+                  className="border-border hover:bg-sidebar-accent"
                 >
                   <TableCell>
                     <Link
                       href={`/provisions/${provision.id}`}
-                      className="font-medium text-[var(--text)] hover:text-[var(--primary)] transition-colors"
+                      className="font-medium text-foreground hover:text-primary transition-colors"
                     >
                       {provision.operation_cases?.reference_code || "Sin referencia"}
                     </Link>
                   </TableCell>
-                  <TableCell className="text-[var(--text)]">
+                  <TableCell className="text-foreground">
                     {provision.operation_cases?.client_name}
                   </TableCell>
                   <TableCell>
-                    <span className="font-medium text-[var(--text)]">
+                    <span className="font-medium text-foreground">
                       {formatCurrency(provision.total, provision.currency)}
                     </span>
                   </TableCell>
                   <TableCell>
                     <ProvisionStatusBadge status={provision.status} />
                   </TableCell>
-                  <TableCell className="text-[var(--text-muted)]">
+                  <TableCell className="text-muted-foreground">
                     {formatDate(provision.created_at)}
                   </TableCell>
                   <TableCell>
@@ -289,14 +289,14 @@ export default async function ProvisionsPage({ searchParams }: ProvisionsPagePro
             </TableBody>
           </Table>
         ) : (
-          <div className="flex flex-col items-center justify-center py-16 px-4">
-            <div className="w-16 h-16 rounded-full bg-[var(--surface-2)] flex items-center justify-center mb-4">
-              <FileText className="h-8 w-8 text-[var(--text-muted)]" />
+            <div className="flex flex-col items-center justify-center py-16 px-4">
+            <div className="w-16 h-16 rounded-full bg-sidebar-accent flex items-center justify-center mb-4">
+              <FileText className="h-8 w-8 text-muted-foreground" />
             </div>
-            <h3 className="text-base font-medium text-[var(--text)] mb-1">
+            <h3 className="text-base font-medium text-foreground mb-1">
               No hay provisiones
             </h3>
-            <p className="text-sm text-[var(--text-muted)] text-center max-w-sm">
+            <p className="text-sm text-muted-foreground text-center max-w-sm">
               {searchQuery || statusFilter !== "all"
                 ? "No se encontraron provisiones que coincidan con los filtros."
                 : "Las provisiones se generarán automáticamente desde los expedientes."}

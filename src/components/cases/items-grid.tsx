@@ -166,7 +166,7 @@ export function ItemsGrid({ caseId }: ItemsGridProps) {
         <Input
           type="text"
           defaultValue={value as string}
-          className="h-8 text-sm bg-[var(--surface)] border-[var(--border)]"
+          className="h-8 text-sm bg-card border-border"
           autoFocus
           onBlur={(e) => handleBlur(item.id, tariffId, field, e.target.value)}
           onKeyDown={(e) => {
@@ -181,9 +181,9 @@ export function ItemsGrid({ caseId }: ItemsGridProps) {
     return (
       <div
         onClick={() => setEditingCell({ itemId: item.id, field })}
-        className="cursor-pointer hover:bg-[var(--surface-2)] rounded px-2 py-1 -mx-2 transition-colors min-h-[32px] flex items-center"
+        className="cursor-pointer hover:bg-sidebar-accent rounded px-2 py-1 -mx-2 transition-colors min-h-[32px] flex items-center"
       >
-        <span className={value ? "text-[var(--text)]" : "text-[var(--text-muted)]"}>
+        <span className={value ? "text-foreground" : "text-muted-foreground"}>
           {(value as string) || placeholder}
         </span>
       </div>
@@ -193,8 +193,8 @@ export function ItemsGrid({ caseId }: ItemsGridProps) {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center py-12">
-        <Loader2 className="h-6 w-6 animate-spin text-[var(--primary)]" />
-        <p className="mt-3 text-sm text-[var(--text-muted)]">Cargando ítems...</p>
+        <Loader2 className="h-6 w-6 animate-spin text-primary" />
+        <p className="mt-3 text-sm text-muted-foreground">Cargando ítems...</p>
       </div>
     )
   }
@@ -202,10 +202,10 @@ export function ItemsGrid({ caseId }: ItemsGridProps) {
   if (items.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-12 px-4">
-        <div className="w-12 h-12 rounded-full bg-[var(--surface-2)] flex items-center justify-center mb-3">
-          <Package className="h-6 w-6 text-[var(--text-muted)]" />
+        <div className="w-12 h-12 rounded-full bg-sidebar-accent flex items-center justify-center mb-3">
+          <Package className="h-6 w-6 text-muted-foreground" />
         </div>
-        <p className="text-sm text-[var(--text-muted)] text-center">
+        <p className="text-sm text-muted-foreground text-center">
           Los ítems aparecerán después del procesamiento documental.
         </p>
       </div>
@@ -214,37 +214,37 @@ export function ItemsGrid({ caseId }: ItemsGridProps) {
 
   return (
     <TooltipProvider>
-      <div className="rounded-xl border border-[var(--border)] overflow-hidden bg-[var(--surface)]">
+      <div className="rounded-xl border border-border overflow-hidden bg-card">
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
-              <TableRow className="border-b border-[var(--border)] hover:bg-transparent">
-                <TableHead className="w-12 text-[var(--text-muted)]">#</TableHead>
-                <TableHead className="text-[var(--text-muted)]">Descripción origen</TableHead>
-                <TableHead className="w-28 text-[var(--text-muted)]">Partida</TableHead>
-                <TableHead className="w-40 text-[var(--text-muted)]">Glosa corta</TableHead>
-                <TableHead className="w-48 text-[var(--text-muted)]">Glosa larga</TableHead>
-                <TableHead className="w-40 text-[var(--text-muted)]">Composición</TableHead>
-                <TableHead className="w-24 text-[var(--text-muted)]">Confianza</TableHead>
-                <TableHead className="w-24 text-[var(--text-muted)]">Estado</TableHead>
+              <TableRow className="border-b border-border hover:bg-transparent">
+                <TableHead className="w-12 text-muted-foreground">#</TableHead>
+                <TableHead className="text-muted-foreground">Descripción origen</TableHead>
+                <TableHead className="w-28 text-muted-foreground">Partida</TableHead>
+                <TableHead className="w-40 text-muted-foreground">Glosa corta</TableHead>
+                <TableHead className="w-48 text-muted-foreground">Glosa larga</TableHead>
+                <TableHead className="w-40 text-muted-foreground">Composición</TableHead>
+                <TableHead className="w-24 text-muted-foreground">Confianza</TableHead>
+                <TableHead className="w-24 text-muted-foreground">Estado</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {items.map((item) => (
                 <TableRow
                   key={item.id}
-                  className={`border-b border-[var(--border)] hover:bg-[var(--surface-2)] ${
+                  className={`border-b border-border hover:bg-sidebar-accent ${
                     item.tariff?.needs_human_review
-                      ? "bg-[var(--warning)]/5"
+                      ? "bg-amber-600/5"
                       : ""
                   }`}
                 >
-                  <TableCell className="font-medium text-[var(--text)]">
+                  <TableCell className="font-medium text-foreground">
                     {item.item_number}
                   </TableCell>
                   <TableCell>
                     <Tooltip>
-                      <TooltipTrigger render={<span className="text-sm text-[var(--text)] truncate max-w-[200px] cursor-help block">
+                      <TooltipTrigger render={<span className="text-sm text-foreground truncate max-w-[200px] cursor-help block">
                           {item.description}
                         </span>} />
                       <TooltipContent side="top">
@@ -282,14 +282,14 @@ export function ItemsGrid({ caseId }: ItemsGridProps) {
                         showLabel={false}
                       />
                     ) : (
-                      <span className="text-[var(--text-muted)]">—</span>
+                      <span className="text-muted-foreground">—</span>
                     )}
                   </TableCell>
                   <TableCell>
                     {item.tariff?.needs_human_review ? (
                       <Badge
                         variant="outline"
-                        className="text-xs border-[var(--warning)] text-[var(--warning)] bg-[var(--warning)]/10"
+                        className="text-xs border-amber-600 text-amber-600 bg-amber-500/10"
                       >
                         <AlertTriangle className="h-3 w-3 mr-1" />
                         Revisar
@@ -297,7 +297,7 @@ export function ItemsGrid({ caseId }: ItemsGridProps) {
                     ) : (
                       <Badge
                         variant="outline"
-                        className="text-xs border-[var(--success)] text-[var(--success)] bg-[var(--success)]/10"
+                        className="text-xs border-emerald-600 text-emerald-600 bg-emerald-500/10"
                       >
                         OK
                       </Badge>

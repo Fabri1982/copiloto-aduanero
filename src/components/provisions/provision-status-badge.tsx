@@ -14,37 +14,37 @@ const statusConfig: Record<
   draft: {
     label: "Borrador",
     variant: "secondary",
-    className: "bg-[var(--surface-2)] text-[var(--text-muted)]",
+    className: "bg-sidebar-accent text-muted-foreground",
   },
   ready_to_send: {
     label: "Listo para enviar",
     variant: "default",
-    className: "bg-[var(--primary)] text-[var(--text-inverse)]",
+    className: "bg-primary text-primary-foreground",
   },
   sent: {
     label: "Enviado",
     variant: "default",
-    className: "bg-[var(--warning)] text-[var(--text-inverse)]",
+    className: "bg-amber-600 text-primary-foreground",
   },
   viewed: {
     label: "Visto",
     variant: "default",
-    className: "bg-[var(--warning)] text-[var(--text-inverse)]",
+    className: "bg-amber-600 text-primary-foreground",
   },
   payment_pending: {
     label: "Pago pendiente",
     variant: "default",
-    className: "bg-[var(--warning)] text-[var(--text-inverse)]",
+    className: "bg-amber-600 text-primary-foreground",
   },
   payment_uploaded: {
     label: "Pago cargado",
     variant: "default",
-    className: "bg-[var(--primary)] text-[var(--text-inverse)]",
+    className: "bg-primary text-primary-foreground",
   },
   payment_validated: {
     label: "Pagado",
     variant: "default",
-    className: "bg-[var(--success)] text-[var(--text-inverse)]",
+    className: "bg-emerald-600 text-primary-foreground",
   },
 }
 
@@ -52,7 +52,7 @@ export function ProvisionStatusBadge({ status }: ProvisionStatusBadgeProps) {
   const config = statusConfig[status] || {
     label: status,
     variant: "secondary",
-    className: "bg-[var(--surface-2)] text-[var(--text-muted)]",
+    className: "bg-sidebar-accent text-muted-foreground",
   }
 
   return (

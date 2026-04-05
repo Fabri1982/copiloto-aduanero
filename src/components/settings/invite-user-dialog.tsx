@@ -81,18 +81,18 @@ export function InviteUserDialog({ onUserInvited }: InviteUserDialogProps) {
           </Button>
         }
       />
-      <DialogContent className="sm:max-w-[425px] bg-[var(--surface)] border-[var(--border)]">
+      <DialogContent className="sm:max-w-[425px] bg-card border-border">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
-            <DialogTitle className="text-[var(--text)]">Invitar Nuevo Usuario</DialogTitle>
-            <DialogDescription className="text-[var(--text-muted)]">
+            <DialogTitle className="text-foreground">Invitar Nuevo Usuario</DialogTitle>
+            <DialogDescription className="text-muted-foreground">
               Envía una invitación para unirse a tu agencia.
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
-              <Label htmlFor="email" className="text-[var(--text)]">
-                Correo Electrónico <span className="text-[var(--error)]">*</span>
+              <Label htmlFor="email" className="text-foreground">
+                Correo Electrónico <span className="text-destructive">*</span>
               </Label>
               <Input
                 id="email"
@@ -101,11 +101,11 @@ export function InviteUserDialog({ onUserInvited }: InviteUserDialogProps) {
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 placeholder="usuario@empresa.com"
                 required
-                className="bg-[var(--surface)] border-[var(--border)]"
+                className="bg-card border-border"
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="name" className="text-[var(--text)]">
+              <Label htmlFor="name" className="text-foreground">
                 Nombre
               </Label>
               <Input
@@ -113,12 +113,12 @@ export function InviteUserDialog({ onUserInvited }: InviteUserDialogProps) {
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 placeholder="Nombre del usuario"
-                className="bg-[var(--surface)] border-[var(--border)]"
+                className="bg-card border-border"
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="role" className="text-[var(--text)]">
-                Rol <span className="text-[var(--error)]">*</span>
+              <Label htmlFor="role" className="text-foreground">
+                Rol <span className="text-destructive">*</span>
               </Label>
               <Select
                 value={formData.role}
@@ -126,17 +126,17 @@ export function InviteUserDialog({ onUserInvited }: InviteUserDialogProps) {
                   setFormData({ ...formData, role: value as typeof formData.role })
                 }
               >
-                <SelectTrigger className="bg-[var(--surface)] border-[var(--border)]">
+                <SelectTrigger className="bg-card border-border">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   {roleOptions.map((role) => (
                     <SelectItem key={role.value} value={role.value}>
                       <div className="flex items-start gap-3 py-1">
-                        <role.icon className="h-4 w-4 mt-0.5 text-[var(--text-muted)]" />
+                        <role.icon className="h-4 w-4 mt-0.5 text-muted-foreground" />
                         <div className="flex flex-col">
                           <span className="font-medium">{role.label}</span>
-                          <span className="text-xs text-[var(--text-muted)]">
+                          <span className="text-xs text-muted-foreground">
                             {role.description}
                           </span>
                         </div>
@@ -147,7 +147,7 @@ export function InviteUserDialog({ onUserInvited }: InviteUserDialogProps) {
               </Select>
             </div>
             {error && (
-              <div className="text-sm text-[var(--error)] bg-[var(--error)]/10 px-3 py-2 rounded-lg">
+              <div className="text-sm text-destructive bg-destructive/10 px-3 py-2 rounded-lg">
                 {error}
               </div>
             )}

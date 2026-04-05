@@ -134,10 +134,10 @@ export default function PaymentsPage() {
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-[var(--text)]">
+          <h1 className="text-2xl font-semibold text-foreground">
             Pagos
           </h1>
-          <p className="mt-1 text-sm text-[var(--text-muted)]">
+          <p className="mt-1 text-sm text-muted-foreground">
             Validación de comprobantes de pago
           </p>
         </div>
@@ -145,59 +145,59 @@ export default function PaymentsPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <Card className="bg-[var(--surface)] border-[var(--border)]">
+        <Card className="bg-card border-border">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-[var(--surface-2)] flex items-center justify-center">
-                <FileText className="h-5 w-5 text-[var(--text-muted)]" />
+              <div className="w-10 h-10 rounded-lg bg-sidebar-accent flex items-center justify-center">
+                <FileText className="h-5 w-5 text-muted-foreground" />
               </div>
               <div>
-                <p className="text-2xl font-semibold text-[var(--text)]">{receipts.length}</p>
-                <p className="text-xs text-[var(--text-muted)]">Total comprobantes</p>
+                <p className="text-2xl font-semibold text-foreground">{receipts.length}</p>
+                <p className="text-xs text-muted-foreground">Total comprobantes</p>
               </div>
             </div>
           </CardContent>
         </Card>
-        <Card className="bg-[var(--surface)] border-[var(--border)]">
+        <Card className="bg-card border-border">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-[var(--warning)]/10 flex items-center justify-center">
-                <FileText className="h-5 w-5 text-[var(--warning)]" />
+              <div className="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center">
+                <FileText className="h-5 w-5 text-amber-600" />
               </div>
               <div>
-                <p className="text-2xl font-semibold text-[var(--text)]">{pendingCount}</p>
-                <p className="text-xs text-[var(--text-muted)]">Pendientes</p>
+                <p className="text-2xl font-semibold text-foreground">{pendingCount}</p>
+                <p className="text-xs text-muted-foreground">Pendientes</p>
               </div>
             </div>
           </CardContent>
         </Card>
-        <Card className="bg-[var(--surface)] border-[var(--border)]">
+        <Card className="bg-card border-border">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-[var(--success)]/10 flex items-center justify-center">
-                <CheckCircle className="h-5 w-5 text-[var(--success)]" />
+              <div className="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center">
+                <CheckCircle className="h-5 w-5 text-emerald-600" />
               </div>
               <div>
-                <p className="text-2xl font-semibold text-[var(--text)]">{validatedCount}</p>
-                <p className="text-xs text-[var(--text-muted)]">Validados</p>
+                <p className="text-2xl font-semibold text-foreground">{validatedCount}</p>
+                <p className="text-xs text-muted-foreground">Validados</p>
               </div>
             </div>
           </CardContent>
         </Card>
-        <Card className="bg-[var(--surface)] border-[var(--border)]">
+        <Card className="bg-card border-border">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-[var(--primary)]/10 flex items-center justify-center">
-                <DollarSign className="h-5 w-5 text-[var(--primary)]" />
+              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                <DollarSign className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <p className="text-2xl font-semibold text-[var(--text)]">
+                <p className="text-2xl font-semibold text-foreground">
                   {new Intl.NumberFormat("es-ES", {
                     style: "currency",
                     currency: "EUR",
                   }).format(totalAmount)}
                 </p>
-                <p className="text-xs text-[var(--text-muted)]">Monto validado</p>
+                <p className="text-xs text-muted-foreground">Monto validado</p>
               </div>
             </div>
           </CardContent>
@@ -205,22 +205,22 @@ export default function PaymentsPage() {
       </div>
 
       {/* Filters */}
-      <Card className="bg-[var(--surface)] border-[var(--border)]">
+      <Card className="bg-card border-border">
         <CardContent className="p-4">
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--text-muted)]" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Buscar por cliente o referencia..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9 bg-[var(--bg)] border-[var(--border)]"
+                className="pl-9 bg-background border-border"
               />
             </div>
             <div className="flex gap-4">
               <Select value={statusFilter} onValueChange={(value) => setStatusFilter(value || "all")}>
-                <SelectTrigger className="w-[180px] bg-[var(--bg)] border-[var(--border)]">
-                  <Filter className="h-4 w-4 mr-2 text-[var(--text-muted)]" />
+                <SelectTrigger className="w-[180px] bg-background border-border">
+                  <Filter className="h-4 w-4 mr-2 text-muted-foreground" />
                   <SelectValue placeholder="Estado" />
                 </SelectTrigger>
                 <SelectContent>
@@ -236,31 +236,31 @@ export default function PaymentsPage() {
       </Card>
 
       {/* Receipts Table */}
-      <div className="rounded-xl border border-[var(--border)] bg-[var(--surface)]">
+      <div className="rounded-xl border border-border bg-card">
         {loading ? (
           <div className="flex items-center justify-center py-16">
-            <Loader2 className="h-8 w-8 animate-spin text-[var(--primary)]" />
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
           </div>
         ) : filteredReceipts.length > 0 ? (
           <Table>
             <TableHeader>
-              <TableRow className="border-[var(--border)] hover:bg-transparent">
-                <TableHead className="text-[var(--text-muted)] font-medium">
+              <TableRow className="border-border hover:bg-transparent">
+                <TableHead className="text-muted-foreground font-medium">
                   Referencia
                 </TableHead>
-                <TableHead className="text-[var(--text-muted)] font-medium">
+                <TableHead className="text-muted-foreground font-medium">
                   Cliente
                 </TableHead>
-                <TableHead className="text-[var(--text-muted)] font-medium">
+                <TableHead className="text-muted-foreground font-medium">
                   Monto detectado
                 </TableHead>
-                <TableHead className="text-[var(--text-muted)] font-medium">
+                <TableHead className="text-muted-foreground font-medium">
                   Estado
                 </TableHead>
-                <TableHead className="text-[var(--text-muted)] font-medium">
+                <TableHead className="text-muted-foreground font-medium">
                   Fecha
                 </TableHead>
-                <TableHead className="text-[var(--text-muted)] font-medium w-[120px]">
+                <TableHead className="text-muted-foreground font-medium w-[120px]">
                   Acciones
                 </TableHead>
               </TableRow>
@@ -269,17 +269,17 @@ export default function PaymentsPage() {
               {filteredReceipts.map((receipt) => (
                 <TableRow
                   key={receipt.id}
-                  className="border-[var(--border)] hover:bg-[var(--surface-2)]"
+                  className="border-border hover:bg-sidebar-accent"
                 >
                   <TableCell>
                     <Link
                       href={`/cases/${receipt.case_id}`}
-                      className="font-medium text-[var(--text)] hover:text-[var(--primary)] transition-colors"
+                      className="font-medium text-foreground hover:text-primary transition-colors"
                     >
                       {receipt.operation_cases?.reference_code || "Sin referencia"}
                     </Link>
                   </TableCell>
-                  <TableCell className="text-[var(--text)]">
+                  <TableCell className="text-foreground">
                     {receipt.operation_cases?.client_name}
                   </TableCell>
                   <TableCell>
@@ -290,7 +290,7 @@ export default function PaymentsPage() {
                         currency={receipt.currency}
                       />
                     ) : (
-                      <span className="text-[var(--text)]">
+                      <span className="text-foreground">
                         {new Intl.NumberFormat("es-ES", {
                           style: "currency",
                           currency: receipt.currency,
@@ -301,7 +301,7 @@ export default function PaymentsPage() {
                   <TableCell>
                     <PaymentStatusBadge status={receipt.status} />
                   </TableCell>
-                  <TableCell className="text-[var(--text-muted)]">
+                  <TableCell className="text-muted-foreground">
                     {formatDate(receipt.created_at)}
                   </TableCell>
                   <TableCell>
@@ -321,7 +321,7 @@ export default function PaymentsPage() {
                           <Button
                             variant="ghost"
                             size="icon-sm"
-                            className="h-8 w-8 text-[var(--success)]"
+                            className="h-8 w-8 text-emerald-600"
                             onClick={() => openReviewDialog(receipt)}
                           >
                             <CheckCircle className="h-4 w-4" />
@@ -330,7 +330,7 @@ export default function PaymentsPage() {
                           <Button
                             variant="ghost"
                             size="icon-sm"
-                            className="h-8 w-8 text-[var(--error)]"
+                            className="h-8 w-8 text-destructive"
                             onClick={() => openReviewDialog(receipt)}
                           >
                             <XCircle className="h-4 w-4" />
@@ -345,14 +345,14 @@ export default function PaymentsPage() {
             </TableBody>
           </Table>
         ) : (
-          <div className="flex flex-col items-center justify-center py-16 px-4">
-            <div className="w-16 h-16 rounded-full bg-[var(--surface-2)] flex items-center justify-center mb-4">
-              <FileText className="h-8 w-8 text-[var(--text-muted)]" />
+            <div className="flex flex-col items-center justify-center py-16 px-4">
+            <div className="w-16 h-16 rounded-full bg-sidebar-accent flex items-center justify-center mb-4">
+              <FileText className="h-8 w-8 text-muted-foreground" />
             </div>
-            <h3 className="text-base font-medium text-[var(--text)] mb-1">
+            <h3 className="text-base font-medium text-foreground mb-1">
               No hay comprobantes de pago
             </h3>
-            <p className="text-sm text-[var(--text-muted)] text-center max-w-sm">
+            <p className="text-sm text-muted-foreground text-center max-w-sm">
               {searchQuery || statusFilter !== "all"
                 ? "No se encontraron comprobantes que coincidan con los filtros."
                 : "Los comprobantes aparecerán cuando los clientes suban sus pagos."}

@@ -116,7 +116,7 @@ export function ThresholdSettings({ isAdmin }: ThresholdSettingsProps) {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="h-8 w-8 animate-spin text-[var(--primary)]" />
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     )
   }
@@ -124,9 +124,9 @@ export function ThresholdSettings({ isAdmin }: ThresholdSettingsProps) {
   return (
     <div className="space-y-6">
       {/* Auto-approval Threshold */}
-      <Card className="bg-[var(--surface)] border-[var(--border)] rounded-xl">
+      <Card className="bg-card border-border rounded-xl">
         <CardHeader>
-          <CardTitle className="text-[var(--text)] flex items-center gap-2">
+          <CardTitle className="text-foreground flex items-center gap-2">
             <CheckCircle className="h-5 w-5 text-green-500" />
             Umbral de Auto-aprobación
           </CardTitle>
@@ -134,7 +134,7 @@ export function ThresholdSettings({ isAdmin }: ThresholdSettingsProps) {
         <CardContent className="space-y-6">
           <div className="space-y-4">
             <div className="flex justify-between items-center">
-              <Label className="text-[var(--text)]">
+              <Label className="text-foreground">
                 Confianza mínima para auto-aprobar
               </Label>
               <Badge
@@ -161,7 +161,7 @@ export function ThresholdSettings({ isAdmin }: ThresholdSettingsProps) {
               disabled={!isAdmin}
               className="w-full"
             />
-            <p className="text-sm text-[var(--text-muted)]">
+            <p className="text-sm text-muted-foreground">
               Los casos con una confianza de IA igual o superior a este valor serán
               aprobados automáticamente sin revisión humana.
             </p>
@@ -170,9 +170,9 @@ export function ThresholdSettings({ isAdmin }: ThresholdSettingsProps) {
       </Card>
 
       {/* Escalation Threshold */}
-      <Card className="bg-[var(--surface)] border-[var(--border)] rounded-xl">
+      <Card className="bg-card border-border rounded-xl">
         <CardHeader>
-          <CardTitle className="text-[var(--text)] flex items-center gap-2">
+          <CardTitle className="text-foreground flex items-center gap-2">
             <AlertTriangle className="h-5 w-5 text-yellow-500" />
             Umbral de Escalamiento
           </CardTitle>
@@ -180,7 +180,7 @@ export function ThresholdSettings({ isAdmin }: ThresholdSettingsProps) {
         <CardContent className="space-y-6">
           <div className="space-y-4">
             <div className="flex justify-between items-center">
-              <Label className="text-[var(--text)]">
+              <Label className="text-foreground">
                 Confianza mínima para escalamiento
               </Label>
               <Badge
@@ -207,7 +207,7 @@ export function ThresholdSettings({ isAdmin }: ThresholdSettingsProps) {
               disabled={!isAdmin}
               className="w-full"
             />
-            <p className="text-sm text-[var(--text-muted)]">
+            <p className="text-sm text-muted-foreground">
               Los casos con una confianza de IA inferior a este valor serán
               escalados automáticamente para revisión prioritaria.
             </p>
@@ -216,10 +216,10 @@ export function ThresholdSettings({ isAdmin }: ThresholdSettingsProps) {
       </Card>
 
       {/* Validation Rules */}
-      <Card className="bg-[var(--surface)] border-[var(--border)] rounded-xl">
+      <Card className="bg-card border-border rounded-xl">
         <CardHeader>
-          <CardTitle className="text-[var(--text)] flex items-center gap-2">
-            <Brain className="h-5 w-5 text-[var(--primary)]" />
+          <CardTitle className="text-foreground flex items-center gap-2">
+            <Brain className="h-5 w-5 text-primary" />
             Reglas de Validación IA
           </CardTitle>
         </CardHeader>
@@ -228,7 +228,7 @@ export function ThresholdSettings({ isAdmin }: ThresholdSettingsProps) {
             {validationRulesList.map((rule) => (
               <div
                 key={rule.key}
-                className="flex items-start gap-3 p-3 rounded-lg bg-[var(--bg)] border border-[var(--border)]"
+                className="flex items-start gap-3 p-3 rounded-lg bg-background border border-border"
               >
                 <Checkbox
                   id={rule.key}
@@ -239,18 +239,18 @@ export function ThresholdSettings({ isAdmin }: ThresholdSettingsProps) {
                 <div className="flex-1">
                   <Label
                     htmlFor={rule.key}
-                    className="text-[var(--text)] font-medium cursor-pointer"
+                    className="text-foreground font-medium cursor-pointer"
                   >
                     {rule.label}
                   </Label>
-                  <p className="text-sm text-[var(--text-muted)]">
+                  <p className="text-sm text-muted-foreground">
                     {rule.description}
                   </p>
                 </div>
                 {settings.validationRules[rule.key] ? (
                   <CheckCircle className="h-5 w-5 text-green-500" />
                 ) : (
-                  <XCircle className="h-5 w-5 text-[var(--text-muted)]" />
+                  <XCircle className="h-5 w-5 text-muted-foreground" />
                 )}
               </div>
             ))}

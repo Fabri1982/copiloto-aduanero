@@ -126,34 +126,34 @@ export function PDFViewer({ url }: PDFViewerProps) {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center h-[500px] bg-[var(--surface)] rounded-lg border border-[var(--border)]">
-        <Loader2 className="h-8 w-8 animate-spin text-[var(--primary)]" />
-        <p className="mt-4 text-sm text-[var(--text-muted)]">Cargando PDF...</p>
+      <div className="flex flex-col items-center justify-center h-[500px] bg-card rounded-lg border border-border">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <p className="mt-4 text-sm text-muted-foreground">Cargando PDF...</p>
       </div>
     )
   }
 
   if (error) {
     return (
-      <div className="flex flex-col items-center justify-center h-[500px] bg-[var(--surface)] rounded-lg border border-[var(--border)]">
-        <AlertCircle className="h-8 w-8 text-[var(--error)]" />
-        <p className="mt-4 text-sm text-[var(--text)]">{error}</p>
+      <div className="flex flex-col items-center justify-center h-[500px] bg-card rounded-lg border border-border">
+        <AlertCircle className="h-8 w-8 text-destructive" />
+        <p className="mt-4 text-sm text-foreground">{error}</p>
       </div>
     )
   }
 
   if (!pdf) {
     return (
-      <div className="flex flex-col items-center justify-center h-[500px] bg-[var(--surface)] rounded-lg border border-[var(--border)]">
-        <p className="text-sm text-[var(--text-muted)]">No se pudo cargar el documento</p>
+      <div className="flex flex-col items-center justify-center h-[500px] bg-card rounded-lg border border-border">
+        <p className="text-sm text-muted-foreground">No se pudo cargar el documento</p>
       </div>
     )
   }
 
   return (
-    <div className="flex flex-col h-full bg-[var(--surface)] rounded-lg border border-[var(--border)] overflow-hidden">
+    <div className="flex flex-col h-full bg-card rounded-lg border border-border overflow-hidden">
       {/* Controls */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border)] bg-[var(--surface)]">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-card">
         <div className="flex items-center gap-2">
           <Button
             variant="ghost"
@@ -164,7 +164,7 @@ export function PDFViewer({ url }: PDFViewerProps) {
           >
             <ChevronLeft className="h-4 w-4" />
           </Button>
-          <span className="text-sm text-[var(--text)] min-w-[100px] text-center">
+          <span className="text-sm text-foreground min-w-[100px] text-center">
             Página {currentPage} de {numPages}
           </span>
           <Button
@@ -188,7 +188,7 @@ export function PDFViewer({ url }: PDFViewerProps) {
           >
             <ZoomOut className="h-4 w-4" />
           </Button>
-          <span className="text-sm text-[var(--text-muted)] min-w-[60px] text-center">
+          <span className="text-sm text-muted-foreground min-w-[60px] text-center">
             {Math.round(scale * 100)}%
           </span>
           <Button
@@ -204,7 +204,7 @@ export function PDFViewer({ url }: PDFViewerProps) {
       </div>
 
       {/* Canvas */}
-      <div className="flex-1 overflow-auto p-4 flex items-start justify-center bg-[var(--bg)]">
+      <div className="flex-1 overflow-auto p-4 flex items-start justify-center bg-background">
         <canvas
           ref={canvasRef}
           className="shadow-lg"

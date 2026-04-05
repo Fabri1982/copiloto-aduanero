@@ -92,51 +92,51 @@ export function GenerateProvisionButton({
       </Button>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="sm:max-w-[425px] bg-[var(--surface)] border-[var(--border)]">
+        <DialogContent className="sm:max-w-[425px] bg-card border-border">
           <DialogHeader>
-            <DialogTitle className="text-[var(--text)] flex items-center gap-2">
+            <DialogTitle className="text-foreground flex items-center gap-2">
               <Sparkles className="h-5 w-5 text-violet-500" />
               Generar provisión con IA
             </DialogTitle>
-            <DialogDescription className="text-[var(--text-muted)]">
+            <DialogDescription className="text-muted-foreground">
               El sistema analizará los documentos del expediente para generar automáticamente una provisión con los conceptos detectados.
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4 py-4">
             {!hasExtractedData && (
-              <Alert className="bg-[var(--warning)]/10 border-[var(--warning)]">
-                <AlertTriangle className="h-4 w-4 text-[var(--warning)]" />
-                <AlertDescription className="text-[var(--text)]">
+              <Alert className="bg-amber-600/10 border-amber-600">
+                <AlertTriangle className="h-4 w-4 text-amber-600" />
+                <AlertDescription className="text-foreground">
                   El expediente no tiene datos extraídos. Procesa los documentos primero para obtener mejores resultados.
                 </AlertDescription>
               </Alert>
             )}
 
             {error && (
-              <Alert className="bg-[var(--error)]/10 border-[var(--error)]">
-                <AlertTriangle className="h-4 w-4 text-[var(--error)]" />
-                <AlertDescription className="text-[var(--text)]">
+              <Alert className="bg-destructive/10 border-destructive">
+                <AlertTriangle className="h-4 w-4 text-destructive" />
+                <AlertDescription className="text-foreground">
                   {error}
                 </AlertDescription>
               </Alert>
             )}
 
-            <div className="space-y-2 text-sm text-[var(--text-muted)]">
+            <div className="space-y-2 text-sm text-muted-foreground">
               <p className="flex items-center gap-2">
-                <CheckCircle className="h-4 w-4 text-[var(--success)]" />
+                <CheckCircle className="h-4 w-4 text-emerald-600" />
                 Análisis de facturas comerciales
               </p>
               <p className="flex items-center gap-2">
-                <CheckCircle className="h-4 w-4 text-[var(--success)]" />
+                <CheckCircle className="h-4 w-4 text-emerald-600" />
                 Detección de aranceles e impuestos
               </p>
               <p className="flex items-center gap-2">
-                <CheckCircle className="h-4 w-4 text-[var(--success)]" />
+                <CheckCircle className="h-4 w-4 text-emerald-600" />
                 Cálculo de gastos de gestión
               </p>
               <p className="flex items-center gap-2">
-                <CheckCircle className="h-4 w-4 text-[var(--success)]" />
+                <CheckCircle className="h-4 w-4 text-emerald-600" />
                 Generación de conceptos desglosados
               </p>
             </div>

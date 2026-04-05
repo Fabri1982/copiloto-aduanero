@@ -104,20 +104,20 @@ export function CreateCaseDialog() {
           </Button>
         }
       />
-      <DialogContent className="sm:max-w-[425px] bg-[var(--surface)] border-[var(--border)]">
+      <DialogContent className="sm:max-w-[425px] bg-card border-border">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
-            <DialogTitle className="text-[var(--text)]">
+            <DialogTitle className="text-foreground">
               Crear nuevo expediente
             </DialogTitle>
-            <DialogDescription className="text-[var(--text-muted)]">
+            <DialogDescription className="text-muted-foreground">
               Completa los datos para crear un nuevo expediente aduanero.
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
-              <Label htmlFor="client_name" className="text-[var(--text)]">
-                Cliente <span className="text-[var(--error)]">*</span>
+              <Label htmlFor="client_name" className="text-foreground">
+                Cliente <span className="text-destructive">*</span>
               </Label>
               <Input
                 id="client_name"
@@ -127,11 +127,11 @@ export function CreateCaseDialog() {
                 }
                 placeholder="Nombre del cliente"
                 required
-                className="bg-[var(--surface)] border-[var(--border)]"
+                className="bg-card border-border"
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="reference_code" className="text-[var(--text)]">
+              <Label htmlFor="reference_code" className="text-foreground">
                 Referencia
               </Label>
               <Input
@@ -141,11 +141,11 @@ export function CreateCaseDialog() {
                   setFormData({ ...formData, reference_code: e.target.value })
                 }
                 placeholder="Código de referencia (opcional)"
-                className="bg-[var(--surface)] border-[var(--border)]"
+                className="bg-card border-border"
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="priority" className="text-[var(--text)]">
+              <Label htmlFor="priority" className="text-foreground">
                 Prioridad
               </Label>
               <Select
@@ -154,7 +154,7 @@ export function CreateCaseDialog() {
                   setFormData({ ...formData, priority: (value as "low" | "medium" | "high") || "medium" })
                 }
               >
-                <SelectTrigger className="bg-[var(--surface)] border-[var(--border)]">
+                <SelectTrigger className="bg-card border-border">
                   <SelectValue placeholder="Selecciona la prioridad" />
                 </SelectTrigger>
                 <SelectContent>
@@ -165,7 +165,7 @@ export function CreateCaseDialog() {
               </Select>
             </div>
             {error && (
-              <div className="text-sm text-[var(--error)] bg-[var(--error-soft)] px-3 py-2 rounded-lg">
+              <div className="text-sm text-destructive bg-destructive/10 px-3 py-2 rounded-lg">
                 {error}
               </div>
             )}

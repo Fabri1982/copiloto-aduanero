@@ -190,12 +190,12 @@ export function ExportCaseDialog({ caseId, caseName }: ExportCaseDialogProps) {
           }
           onClick={fetchProfiles}
         />
-        <DialogContent className="sm:max-w-[500px] bg-[var(--surface)] border-[var(--border)]">
+        <DialogContent className="sm:max-w-[500px] bg-card border-border">
           <DialogHeader>
-            <DialogTitle className="text-[var(--text)]">
+            <DialogTitle className="text-foreground">
               Exportar expediente
             </DialogTitle>
-            <DialogDescription className="text-[var(--text-muted)]">
+            <DialogDescription className="text-muted-foreground">
               {caseName}
             </DialogDescription>
           </DialogHeader>
@@ -203,20 +203,20 @@ export function ExportCaseDialog({ caseId, caseName }: ExportCaseDialogProps) {
           <div className="space-y-4 py-4">
             {loading ? (
               <div className="flex items-center justify-center py-8">
-                <Loader2 className="h-6 w-6 animate-spin text-[var(--primary)]" />
+                <Loader2 className="h-6 w-6 animate-spin text-primary" />
               </div>
             ) : error ? (
-              <Alert className="bg-[var(--error)]/10 border-[var(--error)]">
-                <AlertDescription className="text-[var(--error)]">
+              <Alert className="bg-destructive/10 border-destructive">
+                <AlertDescription className="text-destructive">
                   {error}
                 </AlertDescription>
               </Alert>
             ) : (
               <>
                 {warnings.length > 0 && (
-                  <Alert className="bg-[var(--warning)]/10 border-[var(--warning)]">
-                    <AlertTriangle className="h-4 w-4 text-[var(--warning)]" />
-                    <AlertDescription className="text-[var(--text)]">
+                  <Alert className="bg-amber-600/10 border-amber-600">
+                    <AlertTriangle className="h-4 w-4 text-amber-600" />
+                    <AlertDescription className="text-foreground">
                       <p className="font-medium mb-1">Advertencias:</p>
                       <ul className="list-disc list-inside text-sm space-y-1">
                         {warnings.map((w, i) => (
@@ -228,10 +228,10 @@ export function ExportCaseDialog({ caseId, caseName }: ExportCaseDialogProps) {
                 )}
 
                 {exportResult && (
-                  <Alert className="bg-[var(--success)]/10 border-[var(--success)]">
-                    <AlertDescription className="text-[var(--text)]">
+                  <Alert className="bg-emerald-600/10 border-emerald-600">
+                    <AlertDescription className="text-foreground">
                       <p className="font-medium">Exportación completada</p>
-                      <p className="text-sm text-[var(--text-muted)]">
+                      <p className="text-sm text-muted-foreground">
                         {exportResult.filename} ({exportResult.rows.length} filas)
                       </p>
                     </AlertDescription>
@@ -239,7 +239,7 @@ export function ExportCaseDialog({ caseId, caseName }: ExportCaseDialogProps) {
                 )}
 
                 <div className="space-y-2">
-                  <p className="text-sm font-medium text-[var(--text)]">
+                  <p className="text-sm font-medium text-foreground">
                     Selecciona un formato de exportación:
                   </p>
                   <div className="grid gap-2">
@@ -258,7 +258,7 @@ export function ExportCaseDialog({ caseId, caseName }: ExportCaseDialogProps) {
                         )}
                         <div className="text-left">
                           <p className="font-medium">{profile.name}</p>
-                          <p className="text-xs text-[var(--text-muted)]">
+                          <p className="text-xs text-muted-foreground">
                             Formato {profile.format.toUpperCase()}
                           </p>
                         </div>
