@@ -55,7 +55,7 @@ export function Sidebar({ collapsed = false, onToggle }: SidebarProps) {
         href={item.href}
         onClick={() => setMobileOpen(false)}
         className={cn(
-          "flex items-center gap-3 rounded-[10px] px-3 py-2.5 text-sm font-medium transition-colors",
+          "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
           active
             ? "bg-primary/10 text-primary"
             : "text-muted-foreground hover:bg-sidebar-accent hover:text-foreground"
@@ -70,15 +70,15 @@ export function Sidebar({ collapsed = false, onToggle }: SidebarProps) {
   const SidebarContent = () => (
     <div className="flex h-full flex-col">
       {/* Logo */}
-      <div className="flex h-16 items-center justify-between px-4">
+      <div className="flex h-14 items-center justify-between px-3">
         <Link href="/dashboard" className="flex items-center gap-2">
           {!collapsed && (
-            <span className="text-lg font-semibold tracking-tight text-foreground">
+            <span className="text-base font-semibold tracking-tight text-foreground">
               Copiloto
             </span>
           )}
           {collapsed && (
-            <span className="text-lg font-semibold tracking-tight text-primary">
+            <span className="text-base font-semibold tracking-tight text-primary">
               C
             </span>
           )}
@@ -106,8 +106,8 @@ export function Sidebar({ collapsed = false, onToggle }: SidebarProps) {
       </div>
 
       {/* Navigation */}
-      <div className="flex-1 overflow-y-auto px-3 py-4">
-        <nav className="flex flex-col gap-1">
+      <div className="flex-1 overflow-y-auto px-2 py-3">
+        <nav className="flex flex-col gap-0.5">
           {navigation.map((item) => (
             <NavItem key={item.name} item={item} />
           ))}
@@ -115,8 +115,8 @@ export function Sidebar({ collapsed = false, onToggle }: SidebarProps) {
       </div>
 
       {/* Bottom Navigation */}
-      <div className="border-t border-border px-3 py-4">
-        <nav className="flex flex-col gap-1">
+      <div className="border-t border-border px-2 py-3">
+        <nav className="flex flex-col gap-0.5">
           {bottomNavigation.map((item) => (
             <NavItem key={item.name} item={item} />
           ))}

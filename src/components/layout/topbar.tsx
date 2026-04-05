@@ -43,15 +43,15 @@ export function Topbar() {
   }
 
   return (
-    <header className="flex h-16 items-center justify-between border-b border-border bg-card px-6">
+    <header className="flex h-14 items-center justify-between border-b border-border bg-card px-4">
       {/* Search */}
-      <div className="flex items-center gap-4 flex-1 max-w-md">
+      <div className="flex items-center gap-4 flex-1 max-w-sm">
         <div className="relative w-full">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" strokeWidth={1.5} />
+          <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" strokeWidth={1.5} />
           <Input
             type="search"
             placeholder="Buscar..."
-            className="h-10 w-full rounded-[10px] border-border bg-background pl-10 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus-visible:ring-primary"
+            className="h-8 w-full rounded-md border-border bg-background pl-9 pr-3 text-xs text-foreground placeholder:text-muted-foreground focus-visible:ring-primary"
           />
         </div>
       </div>
@@ -63,7 +63,7 @@ export function Topbar() {
           variant="ghost"
           size="icon"
           onClick={toggleDarkMode}
-          className="h-9 w-9 text-muted-foreground hover:text-foreground hover:bg-sidebar-accent"
+          className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-sidebar-accent"
           suppressHydrationWarning
         >
           {mounted ? (
@@ -81,7 +81,7 @@ export function Topbar() {
         {/* User menu */}
         <DropdownMenu>
           <DropdownMenuTrigger
-            className="relative inline-flex h-9 w-9 items-center justify-center rounded-full p-0 text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-foreground outline-none"
+            className="relative inline-flex h-8 w-8 items-center justify-center rounded-md p-0 text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-foreground outline-none"
           >
             <Avatar className="h-8 w-8">
               <AvatarImage src="" alt="Usuario" />
