@@ -174,6 +174,35 @@ export async function POST(
         .eq("id", id)
     }
     
+    // Trigger document processing via Inngest (same as agency upload)
+    try {
+      const processResponse = await fetch(
+        `${process.env.NEXT_PUBLIC_APP_URL || 'https://copiloto-aduanero.vercel.app'}/api/documents/process`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            documentId: document.id,
+            caseId: id,
+            filePath: filePath,
+            fileName: file.name,
+            mimeType: file.type,
+            agencyId: profile.agency_id,
+          }),
+        }
+      )
+      
+      const processResult = await processResponse.json()
+      
+      if (!processResponse.ok) {
+        console.error("[client/upload] Processing trigger failed:", processResult)
+      } else {
+        console.log("[client/upload] Processing started:", processResult.method)
+      }
+    } catch (processErr) {
+      console.error("[client/upload] Error triggering processing:", processErr)
+    }
+    
     return NextResponse.json({ 
       document,
       message: "Archivo subido exitosamente" 
