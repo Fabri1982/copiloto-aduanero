@@ -87,8 +87,9 @@ export const processDocument = inngest.createFunction(
       if (!supabaseUrl || !serviceKey) {
         throw new Error('Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY')
       }
+      const bucket = 'case-documents'
       const encodedPath = filePath.split('/').map(encodeURIComponent).join('/')
-      const url = `${supabaseUrl}/storage/v1/object/auth/${encodedPath}`
+      const url = `${supabaseUrl}/storage/v1/object/auth/${bucket}/${encodedPath}`
       
       console.log('[process-document] Downloading file from:', url)
       

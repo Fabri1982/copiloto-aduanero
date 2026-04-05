@@ -70,8 +70,9 @@ async function processDocumentWithRetry(
       if (!supabaseUrl || !serviceKey) {
         throw new Error('Missing Supabase configuration')
       }
+      const bucket = 'case-documents'
       const encodedPath = filePath.split('/').map(encodeURIComponent).join('/')
-      const downloadUrl = `${supabaseUrl}/storage/v1/object/auth/${encodedPath}`
+      const downloadUrl = `${supabaseUrl}/storage/v1/object/auth/${bucket}/${encodedPath}`
 
       const headers: Record<string, string> = {
         'Authorization': `Bearer ${serviceKey}`,
