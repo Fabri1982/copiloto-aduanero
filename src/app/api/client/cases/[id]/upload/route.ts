@@ -174,7 +174,8 @@ export async function POST(
         .eq("id", id)
     }
     
-    // Trigger document processing via Inngest (same as agency upload)
+    // Process document synchronously (same as agency upload)
+    let processingResult: any = null
     try {
       const processResponse = await fetch(
         `${process.env.NEXT_PUBLIC_APP_URL || 'https://copiloto-aduanero.vercel.app'}/api/documents/process`,
@@ -192,19 +193,18 @@ export async function POST(
         }
       )
       
-      const processResult = await processResponse.json()
+      processingResult = await processResponse.json()
       
       if (!processResponse.ok) {
-        console.error("[client/upload] Processing trigger failed:", processResult)
-      } else {
-        console.log("[client/upload] Processing started:", processResult.method)
+        console.error("[client/upload] Processing failed:", processingResult)
       }
     } catch (processErr) {
-      console.error("[client/upload] Error triggering processing:", processErr)
+      console.error("[client/upload] Error during processing:", processErr)
     }
     
     return NextResponse.json({ 
       document,
+      processing: processingResult,
       message: "Archivo subido exitosamente" 
     }, { status: 201 })
     

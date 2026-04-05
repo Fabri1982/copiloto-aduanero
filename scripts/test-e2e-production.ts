@@ -137,7 +137,7 @@ async function runTest() {
     log(`Document ID: ${documentId}`, C.green)
     passed++
 
-    section('Step 5: Call /api/documents/process (Inngest path)')
+    section('Step 5: Call /api/documents/process (synchronous)')
     log('Sending request to production...', C.yellow)
     const apiStart = Date.now()
     const response = await fetch(`${BASE_URL}/api/documents/process`, {
@@ -155,12 +155,14 @@ async function runTest() {
     const apiDuration = Date.now() - apiStart
     log(`HTTP ${response.status} in ${(apiDuration / 1000).toFixed(1)}s`, response.ok ? C.green : C.red)
     const responseText = await response.text()
-    log(`Raw response (${responseText.length} bytes):`, C.gray)
-    console.log(`${C.gray}${responseText.substring(0, 500)}${C.reset}\n`)
-
     let result: any
     try { result = JSON.parse(responseText) } catch { result = { raw: responseText } }
 
+    if (responseText.length > 0) {
+      console.log(`${C.gray}${JSON.stringify(result, null, 2).substring(0, 800)}${C.reset}\n`)
+    }
+
+    // If process fails, try process-direct as fallback
     if (!response.ok) {
       failed++
       log(`API error: ${result.error || result.details || result.raw}`, C.red)
@@ -192,14 +194,13 @@ async function runTest() {
       log(`Inngest event sent: method=${result.method}`, C.green)
     }
 
-    section('Step 6: Poll for extraction results (max 120s)')
+    section('Step 6: Verify extraction results')
+    // Since processing is now synchronous, results should be immediate
+    log('Checking for extraction results...', C.yellow)
     let extraction: any = null
-    const maxPollTime = 120_000
-    const pollInterval = 3_000
-    const pollStart = Date.now()
 
-    while (Date.now() - pollStart < maxPollTime) {
-      const elapsed = ((Date.now() - pollStart) / 1000).toFixed(0)
+    // Try up to 3 times with 2s delay (for edge cases)
+    for (let i = 0; i < 3; i++) {
       const { data: ext, error: extError } = await supabase
         .from('document_extractions')
         .select('*')
@@ -212,15 +213,15 @@ async function runTest() {
         extraction = ext
         extractionId = ext.id
         const statusColor = ext.status === 'completed' ? C.green : ext.status === 'failed' ? C.red : C.yellow
-        log(`[${elapsed}s] Status: ${ext.status}`, statusColor)
+        log(`Status: ${ext.status}`, statusColor)
 
         if (ext.status === 'completed' || ext.status === 'failed') break
-      } else {
-        log(`[${elapsed}s] No extraction record yet...`, C.yellow)
       }
 
-      log(`Waiting ${pollInterval / 1000}s before next poll...`, C.gray)
-      await new Promise(r => setTimeout(r, pollInterval))
+      if (i < 2) {
+        log(`Waiting 2s before retry...`, C.gray)
+        await new Promise(r => setTimeout(r, 2000))
+      }
     }
 
     if (!extraction) {

@@ -28,8 +28,9 @@ interface FileWithType {
 
 interface UploadStatus {
   fileId: string
-  status: "pending" | "uploading" | "success" | "error"
+  status: "pending" | "uploading" | "processing" | "success" | "error"
   message?: string
+  steps?: string[]
 }
 
 const documentTypeLabels: Record<DocumentType, string> = {
@@ -191,8 +192,16 @@ export function DocumentUpload({ caseId, agencyId, userId }: DocumentUploadProps
           .eq("file_path", filePath)
           .single()
 
-        // Trigger document processing via Inngest (async, more reliable)
+        // Process document synchronously (waits for completion)
         if (createdDoc) {
+          setUploadStatuses((prev) =>
+            prev.map((s) =>
+              s.fileId === fileWithType.id
+                ? { ...s, status: "processing", steps: ["Iniciando procesamiento..."] }
+                : s
+            )
+          )
+
           try {
             const response = await fetch("/api/documents/process", {
               method: "POST",
@@ -211,11 +220,32 @@ export function DocumentUpload({ caseId, agencyId, userId }: DocumentUploadProps
             
             if (!response.ok) {
               console.error("[DocumentUpload] Processing error:", result)
+              setUploadStatuses((prev) =>
+                prev.map((s) =>
+                  s.fileId === fileWithType.id
+                    ? { ...s, status: "error", message: result.error || "Error en procesamiento" }
+                    : s
+                )
+              )
             } else {
-              console.log("[DocumentUpload] Processing started via Inngest:", result)
+              // Update with processing steps
+              setUploadStatuses((prev) =>
+                prev.map((s) =>
+                  s.fileId === fileWithType.id
+                    ? { ...s, status: "success", steps: result.steps }
+                    : s
+                )
+              )
             }
           } catch (processErr) {
-            console.error("[DocumentUpload] Error starting Inngest processing:", processErr)
+            console.error("[DocumentUpload] Error during processing:", processErr)
+            setUploadStatuses((prev) =>
+              prev.map((s) =>
+                s.fileId === fileWithType.id
+                  ? { ...s, status: "error", message: "Error al procesar documento" }
+                  : s
+              )
+            )
           }
         }
 
@@ -316,47 +346,67 @@ export function DocumentUpload({ caseId, agencyId, userId }: DocumentUploadProps
             return (
               <div
                 key={fileWithType.id}
-                className="flex items-center gap-3 p-3 rounded-lg bg-sidebar-accent border border-border"
+                className="flex flex-col gap-2 p-3 rounded-md bg-sidebar-accent border border-border"
               >
-                <FileUp className="h-5 w-5 text-muted-foreground shrink-0" />
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-foreground truncate">
-                    {fileWithType.file.name}
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    {formatFileSize(fileWithType.file.size)}
-                  </p>
-                </div>
-                <Select
-                  value={fileWithType.documentType}
-                  onValueChange={(value) =>
-                    updateDocumentType(fileWithType.id, (value as DocumentType) || "unknown")
-                  }
-                  disabled={status?.status === "uploading"}
-                >
-                  <SelectTrigger className="w-[180px] h-8 text-xs bg-card border-border">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Object.entries(documentTypeLabels).map(([value, label]) => (
-                      <SelectItem key={value} value={value} className="text-xs">
-                        {label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <div className="flex items-center gap-2">
-                  {status && getStatusIcon(status.status)}
-                  <Button
-                    variant="ghost"
-                    size="icon-xs"
-                    onClick={() => removeFile(fileWithType.id)}
-                    disabled={status?.status === "uploading"}
-                    className="h-6 w-6"
+                <div className="flex items-center gap-3">
+                  <FileUp className="h-5 w-5 text-muted-foreground shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-foreground truncate">
+                      {fileWithType.file.name}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {formatFileSize(fileWithType.file.size)}
+                    </p>
+                  </div>
+                  <Select
+                    value={fileWithType.documentType}
+                    onValueChange={(value) =>
+                      updateDocumentType(fileWithType.id, (value as DocumentType) || "unknown")
+                    }
+                    disabled={status?.status === "uploading" || status?.status === "processing"}
                   >
-                    <X className="h-4 w-4" />
-                  </Button>
+                    <SelectTrigger className="w-[180px] h-8 text-xs bg-card border-border">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Object.entries(documentTypeLabels).map(([value, label]) => (
+                        <SelectItem key={value} value={value} className="text-xs">
+                          {label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <div className="flex items-center gap-2">
+                    {status && getStatusIcon(status.status)}
+                    <Button
+                      variant="ghost"
+                      size="icon-xs"
+                      onClick={() => removeFile(fileWithType.id)}
+                      disabled={status?.status === "uploading" || status?.status === "processing"}
+                      className="h-6 w-6"
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
+
+                {/* Processing steps */}
+                {status?.status === "processing" && status.steps && (
+                  <div className="ml-8 space-y-1">
+                    {status.steps.filter(Boolean).map((step, i) => (
+                      <p key={i} className="text-xs text-muted-foreground">
+                        {step}
+                      </p>
+                    ))}
+                  </div>
+                )}
+
+                {/* Error message */}
+                {status?.status === "error" && status.message && (
+                  <p className="ml-8 text-xs text-destructive">
+                    {status.message}
+                  </p>
+                )}
               </div>
             )
           })}
@@ -370,7 +420,9 @@ export function DocumentUpload({ caseId, agencyId, userId }: DocumentUploadProps
             {isUploading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Subiendo...
+                {files.some(f => uploadStatuses.find(s => s.fileId === f.id)?.status === "processing")
+                  ? "Procesando documento con IA..."
+                  : "Subiendo..."}
               </>
             ) : (
               <>
