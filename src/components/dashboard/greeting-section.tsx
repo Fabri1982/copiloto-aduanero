@@ -37,10 +37,10 @@ export function GreetingSection({ userName }: GreetingSectionProps) {
   if (!mounted) {
     return (
       <div>
-        <h1 className="text-2xl font-semibold text-[var(--text)]">
+        <h1 className="text-[15px] font-normal text-foreground tracking-[-0.45px]">
           Hola, {userName?.split(" ")[0] || "Usuario"}
         </h1>
-        <p className="mt-1 text-sm text-[var(--text-muted)]">
+        <p className="mt-1 text-sm text-muted-foreground">
           Cargando...
         </p>
       </div>
@@ -49,10 +49,10 @@ export function GreetingSection({ userName }: GreetingSectionProps) {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold text-[var(--text)]">
+      <h1 className="text-[15px] font-normal text-foreground tracking-[-0.45px]">
         {greeting}, {userName?.split(" ")[0] || "Usuario"}
       </h1>
-      <p className="mt-1 text-sm text-[var(--text-muted)]">
+      <p className="mt-1 text-sm text-muted-foreground">
         {dateString}
       </p>
     </div>

@@ -57,8 +57,8 @@ export function Sidebar({ collapsed = false, onToggle }: SidebarProps) {
         className={cn(
           "flex items-center gap-3 rounded-[10px] px-3 py-2.5 text-sm font-medium transition-colors",
           active
-            ? "bg-[var(--primary-soft)] text-[var(--primary)]"
-            : "text-[var(--text-muted)] hover:bg-[var(--surface-2)] hover:text-[var(--text)]"
+            ? "bg-primary/10 text-primary"
+            : "text-muted-foreground hover:bg-sidebar-accent hover:text-foreground"
         )}
       >
         <Icon className="h-5 w-5 flex-shrink-0" strokeWidth={1.5} />
@@ -73,12 +73,12 @@ export function Sidebar({ collapsed = false, onToggle }: SidebarProps) {
       <div className="flex h-16 items-center justify-between px-4">
         <Link href="/dashboard" className="flex items-center gap-2">
           {!collapsed && (
-            <span className="text-lg font-semibold tracking-tight text-[var(--text)]">
+            <span className="text-lg font-semibold tracking-tight text-foreground">
               Copiloto
             </span>
           )}
           {collapsed && (
-            <span className="text-lg font-semibold tracking-tight text-[var(--primary)]">
+            <span className="text-lg font-semibold tracking-tight text-primary">
               C
             </span>
           )}
@@ -88,7 +88,7 @@ export function Sidebar({ collapsed = false, onToggle }: SidebarProps) {
             variant="ghost"
             size="icon"
             onClick={onToggle}
-            className="h-8 w-8 text-[var(--text-muted)] hover:text-[var(--text)]"
+            className="h-8 w-8 text-muted-foreground hover:text-foreground"
           >
             <ChevronLeft className="h-4 w-4" />
           </Button>
@@ -98,7 +98,7 @@ export function Sidebar({ collapsed = false, onToggle }: SidebarProps) {
             variant="ghost"
             size="icon"
             onClick={onToggle}
-            className="h-8 w-8 text-[var(--text-muted)] hover:text-[var(--text)]"
+            className="h-8 w-8 text-muted-foreground hover:text-foreground"
           >
             <ChevronRight className="h-4 w-4" />
           </Button>
@@ -115,7 +115,7 @@ export function Sidebar({ collapsed = false, onToggle }: SidebarProps) {
       </div>
 
       {/* Bottom Navigation */}
-      <div className="border-t border-[var(--border)] px-3 py-4">
+      <div className="border-t border-border px-3 py-4">
         <nav className="flex flex-col gap-1">
           {bottomNavigation.map((item) => (
             <NavItem key={item.name} item={item} />
@@ -131,12 +131,12 @@ export function Sidebar({ collapsed = false, onToggle }: SidebarProps) {
       <div className="lg:hidden">
         <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
           <SheetTrigger
-            className="fixed left-4 top-4 z-40 inline-flex h-10 w-10 items-center justify-center rounded-md text-[var(--text-muted)] transition-colors hover:bg-[var(--surface-2)] hover:text-[var(--text)]"
+            className="fixed left-4 top-4 z-40 inline-flex h-10 w-10 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-foreground"
           >
             <Menu className="h-5 w-5" />
             <span className="sr-only">Abrir menú</span>
           </SheetTrigger>
-          <SheetContent side="left" className="w-[260px] p-0 bg-[var(--surface)] border-r border-[var(--border)]">
+          <SheetContent side="left" className="w-[260px] p-0 bg-sidebar border-r border-border">
             <SidebarContent />
           </SheetContent>
         </Sheet>
@@ -145,7 +145,7 @@ export function Sidebar({ collapsed = false, onToggle }: SidebarProps) {
       {/* Desktop Sidebar */}
       <aside
         className={cn(
-          "hidden lg:flex flex-col border-r border-[var(--border)] bg-[var(--surface)] transition-all duration-300 ease-in-out",
+          "hidden lg:flex flex-col border-r border-border bg-sidebar transition-all duration-300 ease-in-out",
           collapsed ? "w-16" : "w-60"
         )}
       >

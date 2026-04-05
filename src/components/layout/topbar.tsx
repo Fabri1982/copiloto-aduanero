@@ -43,15 +43,15 @@ export function Topbar() {
   }
 
   return (
-    <header className="flex h-16 items-center justify-between border-b border-[var(--border)] bg-[var(--surface)] px-6">
+    <header className="flex h-16 items-center justify-between border-b border-border bg-card px-6">
       {/* Search */}
       <div className="flex items-center gap-4 flex-1 max-w-md">
         <div className="relative w-full">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--text-faint)]" strokeWidth={1.5} />
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" strokeWidth={1.5} />
           <Input
             type="search"
             placeholder="Buscar..."
-            className="h-10 w-full rounded-[10px] border-[var(--border)] bg-[var(--bg)] pl-10 pr-4 text-sm text-[var(--text)] placeholder:text-[var(--text-faint)] focus-visible:ring-[var(--primary)]"
+            className="h-10 w-full rounded-[10px] border-border bg-background pl-10 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus-visible:ring-primary"
           />
         </div>
       </div>
@@ -63,7 +63,7 @@ export function Topbar() {
           variant="ghost"
           size="icon"
           onClick={toggleDarkMode}
-          className="h-9 w-9 text-[var(--text-muted)] hover:text-[var(--text)] hover:bg-[var(--surface-2)]"
+          className="h-9 w-9 text-muted-foreground hover:text-foreground hover:bg-sidebar-accent"
           suppressHydrationWarning
         >
           {mounted ? (
@@ -81,31 +81,31 @@ export function Topbar() {
         {/* User menu */}
         <DropdownMenu>
           <DropdownMenuTrigger
-            className="relative inline-flex h-9 w-9 items-center justify-center rounded-full p-0 text-[var(--text-muted)] transition-colors hover:bg-[var(--surface-2)] hover:text-[var(--text)] outline-none"
+            className="relative inline-flex h-9 w-9 items-center justify-center rounded-full p-0 text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-foreground outline-none"
           >
             <Avatar className="h-8 w-8">
               <AvatarImage src="" alt="Usuario" />
-              <AvatarFallback className="bg-[var(--primary-soft)] text-[var(--primary)] text-xs font-medium">
+              <AvatarFallback className="bg-primary/10 text-primary text-xs font-medium">
                 <User className="h-4 w-4" strokeWidth={1.5} />
               </AvatarFallback>
             </Avatar>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56 bg-[var(--surface)] border-[var(--border)]">
-            <DropdownMenuLabel className="text-[var(--text)]">
+          <DropdownMenuContent align="end" className="w-56 bg-card border-border">
+            <DropdownMenuLabel className="text-foreground">
               <div className="flex flex-col">
                 <span className="font-medium">Usuario</span>
-                <span className="text-xs text-[var(--text-muted)]">usuario@ejemplo.com</span>
+                <span className="text-xs text-muted-foreground">usuario@ejemplo.com</span>
               </div>
             </DropdownMenuLabel>
-            <DropdownMenuSeparator className="bg-[var(--border)]" />
-            <DropdownMenuItem className="text-[var(--text)] hover:bg-[var(--surface-2)] hover:text-[var(--text)] cursor-pointer">
+            <DropdownMenuSeparator className="bg-border" />
+            <DropdownMenuItem className="text-foreground hover:bg-sidebar-accent hover:text-foreground cursor-pointer">
               Perfil
             </DropdownMenuItem>
-            <DropdownMenuItem className="text-[var(--text)] hover:bg-[var(--surface-2)] hover:text-[var(--text)] cursor-pointer">
+            <DropdownMenuItem className="text-foreground hover:bg-sidebar-accent hover:text-foreground cursor-pointer">
               Configuración
             </DropdownMenuItem>
-            <DropdownMenuSeparator className="bg-[var(--border)]" />
-            <DropdownMenuItem className="text-[var(--error)] hover:bg-[var(--error-soft)] cursor-pointer">
+            <DropdownMenuSeparator className="bg-border" />
+            <DropdownMenuItem className="text-destructive hover:bg-destructive/10 cursor-pointer">
               Cerrar sesión
             </DropdownMenuItem>
           </DropdownMenuContent>
