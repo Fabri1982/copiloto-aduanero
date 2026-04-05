@@ -191,10 +191,10 @@ export function DocumentUpload({ caseId, agencyId, userId }: DocumentUploadProps
           .eq("file_path", filePath)
           .single()
 
-        // Trigger document processing via direct API (synchronous)
+        // Trigger document processing via Inngest (async, more reliable)
         if (createdDoc) {
           try {
-            const response = await fetch("/api/documents/process-direct", {
+            const response = await fetch("/api/documents/process", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
@@ -211,13 +211,11 @@ export function DocumentUpload({ caseId, agencyId, userId }: DocumentUploadProps
             
             if (!response.ok) {
               console.error("[DocumentUpload] Processing error:", result)
-              // Still mark as success since the file was uploaded
-              // User can retry processing later
             } else {
-              console.log("[DocumentUpload] Processing completed:", result)
+              console.log("[DocumentUpload] Processing started via Inngest:", result)
             }
           } catch (processErr) {
-            console.error("[DocumentUpload] Error during document processing:", processErr)
+            console.error("[DocumentUpload] Error starting Inngest processing:", processErr)
           }
         }
 
