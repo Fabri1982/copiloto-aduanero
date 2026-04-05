@@ -1,4 +1,4 @@
-import { generateWithGemini, safeParseJson } from './openrouter'
+import { generateWithGemini, safeParseJson } from './gemini'
 
 export interface ApparelResult {
   category_normalized: string

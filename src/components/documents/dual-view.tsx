@@ -178,14 +178,14 @@ export function DualView({ caseId, documents }: DualViewProps) {
 
   if (documents.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center h-[500px] bg-[var(--surface)] rounded-xl border border-[var(--border)]">
-        <div className="w-16 h-16 rounded-full bg-[var(--surface-2)] flex items-center justify-center mb-4">
-          <FileText className="h-8 w-8 text-[var(--text-muted)]" />
+      <div className="flex flex-col items-center justify-center h-[500px] rounded-xl border border-border bg-card">
+        <div className="w-16 h-16 rounded-full bg-sidebar flex items-center justify-center mb-4">
+          <FileText className="h-8 w-8 text-muted-foreground" />
         </div>
-        <h3 className="text-base font-medium text-[var(--text)] mb-1">
+        <h3 className="text-[15px] font-normal text-foreground mb-1 tracking-[-0.45px]">
           No hay documentos
         </h3>
-        <p className="text-sm text-[var(--text-muted)]">
+        <p className="text-sm text-muted-foreground">
           Sube documentos para ver el contenido y los datos extraídos.
         </p>
       </div>
@@ -193,15 +193,15 @@ export function DualView({ caseId, documents }: DualViewProps) {
   }
 
   return (
-    <div className="flex flex-col h-[600px] bg-[var(--surface)] rounded-xl border border-[var(--border)] overflow-hidden">
+    <div className="flex flex-col h-[600px] rounded-xl border border-border bg-card overflow-hidden">
       {/* Document Selector */}
-      <div className="flex items-center gap-4 px-4 py-3 border-b border-[var(--border)] bg-[var(--surface)]">
+      <div className="flex items-center gap-4 px-4 py-3 border-b border-border bg-card">
         <div className="flex-1">
           <Select
             value={selectedDocumentId || undefined}
             onValueChange={setSelectedDocumentId}
           >
-            <SelectTrigger className="w-full max-w-md bg-[var(--bg)] border-[var(--border)]">
+            <SelectTrigger className="w-full max-w-md bg-background border-border">
               <SelectValue placeholder="Seleccionar documento" />
             </SelectTrigger>
             <SelectContent>
@@ -209,7 +209,7 @@ export function DualView({ caseId, documents }: DualViewProps) {
                 <SelectItem key={doc.id} value={doc.id}>
                   <div className="flex items-center gap-2">
                     <span className="truncate">{doc.file_name}</span>
-                    <span className="text-xs text-[var(--text-muted)]">
+                    <span className="text-xs text-muted-foreground">
                       ({getDocumentTypeLabel(doc.document_type)})
                     </span>
                   </div>
@@ -223,26 +223,26 @@ export function DualView({ caseId, documents }: DualViewProps) {
         {extractionStatus && (
           <div className="flex items-center gap-2">
             {extractionStatus === "processing" && (
-              <div className="flex items-center gap-2 text-sm text-[var(--primary)]">
+              <div className="flex items-center gap-2 text-sm text-primary">
                 <Loader2 className="h-4 w-4 animate-spin" />
                 <span>Procesando...</span>
               </div>
             )}
             {extractionStatus === "completed" && (
-              <div className="flex items-center gap-2 text-sm text-[var(--success)]">
-                <span className="w-2 h-2 rounded-full bg-[var(--success)]" />
+              <div className="flex items-center gap-2 text-sm text-emerald-600">
+                <span className="w-2 h-2 rounded-full bg-emerald-600" />
                 <span>Procesado</span>
               </div>
             )}
             {extractionStatus === "failed" && (
-              <div className="flex items-center gap-2 text-sm text-[var(--error)]">
+              <div className="flex items-center gap-2 text-sm text-red-600">
                 <AlertCircle className="h-4 w-4" />
                 <span>Error</span>
               </div>
             )}
             {extractionStatus === "pending" && (
-              <div className="flex items-center gap-2 text-sm text-[var(--text-muted)]">
-                <span className="w-2 h-2 rounded-full bg-[var(--text-muted)]" />
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <span className="w-2 h-2 rounded-full bg-muted-foreground" />
                 <span>Pendiente</span>
               </div>
             )}
@@ -253,11 +253,11 @@ export function DualView({ caseId, documents }: DualViewProps) {
       {/* Split View */}
       <div className="flex-1 flex overflow-hidden">
         {/* Left: PDF Viewer */}
-        <div className="flex-1 border-r border-[var(--border)] min-w-0">
+        <div className="flex-1 border-r border-border min-w-0">
           {loadingUrl ? (
             <div className="flex flex-col items-center justify-center h-full">
-              <Loader2 className="h-6 w-6 animate-spin text-[var(--primary)]" />
-              <p className="mt-2 text-sm text-[var(--text-muted)]">
+              <Loader2 className="h-6 w-6 animate-spin text-primary" />
+              <p className="mt-2 text-sm text-muted-foreground">
                 Cargando documento...
               </p>
             </div>
@@ -265,8 +265,8 @@ export function DualView({ caseId, documents }: DualViewProps) {
             <PDFViewer url={signedUrl} />
           ) : (
             <div className="flex flex-col items-center justify-center h-full">
-              <AlertCircle className="h-8 w-8 text-[var(--text-muted)]" />
-              <p className="mt-2 text-sm text-[var(--text-muted)]">
+              <AlertCircle className="h-8 w-8 text-muted-foreground" />
+              <p className="mt-2 text-sm text-muted-foreground">
                 No se pudo cargar el documento
               </p>
             </div>
@@ -274,9 +274,9 @@ export function DualView({ caseId, documents }: DualViewProps) {
         </div>
 
         {/* Right: Extracted Fields */}
-        <div className="w-[400px] flex-shrink-0 bg-[var(--bg)]">
-          <div className="px-4 py-3 border-b border-[var(--border)] bg-[var(--surface)]">
-            <h3 className="text-sm font-medium text-[var(--text)]">
+        <div className="w-[400px] flex-shrink-0 bg-background">
+          <div className="px-4 py-3 border-b border-border bg-card">
+            <h3 className="text-sm font-medium text-foreground tracking-[-0.45px]">
               Datos extraídos
             </h3>
           </div>

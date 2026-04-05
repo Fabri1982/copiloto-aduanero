@@ -1,4 +1,4 @@
-import { generateWithGemini, safeParseJson } from './openrouter'
+import { generateWithGemini, safeParseJson } from './gemini'
 
 export interface TariffResult {
   chile_hs_code_8: string

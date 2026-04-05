@@ -213,41 +213,41 @@ export function ProcessingStatus({ caseId, documents, agencyId }: ProcessingStat
   }
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-2">
       {/* Summary banner */}
       {allCompleted ? (
-        <div className="flex items-center gap-3 p-3 rounded-lg bg-[var(--success)]/10 border border-[var(--success)]/20">
-          <Sparkles className="h-5 w-5 text-[var(--success)] shrink-0" />
+        <div className="flex items-center gap-3 p-3 rounded-[10px] border border-border bg-card">
+          <Sparkles className="h-5 w-5 text-emerald-600 shrink-0" />
           <div className="flex-1">
-            <p className="text-sm font-medium text-[var(--success)]">
+            <p className="text-[15px] font-normal text-foreground tracking-[-0.45px]">
               ¡Documento procesado exitosamente!
             </p>
-            <p className="text-xs text-[var(--success)]/80">
+            <p className="text-xs text-muted-foreground">
               Los datos extraídos están disponibles en el panel derecho
             </p>
           </div>
         </div>
       ) : processingCount > 0 ? (
-        <div className="flex items-center gap-3 p-3 rounded-lg bg-[var(--primary)]/10 border border-[var(--primary)]/20">
-          <Loader2 className="h-5 w-5 animate-spin text-[var(--primary)] shrink-0" />
+        <div className="flex items-center gap-3 p-3 rounded-[10px] border border-border bg-card">
+          <Loader2 className="h-5 w-5 animate-spin text-primary shrink-0" />
           <div className="flex-1">
-            <p className="text-sm font-medium text-[var(--primary)]">
+            <p className="text-[15px] font-normal text-foreground tracking-[-0.45px]">
               Procesando documento{processingCount > 1 ? 's' : ''} con IA...
             </p>
-            <p className="text-xs text-[var(--primary)]/80">
+            <p className="text-xs text-muted-foreground">
               {completedCount > 0 && `${completedCount} completado${completedCount > 1 ? 's' : ''} · `}
               No cierres esta página
             </p>
           </div>
         </div>
       ) : failedCount > 0 ? (
-        <div className="flex items-center gap-3 p-3 rounded-lg bg-[var(--error)]/10 border border-[var(--error)]/20">
-          <AlertCircle className="h-5 w-5 text-[var(--error)] shrink-0" />
+        <div className="flex items-center gap-3 p-3 rounded-[10px] border border-border bg-card">
+          <AlertCircle className="h-5 w-5 text-red-600 shrink-0" />
           <div className="flex-1">
-            <p className="text-sm font-medium text-[var(--error)]">
+            <p className="text-[15px] font-normal text-foreground tracking-[-0.45px]">
               Error al procesar {failedCount} documento{failedCount > 1 ? 's' : ''}
             </p>
-            <p className="text-xs text-[var(--error)]/80">
+            <p className="text-xs text-muted-foreground">
               Puedes reintentar desde la lista
             </p>
           </div>
@@ -264,55 +264,61 @@ export function ProcessingStatus({ caseId, documents, agencyId }: ProcessingStat
         return (
           <div
             key={doc.id}
-            className={`flex items-center gap-3 p-3 rounded-lg border transition-all duration-300 ${
-              isJustCompleted
-                ? "bg-[var(--success)]/5 border-[var(--success)]/30 ring-2 ring-[var(--success)]/20"
-                : "bg-[var(--surface)] border-[var(--border)]"
+            className={`relative h-[46px] rounded-[10px] border border-border bg-sidebar hover:bg-sidebar-accent px-[7px] transition-all duration-300 ${
+              isJustCompleted ? "ring-2 ring-emerald-600/20" : ""
             }`}
           >
-            <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
-              status === "completed" ? "bg-[var(--success)]/20" :
-              status === "failed" ? "bg-[var(--error)]/20" :
-              "bg-[var(--surface-2)]"
-            }`}>
-              {getStatusIcon(status, doc.id)}
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-[var(--text)] truncate">
-                {doc.file_name}
-              </p>
-              {extraction?.error_message && status === "failed" && (
-                <p className="text-xs text-[var(--error)] truncate">
-                  {extraction.error_message}
-                </p>
-              )}
-            </div>
-            <div className="flex items-center gap-2">
-              <span
-                className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${
-                  status === "processing" ? "bg-[var(--primary)]/10 text-[var(--primary)]" :
-                  status === "completed" ? "bg-[var(--success)]/10 text-[var(--success)]" :
-                  status === "failed" ? "bg-[var(--error)]/10 text-[var(--error)]" :
-                  "bg-[var(--text-muted)]/10 text-[var(--text-muted)]"
-                }`}
-              >
-                {getStatusLabel(status)}
-              </span>
-              {status === "failed" && (
-                <Button
-                  variant="ghost"
-                  size="icon-sm"
-                  onClick={() => handleRetry(doc)}
-                  disabled={retrying[doc.id]}
-                  className="h-7 w-7"
-                >
-                  {retrying[doc.id] ? (
-                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                  ) : (
-                    <RefreshCw className="h-3.5 w-3.5" />
+            <div className="grid h-full items-center gap-2 sm:gap-3 md:gap-4 overflow-hidden grid-cols-1 sm:grid-cols-[minmax(0,1fr)_minmax(120px,auto)] md:grid-cols-[minmax(0,1fr)_minmax(140px,auto)_minmax(110px,auto)] lg:grid-cols-[minmax(0,1fr)_minmax(160px,auto)_minmax(130px,auto)_minmax(70px,auto)]">
+              <div className="flex items-center gap-2 min-w-0 overflow-hidden">
+                <div className={`flex size-8 items-center justify-center rounded-[6px] border border-border bg-background shrink-0 ${
+                  status === "completed" ? "bg-emerald-600/20" :
+                  status === "failed" ? "bg-red-600/20" :
+                  ""
+                }`}>
+                  {getStatusIcon(status, doc.id)}
+                </div>
+                <div className="min-w-0">
+                  <p className="text-[15px] font-normal text-foreground tracking-[-0.45px] truncate">
+                    {doc.file_name}
+                  </p>
+                  {extraction?.error_message && status === "failed" && (
+                    <p className="text-xs text-red-600 truncate">
+                      {extraction.error_message}
+                    </p>
                   )}
-                </Button>
-              )}
+                </div>
+              </div>
+
+              <div className="hidden sm:flex items-center gap-2 min-w-0 overflow-hidden">
+                <span
+                  className={`text-[14px] font-normal tracking-[-0.42px] whitespace-nowrap truncate min-w-0 ${
+                    status === "processing" ? "text-primary" :
+                    status === "completed" ? "text-emerald-600" :
+                    status === "failed" ? "text-red-600" :
+                    "text-muted-foreground"
+                  }`}
+                >
+                  {getStatusLabel(status)}
+                </span>
+              </div>
+
+              <div className="hidden md:flex items-center justify-end gap-2 min-w-0 overflow-hidden">
+                {status === "failed" && (
+                  <Button
+                    variant="ghost"
+                    size="icon-sm"
+                    onClick={() => handleRetry(doc)}
+                    disabled={retrying[doc.id]}
+                    className="h-7 w-7"
+                  >
+                    {retrying[doc.id] ? (
+                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                    ) : (
+                      <RefreshCw className="h-3.5 w-3.5" />
+                    )}
+                  </Button>
+                )}
+              </div>
             </div>
           </div>
         )

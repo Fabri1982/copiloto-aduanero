@@ -1,4 +1,4 @@
-import { generateWithGemini, safeParseJson } from './openrouter'
+import { generateWithGemini, safeParseJson } from './gemini'
 
 export type CommunicationType = 'missing_documents' | 'explain_provision' | 'request_payment_proof' | 'general_update'
 

@@ -13,6 +13,7 @@ export function getGemini() {
 }
 
 export const GEMINI_MODEL = 'gemini-2.5-flash-lite'
+const GEMINI_TIMEOUT_MS = 90_000 // 90 seconds
 
 export interface AIResponse {
   content: string
@@ -53,7 +54,11 @@ export async function generateWithGemini(
       },
     })
 
-    const result = await model.generateContent(prompt)
+    const contentPromise = model.generateContent(prompt)
+    const timeoutPromise = new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error(`Gemini timeout after ${GEMINI_TIMEOUT_MS / 1000}s`)), GEMINI_TIMEOUT_MS)
+    )
+    const result = await Promise.race([contentPromise, timeoutPromise])
     const text = result.response.text()
 
     return {
@@ -62,6 +67,13 @@ export async function generateWithGemini(
     }
   } catch (error: any) {
     const isRateLimit = error?.status === 429 || error?.message?.includes('429') || error?.message?.includes('Quota exceeded')
+    const isTimeout = error?.message?.includes('timeout') || error?.message?.includes('ETIMEDOUT')
+    
+    if (isTimeout) {
+      console.error('[Gemini] Request timed out:', error)
+      throw new Error(`Gemini request timed out after ${GEMINI_TIMEOUT_MS / 1000}s. Please try again.`)
+    }
+    
     if (isRateLimit) {
       console.warn('[Gemini] Rate limit hit, retrying in 60s...')
       await new Promise(resolve => setTimeout(resolve, 60000))

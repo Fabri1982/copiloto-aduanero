@@ -6,7 +6,6 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode
 }) {
-  // This will redirect to /login if not authenticated
   await getAuthUser()
   
   return <AppShell>{children}</AppShell>

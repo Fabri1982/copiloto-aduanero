@@ -1,4 +1,4 @@
-import { generateWithGemini, safeParseJson } from './openrouter'
+import { generateWithGemini, safeParseJson } from './gemini'
 
 export interface ValidationResult {
   status: 'approvable' | 'needs_review' | 'missing_documents'

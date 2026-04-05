@@ -151,7 +151,12 @@ export const processDocument = inngest.createFunction(
     // Step 4: Classify and extract with Document Agent
     const extractionResult = await step.run('classify-and-extract', async () => {
       try {
-        return await classifyAndExtract(ocrResult.rawText, caseId)
+        console.log('[process-document] Starting classification...')
+        const classificationStartTime = Date.now()
+        const result = await classifyAndExtract(ocrResult.rawText, caseId)
+        const duration = Date.now() - classificationStartTime
+        console.log(`[process-document] Classification completed in ${duration}ms`)
+        return result
       } catch (error: any) {
         console.error('[process-document] Classification failed:', error)
         // Return a minimal result instead of crashing
